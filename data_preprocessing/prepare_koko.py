@@ -5,6 +5,7 @@ import codecs
 import re
 import csv
 import sys
+import zipfile
 
 from sklearn.model_selection import train_test_split
 
@@ -12,6 +13,7 @@ from sklearn.model_selection import train_test_split
 Lines with errors in the dataset look like the following one: 
 "Jeder hat sicher <error type="09 tog instead of sep: other cases">schonmal //// schon mal</error> aus Gruppenzwang oder weil er es nicht besser wusste etwas Dummes angestellt."
 """
+corpus_file = "../corpora/LearnerCorpora/Koko/ID2988.zip"
 corpus_directory = "../corpora/LearnerCorpora/Koko"
 
 random_split_dir = "../corpora/LearnerCorpora/Koko/random_spit"
@@ -53,14 +55,18 @@ if __name__ == "__main__":
     line_counter = 0
     all_correct_lines = 0
     error_types = dict()
+    error_num = dict()
 
+    with zipfile.ZipFile(corpus_file, 'r') as zip_ref:
+       zip_ref.extractall(corpus_directory)
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
     error_table = codecs.open(error_table_file, 'a')
     error_count = codecs.open(error_count_file, 'a')
     writer_er_type = csv.writer(error_table)
     writer_er_count = csv.writer(error_count)
-    writer_er_count.writerow(['error_type', 'count'])
-    writer_er_type.writerow(['error_type', 'source', 'target'])
+    writer_er_count.writerow(['error_number', 'error_type', 'count'])
+    writer_er_type.writerow(['error_number', 'error_type', 'source', 'target'])
+
 
     if random_split:
         split_names = split_random(names, val=True)  # train, test, valid (which is optional)
@@ -86,13 +92,22 @@ if __name__ == "__main__":
                         if m:
                             error = m.group('error').strip()
                             correct = m.group('correct').strip()
-                            error_type = m.group('type').strip()
+                            error_info = m.group('type').strip()
+                            try:
+                                error_number = error_info.split()[0]
+                                error_type = error_info[len(error_number):]
+
+                            except:
+                                print('Missing error type!')
+                                error_number = '100'
+                                error_type = 'unknown'
                             er_line = re.sub(r'<error type.*/error>', error, line)
                             cor_line = re.sub(r'<error type.*/error>', correct, line)
                             error_types[error_type] = error_types.get(error_type, 0) + 1
+                            error_num[error_type] = error_number
                             outfile_source.write(er_line)
                             outfile_target.write(cor_line)
-                            writer_er_type.writerow([error_type, correct, error])
+                            writer_er_type.writerow([error_number, error_type, error, correct])
                     else:
                         all_correct_lines += 1
                         outfile_source.write(line)
@@ -101,7 +116,7 @@ if __name__ == "__main__":
         outfile_target.close()
     sorted_err_counts = {k: error_types[k] for k in sorted(error_types, key=error_types.get, reverse=True)}
     for k, v in sorted_err_counts.items():
-        writer_er_count.writerow([k, v])
+        writer_er_count.writerow([error_num[k], k, v])
 
     print('# correct lines:', all_correct_lines)
     print('# all lines:', line_counter)
@@ -111,3 +126,5 @@ if __name__ == "__main__":
 # 961
 # 301
 # 241
+
+#modify it: every error can have more than one annotation separated by // - what to do with it? it can be 3 even
