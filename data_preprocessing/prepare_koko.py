@@ -24,6 +24,7 @@ error_table_file = 'errors_source_target.csv'
 error_count_file = 'error_statistics.csv'
 
 
+
 def get_original_split(names):
     """
     :param names: list of filename in the dir
@@ -51,7 +52,7 @@ def split_random(names, val=False):
 
 
 if __name__ == "__main__":
-    random_split = True
+    random_split = False
     line_counter = 0
     all_correct_lines = 0
     error_types = dict()
@@ -92,22 +93,28 @@ if __name__ == "__main__":
                         if m:
                             error = m.group('error').strip()
                             correct = m.group('correct').strip()
+                            if 'unreadable' in error:
+                                continue
                             error_info = m.group('type').strip()
-                            try:
-                                error_number = error_info.split()[0]
-                                error_type = error_info[len(error_number):]
-
-                            except:
-                                print('Missing error type!')
-                                error_number = '100'
-                                error_type = 'unknown'
+                            if '//' in error_info:
+                                type_list = [el.strip() for el in error_info.split('//')]
+                            else:
+                                type_list = [error_info]
+                            for el in type_list:
+                                try:
+                                    error_number = el.split()[0]
+                                    error_type = el[len(error_number):]
+                                except:
+                                    print('Missing error type!')
+                                    error_number = '100'
+                                    error_type = 'unknown'
+                                error_types[error_type] = error_types.get(error_type, 0) + 1
+                                error_num[error_type] = error_number
+                                writer_er_type.writerow([error_number, error_type, error, correct])
                             er_line = re.sub(r'<error type.*/error>', error, line)
                             cor_line = re.sub(r'<error type.*/error>', correct, line)
-                            error_types[error_type] = error_types.get(error_type, 0) + 1
-                            error_num[error_type] = error_number
                             outfile_source.write(er_line)
                             outfile_target.write(cor_line)
-                            writer_er_type.writerow([error_number, error_type, error, correct])
                     else:
                         all_correct_lines += 1
                         outfile_source.write(line)
@@ -127,4 +134,3 @@ if __name__ == "__main__":
 # 301
 # 241
 
-#modify it: every error can have more than one annotation separated by // - what to do with it? it can be 3 even
