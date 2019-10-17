@@ -4,6 +4,7 @@ import os
 import codecs
 import re
 import csv
+import sys
 
 from sklearn.model_selection import train_test_split
 
@@ -58,8 +59,8 @@ if __name__ == "__main__":
     error_count = codecs.open(error_count_file, 'a')
     writer_er_type = csv.writer(error_table)
     writer_er_count = csv.writer(error_count)
-    writer_er_count.writerow(['error_type', 'source', 'target'])
-    writer_er_type.writerow(['error_type', 'count'])
+    writer_er_count.writerow(['error_type', 'count'])
+    writer_er_type.writerow(['error_type', 'source', 'target'])
 
     if random_split:
         split_names = split_random(names, val=True)  # train, test, valid (which is optional)
