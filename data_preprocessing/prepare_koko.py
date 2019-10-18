@@ -52,6 +52,48 @@ def split_random(names, val=False):
     return [train, test, valid]
 
 
+def find_error(line):
+    to_replace = []
+    found_types = dict()
+    if '<error type' in line:
+        m = re.finditer(r'<error type="(?P<type>.*?)".*?>(?P<error>.*?)\/{4}(?P<correct>.*?)<\/error>', line)
+        if m:
+            for match in m:
+                ind = [match.start(), match.end()]
+                error = match.group('error').strip()
+                correct = match.group('correct').strip()
+                error_info = match.group('type').strip()
+                if '//' in error_info:
+                    types = [el.strip() for el in error_info.split('//')]
+                else:
+                    types = [error_info]
+                for t in types:
+                    if t not in found_types:
+                        found_types[t] = []
+                        found_types[t].append([error, correct])
+                    else:
+                        found_types[t].append([error, correct])
+                to_replace.append([ind, error, correct])
+    return to_replace, found_types
+
+
+def replace_in_line(line, to_replace):
+    er_line = ''
+    cor_line = ''
+    new_start = 0
+    for repl in to_replace:
+        ind, error, correct = repl
+        start = ind[0]
+        end = ind[1]
+        er_line += line[new_start:start] + error
+        cor_line += line[new_start:start] + correct
+        new_start = end
+    if new_start < len(line):
+        er_line += line[new_start:]
+        cor_line += line[new_start:]
+    return er_line, cor_line
+
+
 if __name__ == "__main__":
     random_split = False
     line_counter = 0
@@ -93,32 +135,29 @@ if __name__ == "__main__":
                 for line in f:
                     line_counter += 1
                     if '<error type' in line:
-                        m = re.search(r'<.*type="(?P<type>.*)".*>(?P<error>.*)\/{4}(?P<correct>.*)<', line)
-                        if m:
-                            error = m.group('error').strip()
-                            correct = m.group('correct').strip()
-                            if 'unreadable' in error:
-                                continue
-                            error_info = m.group('type').strip()
-                            if '//' in error_info:
-                                type_list = [el.strip() for el in error_info.split('//')]
-                            else:
-                                type_list = [error_info]
-                            for el in type_list:
-                                try:
-                                    error_number = el.split()[0]
-                                    error_type = el[len(error_number):]
-                                except:
-                                    print('Missing error type!')
-                                    error_number = '100'
-                                    error_type = 'unknown'
-                                error_types[error_type] = error_types.get(error_type, 0) + 1
-                                error_num[error_type] = error_number
-                                writer_er_type.writerow([error_number, error_type, error, correct])
-                            er_line = re.sub(r'<error type.*/error>', error, line)
-                            cor_line = re.sub(r'<error type.*/error>', correct, line)
-                            outfile_source.write(er_line)
-                            outfile_target.write(cor_line)
+                        to_replace, found_types = find_error(line)
+                        if 'unreadable' in [e[1] for e in to_replace]:
+                            continue
+                        for name in found_types.keys():
+                            try:
+                                error_number = name.split()[0]
+                                error_type = name[len(error_number):]
+                            except:
+                                print('Missing error type!')
+                                error_number = '100'
+                                error_type = 'unknown'
+                            error_types[error_type] = error_types.get(error_type, 0) + 1
+                            error_num[error_type] = error_number
+                            for value in found_types[name]:
+                                writer_er_type.writerow([error_number, error_type, value[0], value[1]])
+                        #print('BEFORE', line)
+                        #print(to_replace)
+                        er_line, cor_line = replace_in_line(line, to_replace)
+                        #print('AFTER ERR', er_line)
+                        #print('AFTER CORR', cor_line)
+                        #print('+++++++++++++++++++++')
+                        outfile_source.write(er_line)
+                        outfile_target.write(cor_line)
                     else:
                         all_correct_lines += 1
                         outfile_source.write(line)
@@ -133,8 +172,12 @@ if __name__ == "__main__":
     print('# all lines:', line_counter)
     print('# lines with errors:', line_counter - all_correct_lines)
 
-# number of files in random split
-# 961
-# 301
-# 241
+# random plit
+# 1202
+# 150
+# 151
 
+# original split
+# 507
+# 419
+# 575
