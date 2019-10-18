@@ -13,7 +13,8 @@ from sklearn.model_selection import train_test_split
 Lines with errors in the dataset look like the following one: 
 "Jeder hat sicher <error type="09 tog instead of sep: other cases">schonmal //// schon mal</error> aus Gruppenzwang oder weil er es nicht besser wusste etwas Dummes angestellt."
 """
-corpus_file = "../corpora/LearnerCorpora/Koko/ID2988.zip"
+# You need to have a Koko downloaded
+corpus_file = "../corpora/LearnerCorpora/Koko/Koko.zip"
 corpus_directory = "../corpora/LearnerCorpora/Koko"
 
 random_split_dir = "../corpora/LearnerCorpora/Koko/random_spit"
