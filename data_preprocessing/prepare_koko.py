@@ -47,7 +47,7 @@ def split_random(names, val=False):
     valid = None
     train, test = train_test_split(names, test_size=0.2, random_state=42)
     if val:
-        train, valid = train_test_split(train, test_size=0.2, random_state=42)
+        test, valid = train_test_split(test, test_size=0.5, random_state=42)
     return [train, test, valid]
 
 
@@ -80,6 +80,9 @@ if __name__ == "__main__":
         out_names = ['fold1', 'fold2', 'fold3']
     if not os.path.exists(outdir):
         os.makedirs(outdir)
+
+    for e in split_names:
+        print(len(e))
 
     for c, subset in enumerate(split_names):
         outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'a', encoding='utf-8')
