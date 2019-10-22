@@ -1,0 +1,6 @@
+name: grammcorr-py36-mconda3
+channels:
+  - defaults
+dependencies:
+  - jupyter=1.0
+  - python=3.6
