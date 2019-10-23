@@ -9,3 +9,18 @@ As a source of additional data, we used eScape datasets for Automatic Post-Editi
 * [eSCAPE](http://hltshare.fbk.eu/QT21/eSCAPE.html)
 
 
+# Dev and Use
+
+## Reproducible environment
+### Initial set-up
+The `environment.yml` file gives an overview of the dependencies to use this project.  The easiest way to get a working environment is to use [Miniconda](https://docs.conda.io/en/latest/miniconda.html) in the following way:
+
+`conda env create -f gramcorr/environment.yml`
+
+## Update
+The `environment.yml` file may change (occasionally). To get your local environment in sync with the update use:
+
+`conda env update -f environment.yml --prune`
+
+## More information
+* https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
