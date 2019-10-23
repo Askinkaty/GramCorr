@@ -1,8 +1,8 @@
-name: grammcorr-py36-mconda3
+name: grammcorr-mconda3
 channels:
   - defaults
 dependencies:
   - jupyter=1.0
-  - python=3.6
+  - python=3.7
   - pandas=0.25
   - scikit-learn=0.21
