@@ -84,6 +84,25 @@ def find_error(line):
     return to_replace, found_types, if_broken
 
 
+def split_character(line):
+    """
+    :param line: tokenized line
+    :return:  character split line
+    """
+    line = line.replace(' ', '<s>')
+    ch_line = ''.join(list(line))
+    return ch_line
+
+
+def split_bpe(line):
+    """
+    TODO: implement if needed, should use BPE model trained on the data
+    :param line: tokenised line
+    :return: line splitted into subwords using BPE
+    """
+    return True
+
+
 def replace_in_line(line, to_replace):
     """
     :param line: raw line
@@ -145,6 +164,7 @@ if __name__ == "__main__":
     error_types = dict()
     error_num = dict()
     files_with_broken = []
+    char = False # set True if you need a char tokenized line
 
     csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
     if csv_exist:
@@ -209,6 +229,9 @@ if __name__ == "__main__":
                         #print('BEFORE', line)
                         #print(to_replace)
                         er_line, cor_line = replace_in_line(line, to_replace)
+                        if char:
+                            er_line = split_character(er_line)
+                            cor_line = split_character(cor_line)
                         #print('AFTER ERR', er_line)
                         #print('AFTER CORR', cor_line)
                         #print('+++++++++++++++++++++')
