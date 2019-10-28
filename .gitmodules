@@ -1,0 +1,3 @@
+[submodule "boyd-lowresource"]
+	path = boyd-lowresource
+	url = https://github.com/Askinkaty/boyd-wnut2018.git
