@@ -14,8 +14,9 @@ Lines with errors in the dataset look like the following one:
 "Jeder hat sicher <error type="09 tog instead of sep: other cases">schonmal //// schon mal</error> aus Gruppenzwang oder weil er es nicht besser wusste etwas Dummes angestellt."
 """
 # You need to have a Koko downloaded
-corpus_file = "../corpora/LearnerCorpora/Koko/Koko.zip"
 corpus_directory = "../corpora/LearnerCorpora/Koko"
+corpus_file = "../corpora/LearnerCorpora/Koko/Koko.zip"
+
 
 random_split_dir = "../corpora/LearnerCorpora/Koko/random_spit"
 original_split_dir = "../corpora/LearnerCorpora/Koko/original_split"
@@ -68,7 +69,7 @@ def find_error(line):
                 error = match.group('error').strip().replace('-unreadable-', '')
                 number_of_errors += 1
                 correct = match.group('correct').strip()
-                if_broken = check_correction(error)
+                broken = check_correction(error)
                 error_info = match.group('type').strip()
                 if '//' in error_info:
                     types = [el.strip() for el in error_info.split('//')]
@@ -81,7 +82,7 @@ def find_error(line):
                     else:
                         found_types[t].append([error, correct])
                 to_replace.append([ind, error, correct])
-    return to_replace, found_types, if_broken
+    return to_replace, found_types, broken
 
 
 def split_character(line):
@@ -182,6 +183,11 @@ if __name__ == "__main__":
         writer_er_count.writerow(['error_number', 'error_type', 'count'])
         writer_er_type.writerow(['error_number', 'error_type', 'source', 'target'])
 
+    try:
+        os.makedirs(corpus_directory)
+    except FileExistsError:
+        # directory already exists
+        pass
     with zipfile.ZipFile(corpus_file, 'r') as zip_ref:
         zip_ref.extractall(corpus_directory)
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
@@ -203,15 +209,15 @@ if __name__ == "__main__":
         print(len(e))
 
     for c, subset in enumerate(split_names):
-        outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'a', encoding='utf-8')
-        outfile_target = codecs.open(os.path.join(outdir, out_names[c] + '_target.txt'), 'a', encoding='utf-8')
+        outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
+        outfile_target = codecs.open(os.path.join(outdir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
         for filename in subset:
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
                 for line in f:
                     line_counter += 1
                     if '<error type' in line:
-                        to_replace, found_types, if_broken = find_error(line)
-                        if if_broken:
+                        to_replace, found_types, broken = find_error(line)
+                        if broken:
                             files_with_broken.append(filename)
                         for name in found_types.keys():
                             try:
@@ -249,17 +255,11 @@ if __name__ == "__main__":
         for k, v in sorted_err_counts.items():
             writer_er_count.writerow([error_num[k], k, v])
 
+    for f in names:
+        os.remove(os.path.join(corpus_directory, f))
+
     print('# correct lines:', all_correct_lines)
     print('# all lines:', line_counter)
     print('# lines with errors:', line_counter - all_correct_lines)
     print('Number of errors:', number_of_errors)
     print('Broken annotations:', broken_annotations)
-# random split
-# 1202
-# 150
-# 151
-
-# original split
-# 507
-# 419
-# 575
