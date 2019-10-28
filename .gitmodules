@@ -1,3 +1,6 @@
 [submodule "boyd-lowresource"]
 	path = boyd-lowresource
 	url = https://github.com/Askinkaty/boyd-wnut2018.git
+[submodule "helo_word"]
+	path = helo_word
+	url = https://github.com/Askinkaty/helo_word.git
