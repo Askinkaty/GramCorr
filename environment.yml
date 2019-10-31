@@ -3,6 +3,9 @@ channels:
   - defaults
 dependencies:
   - jupyter=1.0
-  - python=3.7
+  - python=3.6
   - pandas=0.25
   - scikit-learn=0.21
+  - spacy==1.9.0  # required version for errant
+  - nltk
+  - tqdm

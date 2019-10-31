@@ -216,6 +216,7 @@ if __name__ == "__main__":
                 for line in f:
                     line_counter += 1
                     if '<error type' in line:
+                        print(line)
                         to_replace, found_types, broken = find_error(line)
                         if broken:
                             files_with_broken.append(filename)

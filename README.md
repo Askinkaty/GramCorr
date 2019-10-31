@@ -8,6 +8,33 @@ Experiments are performed using KoKo German L1 Learner Corpus (version 3):
 As a source of additional data, we used eScape datasets for Automatic Post-Editing (APE) task:
 * [eSCAPE](http://hltshare.fbk.eu/QT21/eSCAPE.html)
 
+# Submodules
+
+Initialize submodules by
+
+`git submodule update --init --recursive`
+
+### Repository with experiments on Low Resource GEC for German:
+https://github.com/adrianeboyd/boyd-wnut2018
+
+The repo contains a submodule `errant` with the extensions to ERRANT for German.
+Install spacy and download the German models:
+
+```
+pip install -U spacy==2.0.0
+python -m spacy download de
+```
+
+Install [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/) under `errant/resources/tree-tagger-3.2`.
+German parameter file `german.par` is [here](https://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/german.par.gz).
+If you save the parameter file in `errant/` submodule, you should specify the path to it when initializing TreeTagger, e.g.
+in `parallel_to_m2.py` specify TAGPARFILE.    
+
+Install treetaggerwrapper:
+
+```
+pip install treetaggerwrapper
+```
 
 # Dev and Use
 
@@ -24,3 +51,4 @@ The `environment.yml` file may change (occasionally). To get your local environm
 
 ## More information
 * https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
+
