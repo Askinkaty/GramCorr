@@ -6,6 +6,8 @@ import re
 import csv
 import sys
 import zipfile
+import argparse
+
 
 from sklearn.model_selection import train_test_split
 
@@ -14,16 +16,13 @@ Lines with errors in the dataset look like the following one:
 "Jeder hat sicher <error type="09 tog instead of sep: other cases">schonmal //// schon mal</error> aus Gruppenzwang oder weil er es nicht besser wusste etwas Dummes angestellt."
 """
 # You need to have a Koko downloaded
-corpus_directory = "../corpora/LearnerCorpora/Koko"
-corpus_file = "../corpora/LearnerCorpora/Koko/Koko.zip"
-
-
-random_split_dir = "../corpora/LearnerCorpora/Koko/random_spit"
-original_split_dir = "../corpora/LearnerCorpora/Koko/original_split"
+corpus_directory = "../corpora/LearnerCorpora/Koko/"
+corpus_file = corpus_directory + "Koko.zip"
 original_split_ind = [1663, 2225]
 
 error_table_file = 'errors_source_target.csv'
 error_count_file = 'error_statistics.csv'
+
 
 
 def get_original_split(names):
@@ -90,8 +89,9 @@ def split_character(line):
     :param line: tokenized line
     :return:  character split line
     """
-    line = line.replace(' ', '<s>')
-    ch_line = ''.join(list(line))
+    line = line.replace(' ', '<\s>')
+    ch_line = ' '.join(list(line))
+    ch_line = ch_line.replace('< \ s >', '<\s>')
     return ch_line
 
 
@@ -117,6 +117,8 @@ def replace_in_line(line, to_replace):
         ind, error, correct = repl
         start = ind[0]
         end = ind[1]
+        print('LINE', er_line)
+
         er_line += line[new_start:start] + error
         cor_line += line[new_start:start] + correct
         new_start = end
@@ -157,15 +159,27 @@ def check_correction(correct):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Convert corpus with annotated errors into 1) paralles source/target files line separated",
+        formatter_class=argparse.RawTextHelpFormatter,
+        usage="%(prog)s [-h] [options] -split TYPE_OF_SPLIT")
+    parser.add_argument("-split", choices=["original", "random", "none"], default="original",
+                        help="Options: original (keep the original split of KOKO), "
+                        "random or none", required=True)
+    parser.add_argument("-char", action='store_true',
+                        help="Keep word tokenised split word in characters: true/false")
+
+    args = parser.parse_args()
+    split = args.split
+    char = args.char
+
     number_of_errors = 0
     broken_annotations = 0
-    random_split = False
     line_counter = 0
     all_correct_lines = 0
     error_types = dict()
     error_num = dict()
     files_with_broken = []
-    char = False # set True if you need a char tokenized line
 
     csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
     if csv_exist:
@@ -180,8 +194,8 @@ if __name__ == "__main__":
         writer = True
         writer_er_type = csv.writer(error_table)
         writer_er_count = csv.writer(error_count)
-        writer_er_count.writerow(['error_number', 'error_type', 'count'])
-        writer_er_type.writerow(['error_number', 'error_type', 'source', 'target'])
+        writer_er_count.writerow(['error_category', 'error_type', 'count'])
+        writer_er_type.writerow(['error_category', 'error_type', 'source', 'target', ])
 
     try:
         os.makedirs(corpus_directory)
@@ -192,15 +206,20 @@ if __name__ == "__main__":
         zip_ref.extractall(corpus_directory)
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
 
-    if random_split:
+    if split == 'random':
         split_names = split_random(names, val=True)  # train, test, valid (which is optional)
-        outdir = random_split_dir
+        outdir = corpus_directory + 'random_spit'
         out_names = ['train', 'test', 'valid']
-    else:
+    elif split == 'original':
         # original split which we could use only for comparison with the prev experiments
         split_names = get_original_split(names)
-        outdir = original_split_dir
+        outdir = corpus_directory + 'original_split'
         out_names = ['fold1', 'fold2', 'fold3']
+    else:
+        split_names = [names]
+        outdir = corpus_directory + 'no_split'
+        out_names = ['corpus']
+
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
@@ -216,7 +235,6 @@ if __name__ == "__main__":
                 for line in f:
                     line_counter += 1
                     if '<error type' in line:
-                        print(line)
                         to_replace, found_types, broken = find_error(line)
                         if broken:
                             files_with_broken.append(filename)
@@ -233,15 +251,16 @@ if __name__ == "__main__":
                             if writer:
                                 for value in found_types[name]:
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
-                        #print('BEFORE', line)
-                        #print(to_replace)
+                        # print('BEFORE', line)
+                        # print(to_replace)
                         er_line, cor_line = replace_in_line(line, to_replace)
                         if char:
                             er_line = split_character(er_line)
                             cor_line = split_character(cor_line)
-                        #print('AFTER ERR', er_line)
-                        #print('AFTER CORR', cor_line)
-                        #print('+++++++++++++++++++++')
+
+                        # print('AFTER ERR', er_line)
+                        # print('AFTER CORR', cor_line)
+                        # print('+++++++++++++++++++++')
                         outfile_source.write(er_line)
                         outfile_target.write(cor_line)
                     else:
