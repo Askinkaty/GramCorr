@@ -7,6 +7,7 @@ import csv
 import sys
 import zipfile
 import argparse
+import random
 
 
 from sklearn.model_selection import train_test_split
@@ -59,6 +60,7 @@ def split_cross_val(names, n):
     :param n: number of folds to split into
     :return:
     """
+    random.shuffle(names)
     k, m = divmod(len(names), n)
     return (names[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
 
