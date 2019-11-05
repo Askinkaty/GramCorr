@@ -15,7 +15,12 @@ from sklearn.model_selection import train_test_split
 """
 Lines with errors in the dataset look like the following one: 
 "Jeder hat sicher <error type="09 tog instead of sep: other cases">schonmal //// schon mal</error> aus Gruppenzwang oder weil er es nicht besser wusste etwas Dummes angestellt."
+
+
 """
+
+
+
 # You need to have a Koko downloaded
 corpus_directory = "../corpora/LearnerCorpora/Koko/"
 corpus_file = corpus_directory + "Koko.zip"
@@ -97,7 +102,7 @@ def find_error(line):
     return to_replace, found_types, broken
 
 
-def split_data(split, names, folds=None):
+def split_data(split, names, char, folds=None):
     if split == 'random':
         split_names = split_train_dev_test(names)  # train, test, valid
         outdir = corpus_directory + 'random_spit'
@@ -117,6 +122,8 @@ def split_data(split, names, folds=None):
         split_names = [names]
         outdir = corpus_directory + 'no_split'
         out_names = ['corpus']
+    if char:
+        outdir += '_char'
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
@@ -216,6 +223,7 @@ def main():
     broken_annotations = 0
     line_counter = 0
     all_correct_lines = 0
+    writer = None
 
     csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
     if csv_exist:
@@ -241,7 +249,7 @@ def main():
     with zipfile.ZipFile(corpus_file, 'r') as zip_ref:
         zip_ref.extractall(corpus_directory)
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
-    out_names, split_names, outdir = split_data(split, names, folds)
+    out_names, split_names, outdir = split_data(split, names, char, folds)
 
     for c, subset in enumerate(split_names):
         outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
@@ -250,7 +258,10 @@ def main():
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
                 for line in f:
                     line_counter += 1
-                    line = line.replace('-unreadable-', 'UNK')
+                    if char:
+                        line = line.replace('-unreadable-', '@')
+                    else:
+                        line = line.replace('-unreadable-', 'UNK')
                     if '<error type' in line:
                         to_replace, found_types, broken = find_error(line)
                         if broken:
@@ -264,20 +275,28 @@ def main():
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
                         # print('BEFORE', line)
                         # print(to_replace)
+                        #print(len(line))
+
                         er_line, cor_line = replace_in_line(line, to_replace)
+
                         if char:
                             er_line = split_character(er_line)
                             cor_line = split_character(cor_line)
-
                         # print('AFTER ERR', er_line)
                         # print('AFTER CORR', cor_line)
                         # print('+++++++++++++++++++++')
+                        #print('AFTER CORR', cor_line)
+                        #print('AFTER ERR', er_line)
+
                         outfile_source.write(er_line)
                         outfile_target.write(cor_line)
                     else:
                         all_correct_lines += 1
+                        if char:
+                            line = split_character(line)
                         outfile_source.write(line)
                         outfile_target.write(line)
+
         outfile_source.close()
         outfile_target.close()
     sorted_err_counts = {k: error_types[k] for k in sorted(error_types, key=error_types.get, reverse=True)}
