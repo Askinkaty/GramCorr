@@ -8,6 +8,8 @@ import sys
 import zipfile
 import argparse
 import random
+import time
+import pickle
 
 
 from sklearn.model_selection import train_test_split
@@ -19,7 +21,7 @@ Lines with errors in the dataset look like the following one:
 
 """
 
-
+random.seed(42)
 
 # You need to have a Koko downloaded
 corpus_directory = "../corpora/LearnerCorpora/Koko/"
@@ -28,6 +30,7 @@ original_split_ind = [1089, 1663, 2225]
 
 error_table_file = 'errors_source_target.csv'
 error_count_file = 'error_statistics.csv'
+error_coordinates_file = 'error_coordinates.csv'
 
 
 
@@ -98,7 +101,7 @@ def find_error(line):
                         found_types[t].append([error, correct])
                     else:
                         found_types[t].append([error, correct])
-                to_replace.append([ind, error, correct])
+                to_replace.append([ind, error, correct, types])
     return to_replace, found_types, broken
 
 
@@ -127,6 +130,7 @@ def split_data(split, names, char, folds=None):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
+    split_names = list(split_names)
     return out_names, split_names, outdir
 
 
@@ -159,7 +163,10 @@ def replace_in_line(line, to_replace):
     cor_line = ''
     new_start = 0
     for repl in to_replace:
-        ind, error, correct = repl
+        ind, error, correct, _ = repl
+        if 'UNK' in error or 'UNK' in correct: # remove for now words which have a tag -unreadable- inside them
+            print('UNK tag in the source or the target!')
+            return None
         start = ind[0]
         end = ind[1]
         er_line += line[new_start:start] + error
@@ -168,7 +175,9 @@ def replace_in_line(line, to_replace):
     if new_start < len(line):
         er_line += line[new_start:]
         cor_line += line[new_start:]
-    return er_line, cor_line
+    er_line = ' '.join(er_line.split())
+    cor_line = ' '.join(cor_line.split())
+    return [er_line, cor_line]
 
 
 def balanced(expression):
@@ -208,6 +217,36 @@ def get_err_type_number(name, line):
     return error_type, error_number
 
 
+def create_csv_tables(files, outdir):
+    error_table_file, error_count_file, error_coordinates_file = [i for i in files]
+    csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
+    answer = None
+    if csv_exist:
+        print('csv files with already exist, should I rewrite them? (yes/no)')
+        answer = input()
+    if not csv_exist or answer == 'yes':
+        if answer == 'yes':
+            try:
+                os.remove(error_table_file)
+                os.remove(error_count_file)
+                os.remove(os.path.join(outdir, error_coordinates_file))
+            except:
+                print("Error while deleting file ")
+        error_table = codecs.open(error_table_file, 'a')
+        error_count = codecs.open(error_count_file, 'a')
+        error_coordinates = codecs.open(os.path.join(outdir, error_coordinates_file), 'a')
+        writer = True
+        writer_er_type = csv.writer(error_table)
+        writer_er_count = csv.writer(error_count)
+        writer_er_coord = csv.writer(error_coordinates)
+        writer_er_count.writerow(['error_category', 'error_type', 'count'])
+        writer_er_type.writerow(['error_category', 'error_type', 'source', 'target', ])
+        writer_er_coord.writerow(['fold#', 'line', 'filename', 'origline', 'indx', 'error', 'correction', 'types'])
+        return [writer_er_type, writer_er_count, writer_er_coord, writer]
+    else:
+        return None
+
+
 def main():
     args = parser.parse_args()
     split = args.split
@@ -224,23 +263,6 @@ def main():
     line_counter = 0
     all_correct_lines = 0
     writer = None
-
-    csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
-    if csv_exist:
-        print('csv files with already exist, should I rewrite them? (yes/no)')
-        answer = input()
-    if not csv_exist or answer == 'yes':
-        if answer == 'yes':
-            os.remove(error_table_file)
-            os.remove(error_count_file)
-        error_table = codecs.open(error_table_file, 'a')
-        error_count = codecs.open(error_count_file, 'a')
-        writer = True
-        writer_er_type = csv.writer(error_table)
-        writer_er_count = csv.writer(error_count)
-        writer_er_count.writerow(['error_category', 'error_type', 'count'])
-        writer_er_type.writerow(['error_category', 'error_type', 'source', 'target', ])
-
     try:
         os.makedirs(corpus_directory)
     except FileExistsError:
@@ -248,14 +270,24 @@ def main():
         pass
     with zipfile.ZipFile(corpus_file, 'r') as zip_ref:
         zip_ref.extractall(corpus_directory)
+
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
     out_names, split_names, outdir = split_data(split, names, char, folds)
+    with open(os.path.join(outdir, 'split_names.pkl'), 'wb') as pkl:
+        pickle.dump(split_names, pkl)
+    writers = create_csv_tables([error_table_file,
+                                 error_count_file,
+                                 error_coordinates_file], outdir)
+    if writers:
+        writer_er_type, writer_er_count, writer_er_coord, writer = writers
 
     for c, subset in enumerate(split_names):
         outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
         outfile_target = codecs.open(os.path.join(outdir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
+        fold_line = 0
         for filename in subset:
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
+                original_line = 0
                 for line in f:
                     line_counter += 1
                     if char:
@@ -273,20 +305,32 @@ def main():
                             if writer:
                                 for value in found_types[name]:
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
+                        if to_replace:
+                            for er in to_replace:
+                                coordinates = []
+                                coordinates.append(out_names[c])  # fold name
+                                coordinates.append(fold_line)  # line in the out file
+                                coordinates.append(filename)  # name of orig file
+                                coordinates.append(original_line)  # line in the orig file
+                                coordinates.append(er[0][0]) # index of error in line
+                                coordinates.append(er[1]) # error to replace
+                                coordinates.append(er[2]) # correction
+                                coordinates.append(er[3]) # types of errors
+                                if writer:
+                                    writer_er_coord.writerow(coordinates)
                         # print('BEFORE', line)
                         # print(to_replace)
-                        #print(len(line))
-
-                        er_line, cor_line = replace_in_line(line, to_replace)
-
+                        replaced = replace_in_line(line, to_replace)
+                        if replaced:
+                            er_line, cor_line = replaced
+                        else:
+                            continue
                         if char:
                             er_line = split_character(er_line)
                             cor_line = split_character(cor_line)
                         # print('AFTER ERR', er_line)
                         # print('AFTER CORR', cor_line)
                         # print('+++++++++++++++++++++')
-                        #print('AFTER CORR', cor_line)
-                        #print('AFTER ERR', er_line)
 
                         outfile_source.write(er_line)
                         outfile_target.write(cor_line)
@@ -296,7 +340,8 @@ def main():
                             line = split_character(line)
                         outfile_source.write(line)
                         outfile_target.write(line)
-
+                    original_line += 1
+                    fold_line += 1
         outfile_source.close()
         outfile_target.close()
     sorted_err_counts = {k: error_types[k] for k in sorted(error_types, key=error_types.get, reverse=True)}
@@ -313,7 +358,6 @@ def main():
     print('# lines with errors:', line_counter - all_correct_lines)
     print('Number of errors:', number_of_errors)
     print('Broken annotations:', broken_annotations)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
