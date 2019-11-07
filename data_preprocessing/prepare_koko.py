@@ -33,7 +33,6 @@ error_count_file = 'error_statistics.csv'
 error_coordinates_file = 'error_coordinates.csv'
 
 
-
 def get_original_split(names):
     """
     :param names: list of filename in the dir
@@ -106,32 +105,28 @@ def find_error(line):
 
 
 def split_data(split, names, char, folds=None):
+    out_names = []
     if split == 'random':
         split_names = split_train_dev_test(names)  # train, test, valid
-        outdir = corpus_directory + 'random_spit'
-        out_names = ['train', 'test', 'valid']
+        out_dir = corpus_directory + 'random_spit'
     elif split == 'random-cv':
         split_names = split_cross_val(names, folds)
-        outdir = corpus_directory + 'cv'
-        out_names = []
-        for i in range(folds):
-            out_names.append('fold_' + str(i))
+        out_dir = corpus_directory + 'cv'
     elif split == 'original':
         # original split which we could use only for comparison with the prev experiments
         split_names = get_original_split(names)
-        outdir = corpus_directory + 'original_split'
-        out_names = ['fold1', 'fold2', 'fold3']
+        out_dir = corpus_directory + 'original_split'
     else:
         split_names = [names]
-        outdir = corpus_directory + 'no_split'
-        out_names = ['corpus']
+        out_dir = corpus_directory + 'no_split'
     if char:
-        outdir += '_char'
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-
+        out_dir += '_char'
+    for i in range(len(split_names)):
+        out_names.append('fold_'+ str(i))
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
     split_names = list(split_names)
-    return out_names, split_names, outdir
+    return out_names, split_names, out_dir
 
 
 def split_character(line):
@@ -148,7 +143,7 @@ def split_bpe(line):
     """
     TODO: implement if needed, should use BPE model trained on the data
     :param line: tokenised line
-    :return: line splitted into subwords using BPE
+    :return: line split into subwords using BPE
     """
     return True
 
@@ -217,7 +212,7 @@ def get_err_type_number(name, line):
     return error_type, error_number
 
 
-def create_csv_tables(files, outdir):
+def create_csv_tables(files, out_dir):
     error_table_file, error_count_file, error_coordinates_file = [i for i in files]
     csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
     answer = None
@@ -229,12 +224,12 @@ def create_csv_tables(files, outdir):
             try:
                 os.remove(error_table_file)
                 os.remove(error_count_file)
-                os.remove(os.path.join(outdir, error_coordinates_file))
+                os.remove(os.path.join(out_dir, error_coordinates_file))
             except:
                 print("Error while deleting file ")
         error_table = codecs.open(error_table_file, 'a')
         error_count = codecs.open(error_count_file, 'a')
-        error_coordinates = codecs.open(os.path.join(outdir, error_coordinates_file), 'a')
+        error_coordinates = codecs.open(os.path.join(out_dir, error_coordinates_file), 'a')
         writer = True
         writer_er_type = csv.writer(error_table)
         writer_er_count = csv.writer(error_count)
@@ -272,18 +267,18 @@ def main():
         zip_ref.extractall(corpus_directory)
 
     names = [name for name in os.listdir(corpus_directory) if name.endswith(".txt")]
-    out_names, split_names, outdir = split_data(split, names, char, folds)
-    with open(os.path.join(outdir, 'split_names.pkl'), 'wb') as pkl:
+    out_names, split_names, out_dir = split_data(split, names, char, folds)
+    with open(os.path.join(out_dir, 'split_names.pkl'), 'wb') as pkl:
         pickle.dump(split_names, pkl)
     writers = create_csv_tables([error_table_file,
                                  error_count_file,
-                                 error_coordinates_file], outdir)
+                                 error_coordinates_file], out_dir)
     if writers:
         writer_er_type, writer_er_count, writer_er_coord, writer = writers
 
     for c, subset in enumerate(split_names):
-        outfile_source = codecs.open(os.path.join(outdir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
-        outfile_target = codecs.open(os.path.join(outdir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
+        outfile_source = codecs.open(os.path.join(out_dir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
+        outfile_target = codecs.open(os.path.join(out_dir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
         fold_line = 0
         for filename in subset:
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
@@ -307,15 +302,8 @@ def main():
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
                         if to_replace:
                             for er in to_replace:
-                                coordinates = []
-                                coordinates.append(out_names[c])  # fold name
-                                coordinates.append(fold_line)  # line in the out file
-                                coordinates.append(filename)  # name of orig file
-                                coordinates.append(original_line)  # line in the orig file
-                                coordinates.append(er[0][0]) # index of error in line
-                                coordinates.append(er[1]) # error to replace
-                                coordinates.append(er[2]) # correction
-                                coordinates.append(er[3]) # types of errors
+                                coordinates = [out_names[c], fold_line, filename, original_line, er[0][0], er[1], er[2],
+                                               er[3]]
                                 if writer:
                                     writer_er_coord.writerow(coordinates)
                         # print('BEFORE', line)
@@ -358,6 +346,7 @@ def main():
     print('# lines with errors:', line_counter - all_correct_lines)
     print('Number of errors:', number_of_errors)
     print('Broken annotations:', broken_annotations)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

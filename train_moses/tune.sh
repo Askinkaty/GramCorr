@@ -15,6 +15,7 @@ TMP=$MY_MODEL_DIR/TMP
 
 END=9
 mkdir -p $TUNED_MODELS
+chmod -R 755 $MY_MODEL_DIR
 
 for i in $(seq 0 $END)
 do
@@ -23,6 +24,7 @@ do
     cp $TUNE_DIR/fold${i}/train.de $TMP
     cp $TUNE_DIR/fold${i}/ActualParameters.cfg $TMP
     cp $TUNE_DIR/fold${i}/moses.ini $TMP
+    chmod -R 755 $TMP
     cd $TMP
     sed -i "s|MODELS-KOKOfold${i}-en-de|$MY_MODEL_DIR/fold${i}/MODELS-KOKOfold${i}-en-de|" moses.ini
     tar -czvf train-KOKOfold${i}-en-de.tar.gz train.en train.de ActualParameters.cfg moses.ini
