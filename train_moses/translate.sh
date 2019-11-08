@@ -2,6 +2,14 @@
 
 set -e
 
+
+#MODEL=3_gram
+#CORPUS=KOKO
+#
+#BASE_DIR=/hltsrv0/a.katinskaia/$CORPUS
+#CUR_MODEL_DIR=$ALL_MODELS_DIR/ALL_MODELS/$MODEL
+
+
 KOKO_DIR=/hltsrv0/a.katinskaia/KOKO
 
 

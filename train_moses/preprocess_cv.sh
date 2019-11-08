@@ -3,10 +3,13 @@
 set -e
 
 HOME_DIR=/hltsrv0/a.katinskaia
-PATH_TO_DATASET=$HOME_DIR/KOKO/cv
-PATH_TO_PREPARED_DATA=$HOME_DIR/KOKO/prepared
-PATH_TO_PROCESSED=$HOME_DIR/KOKO/processed
-TMP=$HOME_DIR/KOKO/tmp
+CORPUS=KOKO
+CHAR='_char'
+#CHAR=''
+PATH_TO_DATASET=$HOME_DIR/${CORPUS}/DATA/cv${CHAR}
+PATH_TO_PREPARED_DATA=$HOME_DIR/${CORPUS}/DATA/prepared${CHAR}
+PATH_TO_PROCESSED=$HOME_DIR/${CORPUS}/DATA/processed${CHAR}
+TMP=$HOME_DIR/${CORPUS}/tmp
 
 END=9
 
@@ -15,7 +18,7 @@ PROCESSED_DIR=/hltsrv2/QT21_PROCESSING_SYSTEM/PROCESSED_REPOSITORY
 
 rm -rf $PATH_TO_PREPARED_DATA
 
-for i in $(seq 7 $END)
+for i in $(seq 0 $END)
 do
     echo ${i}
     mkdir -p $PATH_TO_PREPARED_DATA/fold${i}
@@ -27,24 +30,34 @@ do
         chmod 755 $PATH_TO_PREPARED_DATA/fold${i}/train.${lang}
         mkdir -p $TMP
         cp $PATH_TO_PREPARED_DATA/fold${i}/train.${lang} $TMP
-        cp $HOME_DIR/KOKO/ActualParameters.cfg $TMP
+        cp $HOME_DIR/${CORPUS}/ActualParameters.cfg $TMP
         cd $TMP
-        tar -czvf train-KOKOfold${i}-${lang}.tar.gz train.${lang} ActualParameters.cfg
-        cp train-KOKOfold${i}-${lang}.tar.gz $CORPUS_DIR
+        tar -czvf train-${CORPUS}fold${i}-${lang}.tar.gz train.${lang} ActualParameters.cfg
+        cp train-${CORPUS}fold${i}-${lang}.tar.gz $CORPUS_DIR
         cd $CORPUS_DIR
-        touch train-KOKOfold${i}-${lang}.ready
-        while ! test -f "$CORPUS_DIR/train-KOKOfold${i}-${lang}.done"
+        touch train-${CORPUS}fold${i}-${lang}.ready
+    done
+done
+
+
+cd $CORPUS_DIR
+for i in $(seq 0 $END)
+do
+    for lang in en de
+    do
+        while ! test -f "$CORPUS_DIR/train-${CORPUS}fold${i}-${lang}.done"
         do
             sleep 60
             echo "Still waiting"
         done
         rm -rf $TMP
         mkdir -p $PATH_TO_PROCESSED/processed_fold${i}
-        mv $PROCESSED_DIR/PROCESSED-KOKOfold${i}-${lang}.tar.gz $PATH_TO_PROCESSED/processed_fold${i}
-        rm -f $PROCESSED_DIR/PROCESSED-KOKOfold${i}-${lang}.done
-        rm -rf $CORPUS_DIR/PROCESSED-KOKOfold${i}-${lang}
-        rm -f $CORPUS_DIR/train-KOKOfold${i}-${lang}.done
-        rm -f $CORPUS_DIR/train-KOKOfold${i}-${lang}.tar.gz
-        tar -xzvf $PATH_TO_PROCESSED/processed_fold${i}/PROCESSED-KOKOfold${i}-${lang}.tar.gz
+        mv $PROCESSED_DIR/PROCESSED-${CORPUS}fold${i}-${lang}.tar.gz $PATH_TO_PROCESSED/processed_fold${i}
+        rm -rf $PROCESSED_DIR/PROCESSED-${CORPUS}fold${i}-${lang}.done
+        rm -rf $CORPUS_DIR/PROCESSED-${CORPUS}fold${i}-${lang}
+        rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-${lang}.done
+        rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-${lang}.tar.gz
+        tar -xzvf $PATH_TO_PROCESSED/processed_fold${i}/PROCESSED-${CORPUS}fold${i}-${lang}.tar.gz
+        cd $CORPUS_DIR
     done
 done
