@@ -69,7 +69,7 @@ def split_cross_val(names, n):
     """
     random.shuffle(names)
     k, m = divmod(len(names), n)
-    return (names[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
+    return list(names[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
 
 
 def find_error(line):
@@ -135,7 +135,7 @@ def split_character(line):
     :return:  character split line
     """
     line = line.replace(' ', '_')
-    ch_line = ' '.join(list(line))
+    ch_line = ' '.join(list(line)).strip()
     return ch_line
 
 
@@ -275,7 +275,6 @@ def main():
                                  error_coordinates_file], out_dir)
     if writers:
         writer_er_type, writer_er_count, writer_er_coord, writer = writers
-
     for c, subset in enumerate(split_names):
         outfile_source = codecs.open(os.path.join(out_dir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
         outfile_target = codecs.open(os.path.join(out_dir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
@@ -284,6 +283,8 @@ def main():
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
                 original_line = 0
                 for line in f:
+                    original_line += 1
+                    fold_line += 1
                     line_counter += 1
                     if char:
                         line = line.replace('-unreadable-', '@')
@@ -300,17 +301,16 @@ def main():
                             if writer:
                                 for value in found_types[name]:
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
-                        if to_replace:
-                            for er in to_replace:
-                                coordinates = [out_names[c], fold_line, filename, original_line, er[0][0], er[1], er[2],
-                                               er[3]]
-                                if writer:
-                                    writer_er_coord.writerow(coordinates)
                         # print('BEFORE', line)
                         # print(to_replace)
                         replaced = replace_in_line(line, to_replace)
-                        if replaced:
+                        if replaced and to_replace:
                             er_line, cor_line = replaced
+                            for er in to_replace:
+                                coordinates = [out_names[c], fold_line, filename,
+                                               original_line, er[0][0], er[1], er[2], er[3]]
+                                if writer:
+                                    writer_er_coord.writerow(coordinates)
                         else:
                             continue
                         if char:
@@ -319,17 +319,15 @@ def main():
                         # print('AFTER ERR', er_line)
                         # print('AFTER CORR', cor_line)
                         # print('+++++++++++++++++++++')
-
-                        outfile_source.write(er_line)
-                        outfile_target.write(cor_line)
+                        outfile_source.write(er_line + '\n')
+                        outfile_target.write(cor_line + '\n')
                     else:
                         all_correct_lines += 1
                         if char:
                             line = split_character(line)
-                        outfile_source.write(line)
-                        outfile_target.write(line)
-                    original_line += 1
-                    fold_line += 1
+                        line = line.strip()
+                        outfile_source.write(line + '\n')
+                        outfile_target.write(line + '\n')
         outfile_source.close()
         outfile_target.close()
     sorted_err_counts = {k: error_types[k] for k in sorted(error_types, key=error_types.get, reverse=True)}
