@@ -44,6 +44,9 @@ do
     done
     mkdir $TUNED_MODELS/fold${i}
     mv $TUNING_DIR/TUNING-KOKOfold${i}-en-de.tar.gz $TUNED_MODELS/fold${i}
+    rm -rf $CORPUS_DIR/train-KOKOfold${i}-en-de.done
+    rm -rf $CORPUS_DIR/train-KOKOfold${i}-en-de.tar.gz
+    rm -rf $TUNING_DIR/TUNING-KOKOfold${i}-en-de.done
     tar -xzvf $TUNED_MODELS/fold${i}/TUNING-KOKOfold${i}-en-de.tar.gz
     cd $CORPUS_DIR
 done
