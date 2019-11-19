@@ -45,7 +45,7 @@ for i in $(seq 0 $END)
 do
     for lang in en de
     do
-        while ! test -f "$CORPUS_DIR/train-${CORPUS}fold${i}-${lang}.done"
+        while ! test -f "train-${CORPUS}fold${i}-${lang}.done"
         do
             sleep 60
             echo "Still waiting"

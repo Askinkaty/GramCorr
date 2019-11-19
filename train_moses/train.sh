@@ -2,9 +2,9 @@
 
 set -e
 
-MODEL=1_gram
+MODEL=10_gram
 CORPUS=KOKO
-CHAR=''
+CHAR='_char'
 
 BASE_DIR=/hltsrv0/a.katinskaia/${CORPUS}
 CUR_MODEL_DIR=$BASE_DIR/ALL_MODELS/$MODEL
@@ -48,8 +48,8 @@ do
     cp $BASE_DIR/ActualParameters.cfg $TRAIN_DIR/fold${i}
     # echo "_MAX_PHRASE_LENGTH_=3" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 3-gram
     # echo "_MAX_PHRASE_LENGTH_=5" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 5-gram
-    # echo "_MAX_PHRASE_LENGTH_=10" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 10-gram
-    echo "_MAX_PHRASE_LENGTH_=1" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 1-gram
+    echo "_MAX_PHRASE_LENGTH_=10" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 10-gram
+    # echo "_MAX_PHRASE_LENGTH_=1" >> $TRAIN_DIR/fold${i}/ActualParameters.cfg # 1-gram
     cp $TRAIN_DIR/fold${i}/ActualParameters.cfg $TUNE_DIR/fold${i}
     cp $TRAIN_DIR/fold${i}/ActualParameters.cfg $TEST_DIR/fold${i}
 

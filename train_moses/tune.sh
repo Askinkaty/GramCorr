@@ -3,16 +3,17 @@
 set -e
 
 
-MODEL=3_gram
+MODEL=10_gram
 CORPUS=KOKO
+CHAR='_char'
 
 BASE_DIR=/hltsrv0/a.katinskaia/${CORPUS}
-CUR_MODEL_DIR=$ALL_MODELS_DIR/ALL_MODELS/$MODEL
+CUR_MODEL_DIR=$BASE_DIR/ALL_MODELS/$MODEL
 
-PATH_TO_PROCESSED=$BASE_DIR/processed
+PATH_TO_PROCESSED=$BASE_DIR/DATA/processed${CHAR}
 
 
-{CORPUS}_DIR=/hltsrv2/SMT_TUNING_SYSTEM/{CORPUS}_REPOSITORY
+CORPUS_DIR=/hltsrv2/SMT_TUNING_SYSTEM/CORPUS_REPOSITORY
 TUNING_DIR=/hltsrv2/SMT_TUNING_SYSTEM/TUNING_REPOSITORY
 
 TUNE_DIR=$CUR_MODEL_DIR/TUNE-${CORPUS}
@@ -35,25 +36,26 @@ do
     cd $TMP
     sed -i "s|MODELS-${CORPUS}fold${i}-en-de|$MY_MODEL_DIR/fold${i}/MODELS-${CORPUS}fold${i}-en-de|" moses.ini
     tar -czvf train-${CORPUS}fold${i}-en-de.tar.gz train.en train.de ActualParameters.cfg moses.ini
-    cp train-${CORPUS}fold${i}-en-de.tar.gz ${CORPUS}_DIR
-    cd ${CORPUS}_DIR
+    cp train-${CORPUS}fold${i}-en-de.tar.gz $CORPUS_DIR
+    cd $CORPUS_DIR
     touch train-${CORPUS}fold${i}-en-de.ready
     rm -rf $TMP
 done
 
-cd ${CORPUS}_DIR
+cd $CORPUS_DIR
 for i in $(seq 0 $END)
 do
-    while ! test -f "${CORPUS}_DIR/train-${CORPUS}fold${i}-en-de.done"
+    while ! test -f "train-${CORPUS}fold${i}-en-de.done"
     do
         sleep 60
         echo "Still waiting"
     done
     mkdir $TUNED_MODELS/fold${i}
     mv $TUNING_DIR/TUNING-${CORPUS}fold${i}-en-de.tar.gz $TUNED_MODELS/fold${i}
-    rm -rf ${CORPUS}_DIR/train-${CORPUS}fold${i}-en-de.done
-    rm -rf ${CORPUS}_DIR/train-${CORPUS}fold${i}-en-de.tar.gz
+    rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-en-de.done
+    rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-en-de.tar.gz
     rm -rf $TUNING_DIR/TUNING-${CORPUS}fold${i}-en-de.done
-    tar -xzvf $TUNED_MODELS/fold${i}/TUNING-${CORPUS}fold${i}-en-de.tar.gz
-    cd ${CORPUS}_DIR
+    cd $TUNED_MODELS/fold${i}
+    tar -xzvf TUNING-${CORPUS}fold${i}-en-de.tar.gz
+    cd $CORPUS_DIR
 done
