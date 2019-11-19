@@ -32,6 +32,9 @@ error_table_file = 'errors_source_target.csv'
 error_count_file = 'error_statistics.csv'
 error_coordinates_file = 'error_coordinates.csv'
 
+out_xml_dir = '../translate/Koko_xml/' # dir to store data with xml mark-up for decoding
+
+
 
 def get_original_split(names):
     """
@@ -85,6 +88,8 @@ def find_error(line):
         if m:
             for match in m:
                 ind = [match.start(), match.end()]
+                i = ind[0]
+                k = ind[1]
                 error = match.group('error').strip()
                 number_of_errors += 1
                 correct = match.group('correct').strip()
@@ -122,7 +127,7 @@ def split_data(split, names, char, folds=None):
     if char:
         out_dir += '_char'
     for i in range(len(split_names)):
-        out_names.append('fold_'+ str(i))
+        out_names.append('fold'+ str(i))
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     split_names = list(split_names)
@@ -152,27 +157,47 @@ def replace_in_line(line, to_replace):
     """
     :param line: raw line
     :param to_replace: indexes to replace, error and correction
-    :return: line with error, corrected line
+    :return: line with error, corrected line, index of correction, index of error, line with xml mark-up for decoder
     """
     er_line = ''
     cor_line = ''
+    xml_line = ''
     new_start = 0
-    for repl in to_replace:
+    real_ind = []
+    err_ind = []
+    dif = 0
+    dif_er = 0
+    for i, repl in enumerate(to_replace):
         ind, error, correct, _ = repl
+        if i == 0:
+            real_ind.append(ind[0])
+            err_ind.append(ind[0])
+        else:
+            ri = ind[0] - dif + 1
+            err_i = ind[0] - dif_er + 1
+            real_ind.append(ri)
+            err_ind.append(err_i)
         if 'UNK' in error or 'UNK' in correct: # remove for now words which have a tag -unreadable- inside them
             print('UNK tag in the source or the target!')
             return None
         start = ind[0]
         end = ind[1]
+        d = end - (start + len(correct))
+        d_err = end - (start + len(error))
+        dif += d
+        dif_er += d_err
         er_line += line[new_start:start] + error
         cor_line += line[new_start:start] + correct
+        line_repl = '<np translation="' + line[new_start:start].strip() + '">' + line[new_start:start].strip() + '</np>'
+        xml_line += line_repl + error
         new_start = end
     if new_start < len(line):
         er_line += line[new_start:]
         cor_line += line[new_start:]
+        xml_line += '<np translation="' + line[new_start:].strip() + '">' + line[new_start:].strip() + '</np>'
     er_line = ' '.join(er_line.split())
     cor_line = ' '.join(cor_line.split())
-    return [er_line, cor_line]
+    return [er_line, cor_line, real_ind, err_ind, xml_line]
 
 
 def balanced(expression):
@@ -213,6 +238,11 @@ def get_err_type_number(name, line):
 
 
 def create_csv_tables(files, out_dir):
+    """
+    :param files: Files which will be created: csv tables with statistics about errors
+    :param out_dir: Directory where to write created files
+    :return:
+    """
     error_table_file, error_count_file, error_coordinates_file = [i for i in files]
     csv_exist = all([os.path.isfile(error_table_file), os.path.isfile(error_count_file)])
     answer = None
@@ -236,7 +266,8 @@ def create_csv_tables(files, out_dir):
         writer_er_coord = csv.writer(error_coordinates)
         writer_er_count.writerow(['error_category', 'error_type', 'count'])
         writer_er_type.writerow(['error_category', 'error_type', 'source', 'target', ])
-        writer_er_coord.writerow(['fold#', 'line', 'filename', 'origline', 'indx', 'error', 'correction', 'types'])
+        writer_er_coord.writerow(['fold#', 'line', 'filename', 'origline', 'indx', 'err_indx',
+                                  'error', 'correction', 'types'])
         return [writer_er_type, writer_er_count, writer_er_coord, writer]
     else:
         return None
@@ -247,6 +278,7 @@ def main():
     split = args.split
     char = args.char
     folds = args.folds
+    xml = args.xml
 
     global number_of_errors
     global broken_annotations
@@ -261,7 +293,6 @@ def main():
     try:
         os.makedirs(corpus_directory)
     except FileExistsError:
-        # directory already exists
         pass
     with zipfile.ZipFile(corpus_file, 'r') as zip_ref:
         zip_ref.extractall(corpus_directory)
@@ -278,6 +309,13 @@ def main():
     for c, subset in enumerate(split_names):
         outfile_source = codecs.open(os.path.join(out_dir, out_names[c] + '_source.txt'), 'w', encoding='utf-8')
         outfile_target = codecs.open(os.path.join(out_dir, out_names[c] + '_target.txt'), 'w', encoding='utf-8')
+        if xml: # crecte dir and files with xml mark-up for decoder
+            xml_dir = os.path.join(out_xml_dir, out_names[c])
+            try:
+                os.makedirs(xml_dir)
+            except FileExistsError:
+                pass
+            outfile_xml_source = codecs.open(os.path.join(xml_dir, 'train.en'), 'w', encoding='utf-8')
         fold_line = 0
         for filename in subset:
             with codecs.open(os.path.join(corpus_directory, filename), 'r', encoding='utf-8') as f:
@@ -302,13 +340,12 @@ def main():
                                 for value in found_types[name]:
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
                         # print('BEFORE', line)
-                        # print(to_replace)
                         replaced = replace_in_line(line, to_replace)
                         if replaced and to_replace:
-                            er_line, cor_line = replaced
-                            for er in to_replace:
+                            er_line, cor_line, real_ind, err_ind, xml_line = replaced
+                            for ei, er in enumerate(to_replace):
                                 coordinates = [out_names[c], fold_line, filename,
-                                               original_line, er[0][0], er[1], er[2], er[3]]
+                                               original_line, real_ind[ei], err_ind[ei], er[1], er[2], er[3]]
                                 if writer:
                                     writer_er_coord.writerow(coordinates)
                         else:
@@ -321,6 +358,8 @@ def main():
                         # print('+++++++++++++++++++++')
                         outfile_source.write(er_line + '\n')
                         outfile_target.write(cor_line + '\n')
+                        if xml:
+                            outfile_xml_source.write(xml_line + '\n')
                     else:
                         all_correct_lines += 1
                         if char:
@@ -328,6 +367,8 @@ def main():
                         line = line.strip()
                         outfile_source.write(line + '\n')
                         outfile_target.write(line + '\n')
+                        if xml:
+                            outfile_xml_source.write(line + '\n')
         outfile_source.close()
         outfile_target.close()
     sorted_err_counts = {k: error_types[k] for k in sorted(error_types, key=error_types.get, reverse=True)}
@@ -357,4 +398,6 @@ if __name__ == "__main__":
     parser.add_argument("-folds", type=int, default=10, help="Number of folds for cross-validation")
     parser.add_argument("-char", action='store_true',
                         help="Keep word tokenised split word in characters: true/false")
+    parser.add_argument("-xml", action='store_true',
+                        help="Prepare data for decoding with XML markup")
     main()
