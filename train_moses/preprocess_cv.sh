@@ -6,9 +6,21 @@ HOME_DIR=/hltsrv0/a.katinskaia
 CORPUS=KOKO
 CHAR='_char'
 #CHAR=''
-PATH_TO_DATASET=$HOME_DIR/${CORPUS}/DATA/cv${CHAR}
-PATH_TO_PREPARED_DATA=$HOME_DIR/${CORPUS}/DATA/prepared${CHAR}
-PATH_TO_PROCESSED=$HOME_DIR/${CORPUS}/DATA/processed${CHAR}
+#PATH_TO_DATASET=$HOME_DIR/${CORPUS}/DATA/cv${CHAR}
+
+#needed to expriment with processing split sentences
+#PATH_TO_DATASET=$HOME_DIR/${CORPUS}/DATA/cv/to_preproc${CHAR}
+PATH_TO_DATASET=$HOME_DIR/${CORPUS}/DATA/to_preproc${CHAR}
+
+
+#PATH_TO_PREPARED_DATA=$HOME_DIR/${CORPUS}/DATA/prepared${CHAR}
+#PATH_TO_PROCESSED=$HOME_DIR/${CORPUS}/DATA/processed${CHAR}
+
+#needed to expriment with processing split sentences
+PATH_TO_PREPARED_DATA=$HOME_DIR/$CORPUS/DATA/split_prepared${CHAR}
+PATH_TO_PROCESSED=$HOME_DIR/${CORPUS}/DATA/split_processed${CHAR}
+
+
 TMP=$HOME_DIR/${CORPUS}/tmp
 
 END=9
@@ -22,8 +34,11 @@ for i in $(seq 0 $END)
 do
     echo ${i}
     mkdir -p $PATH_TO_PREPARED_DATA/fold${i}
-    cp $PATH_TO_DATASET/fold_${i}_source.txt $PATH_TO_PREPARED_DATA/fold${i}/train.en
-    cp $PATH_TO_DATASET/fold_${i}_target.txt $PATH_TO_PREPARED_DATA/fold${i}/train.de
+#    cp $PATH_TO_DATASET/fold_${i}_source.txt $PATH_TO_PREPARED_DATA/fold${i}/train.en
+#    cp $PATH_TO_DATASET/fold_${i}_target.txt $PATH_TO_PREPARED_DATA/fold${i}/train.de
+
+    cp $PATH_TO_DATASET/fold${i}_source.txt $PATH_TO_PREPARED_DATA/fold${i}/train.en
+    cp $PATH_TO_DATASET/fold${i}_target.txt $PATH_TO_PREPARED_DATA/fold${i}/train.de
 
     for lang in en de
     do
@@ -60,4 +75,18 @@ do
         tar -xzvf $PATH_TO_PROCESSED/processed_fold${i}/PROCESSED-${CORPUS}fold${i}-${lang}.tar.gz
         cd $CORPUS_DIR
     done
+done
+
+
+
+for i in $(seq 0 $END)
+do
+    cd $PATH_TO_PROCESSED/processed_fold${i}
+    tar -xzvf PROCESSED-${CORPUS}fold${i}-en.tar.gz
+    tar -xzvf PROCESSED-${CORPUS}fold${i}-de.tar.gz
+    mkdir -p $PATH_TO_PROCESSED/folds/fold${i}
+    cp $PATH_TO_PROCESSED/processed_fold${i}/PROCESSED-${CORPUS}fold${i}-en/train.en $PATH_TO_PROCESSED/folds/fold${i}
+    cp $PATH_TO_PROCESSED/processed_fold${i}/PROCESSED-${CORPUS}fold${i}-de/train.de $PATH_TO_PROCESSED/folds/fold${i}
+
+
 done

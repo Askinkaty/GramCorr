@@ -3,12 +3,13 @@
 set -e
 
 
-MODEL=10_gram
+MODEL=5_gram
 CORPUS=KOKO
-CHAR='_char'
+#CHAR='_char'
+CHAR=''
 
 BASE_DIR=/hltsrv0/a.katinskaia/${CORPUS}
-CUR_MODEL_DIR=$BASE_DIR/ALL_MODELS/$MODEL
+CUR_MODEL_DIR=$BASE_DIR/ALL_REVERTED_MODELS/$MODEL
 
 PATH_TO_PROCESSED=$BASE_DIR/DATA/processed${CHAR}
 
@@ -34,28 +35,28 @@ END=9
 #    cp $TUNE_DIR/fold${i}/moses.ini $TMP
 #    chmod -R 755 $TMP
 #    cd $TMP
-#    sed -i "s|MODELS-${CORPUS}fold${i}-en-de|$MY_MODEL_DIR/fold${i}/MODELS-${CORPUS}fold${i}-en-de|" moses.ini
-#    tar -czvf train-${CORPUS}fold${i}-en-de.tar.gz train.en train.de ActualParameters.cfg moses.ini
-#    cp train-${CORPUS}fold${i}-en-de.tar.gz $CORPUS_DIR
+#    sed -i "s|MODELS-${CORPUS}fold${i}-de-en|$MY_MODEL_DIR/fold${i}/MODELS-${CORPUS}fold${i}-de-en|" moses.ini
+#    tar -czvf train-${CORPUS}10fold${i}-de-en.tar.gz train.en train.de ActualParameters.cfg moses.ini
+#    cp train-${CORPUS}10fold${i}-de-en.tar.gz $CORPUS_DIR
 #    cd $CORPUS_DIR
-#    touch train-${CORPUS}fold${i}-en-de.ready
+#    touch train-${CORPUS}10fold${i}-de-en.ready
 #    rm -rf $TMP
 #done
 
 cd $CORPUS_DIR
-for i in $(seq 1 $END)
+for i in $(seq 0 $END)
 do
-    while ! test -f "train-${CORPUS}fold${i}-en-de.done"
+    while ! test -f "train-${CORPUS}5fold${i}-de-en.done"
     do
         sleep 60
         echo "Still waiting"
     done
-    mkdir $TUNED_MODELS/fold${i}
-    mv $TUNING_DIR/TUNING-${CORPUS}fold${i}-en-de.tar.gz $TUNED_MODELS/fold${i}
-    rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-en-de.done
-    rm -rf $CORPUS_DIR/train-${CORPUS}fold${i}-en-de.tar.gz
-    rm -rf $TUNING_DIR/TUNING-${CORPUS}fold${i}-en-de.done
+    mkdir -p $TUNED_MODELS/fold${i}
+    mv $TUNING_DIR/TUNING-${CORPUS}5fold${i}-de-en.tar.gz $TUNED_MODELS/fold${i}
+    rm -rf $CORPUS_DIR/train-${CORPUS}5fold${i}-de-en.done
+    rm -rf $CORPUS_DIR/train-${CORPUS}5fold${i}-de-en.tar.gz
+    rm -rf $TUNING_DIR/TUNING-${CORPUS}5fold${i}-de-en.done
     cd $TUNED_MODELS/fold${i}
-    tar -xzvf TUNING-${CORPUS}fold${i}-en-de.tar.gz
+    tar -xzvf TUNING-${CORPUS}5fold${i}-de-en.tar.gz
     cd $CORPUS_DIR
 done
