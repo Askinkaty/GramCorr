@@ -11,6 +11,7 @@ import random
 import time
 import pickle
 import string
+from collections import namedtuple
 
 from sklearn.model_selection import train_test_split
 
@@ -107,15 +108,10 @@ def find_error(line):
     found_types = dict()
     global number_of_errors
     if '$error type' in line:
-        # m = re.finditer(r'<error type="(?P<type>.*?)".*?>(?P<error>.*?)\/{4}(?P<correct>.*?)<\/error>', line)
         m = re.finditer(r'\$error type=\\"(?P<type>.*?)\\".*?\$(?P<error>.*?)\/{4}(?P<correct>.*?)\$\/error\$', line)
         if m:
             for match in m:
                 ind = [match.start(), match.end()]
-                # print(match)
-                # sys.exit()
-                i = ind[0]
-                k = ind[1]
                 error = match.group('error').strip()
                 number_of_errors += 1
                 correct = match.group('correct').strip()
@@ -132,7 +128,6 @@ def find_error(line):
                     else:
                         found_types[t].append([error, correct])
                 to_replace.append([ind, error, correct, types])
-    # print(to_replace)
     return to_replace, found_types, broken
 
 
@@ -171,39 +166,14 @@ def split_character(line):
     return ch_line
 
 
-def split_bpe(line):
-    """
-    TODO: implement if needed, should use BPE model trained on the data
-    :param line: tokenised line
-    :return: line split into subwords using BPE
-    """
-    return True
-
-
-def split_long_line(line, start):
-    m = 50
-    parts = []
-    if len(line) > m:
-        n = round(len(line) / m)
-        if len(line) % m:
-            n += 1
-        s = start
-        for j in range(n):
-            e = s + m
-            piece = line[s:e]
-            parts.append(piece)
-            s = e
-    else:
-        parts.append(line)
-    return parts
-
-
 def replace_in_line(line, to_replace):
     """
     :param line: raw line
     :param to_replace: indexes to replace, error and correction
     :return: line with error, corrected line, index of correction, index of error, line with xml mark-up for decoder
     """
+    Replace = namedtuple('Replace', ['er_line', 'cor_line', 'real_ind', 'err_ind',
+                                     'to_preproc_source', 'to_preproc_target'])
     er_line = ''
     cor_line = ''
     new_start = 0
@@ -255,8 +225,11 @@ def replace_in_line(line, to_replace):
 
     er_line = ' '.join(er_line.split())
     cor_line = ' '.join(cor_line.split())
+    er_line = er_line.replace('\ <', '').replace('\ >', '')
+    cor_line = cor_line.replace('\ <', '').replace('\ >', '')
 
-    return [er_line, cor_line, real_ind, err_ind, to_preproc_source, to_preproc_target]
+    return Replace(er_line, cor_line, real_ind, err_ind, to_preproc_source, to_preproc_target)
+
 
 
 def balanced(expression):
@@ -399,29 +372,32 @@ def main():
                             if writer:
                                 for value in found_types[name]:
                                     writer_er_type.writerow([error_number, error_type, value[0], value[1]])
-                        replaced = replace_in_line(line, to_replace)
-                        if replaced and to_replace:
-                            er_line, cor_line, real_ind, err_ind, \
-                            to_preproc_source, to_preproc_target = replaced
+                        replace = replace_in_line(line, to_replace)
+                        if replace and to_replace:
+                            er_line = replace.er_line
+                            cor_line = replace.cor_line
                             for ei, er in enumerate(to_replace):
                                 new_er = clean_err(er[1])
                                 coordinates = [out_names[c], fold_line, filename,
-                                               original_line, real_ind[ei], err_ind[ei], new_er, er[2], er[3]]
+                                               original_line, replace.real_ind[ei], replace.err_ind[ei],
+                                               new_er, er[2], er[3]]
                                 if writer:
                                     writer_er_coord.writerow(coordinates)
                         else:
                             fold_line -= 1
                             original_line -= 1
                             continue
-                        er_line = er_line.replace('\ <', '').replace('\ >', '')
-                        cor_line = cor_line.replace('\ <', '').replace('\ >', '')
                         if char:
                             er_line = split_character(er_line)
                             cor_line = split_character(cor_line)
-                        for sl in to_preproc_source:
+                        for sl in replace.to_preproc_source:
+                            if char:
+                                sl = split_character(sl)
                             out_preproc_source.write(sl + '\n')
                         out_preproc_source.write('###' + '\n')
-                        for tl in to_preproc_target:
+                        for tl in replace.to_preproc_target:
+                            if char:
+                                tl = split_character(tl)
                             out_preproc_target.write(tl + '\n')
                         out_preproc_target.write('###' + '\n')
 

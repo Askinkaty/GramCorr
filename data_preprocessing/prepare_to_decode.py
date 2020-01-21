@@ -6,17 +6,17 @@ import re
 import sys
 
 #data_dir = '../translate/Koko/folds'
-data_dir = '../translate/Koko/split_processed'
+data_dir = '../translate/Koko/split_processed_char'
 
-out_xml_dir = '../translate/Koko_xml/word_test'
-out_dir = '../translate/Koko/word_test'
+out_xml_dir = '../translate/Koko_xml/char_test'
+out_dir = '../translate/Koko/char_test'
 
 
 def build_line(line, xml=False):
     # print(line)
     new_line = ''
     for i, el in enumerate(line):
-        el = el.replace('\ "', '\\"').replace('"', '\\"').replace('\ <', '').replace('\ >', '')
+        el = el.replace('\ "', '\\"').replace('"', '\\"').replace('<', '').replace('>', '')
         if el.startswith('$ $ $'):
             el = el.replace('$ $ $', '')
             if xml:
