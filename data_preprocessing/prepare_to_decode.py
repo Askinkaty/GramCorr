@@ -80,6 +80,7 @@ def add_decoder_xml_markup():
             out_xml.write(new_xline)
         for tl in target_lines:
             new_tline = build_line(tl)
+
             # print('CORRECT LINE: ', new_tline)
             out_target.write(new_tline)
 

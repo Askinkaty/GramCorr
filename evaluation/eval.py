@@ -23,7 +23,7 @@ error_table_file = '../corpora/LearnerCorpora/Koko/cv/error_coordinates.csv'
 translated = '../translated/Koko_xml/'
 data = '../translate/Koko/word_test'
 proc_data_dir = '../translate/Koko/split_processed'
-error_dict_file = 'error_dict8.pkl'
+error_dict_file = 'error_dict.pkl'
 random.seed(42)
 
 
@@ -439,44 +439,47 @@ def collect_error_info(error_id, data, models):
     for k, v in data.items():
         if k != 'type':
             model_dict = v
+            expected = model_dict['expected']
             if model_dict['corrected'] == 1:
                 correction = model_dict['correction']
                 score = model_dict['score']
                 corrected = 1
                 model_list.append(k)
-                error_info.append((k, correction, score, corrected))
+                error_info.append((expected, k, correction, score, corrected))
             if model_dict['suggestions']:
                 for suggestion, s_score in model_dict['suggestions'].items():
                     if suggestion == error:
                         continue
-                    new_suggestion = (k, suggestion, s_score, int(suggestion == model_dict['expected']))
+                    new_suggestion = (expected, k, suggestion, s_score, int(suggestion == model_dict['expected']))
                     if new_suggestion not in error_info:
                         error_info.append(new_suggestion)
             if model_dict['valid'] == 1 and not model_dict['suggestions']:
-                error_info.append((k, None, 0.0, 0))
+                error_info.append((None, k, None, 0.0, 0))
         if k == 'type':
             t = v[0]
     if len(error_info) < 3:
         for model in models:
             if model not in model_list:
-                error_info.append((model, None, 0.0, 0))
+                error_info.append((None, model, None, 0.0, 0))
     return error_info, t
 
 
 def build_rows(error_info, t, error_id, models):
     rows = []
     error = error_id.split('_')[-1]
+    # error_info.append((expected, k, correction, score, corrected))
+    # (None, model, None, 0.0, 0)
     hyp = None
     for tuple in error_info:
-        if tuple[1] is not None and hyp != tuple[1]:
-            hyp = tuple[1]
-            cor = tuple[3]
-            row = [error_id, t, len(error), hyp, cor]
+        if tuple[2] is not None and hyp != tuple[2]:
+            hyp = tuple[2]
+            cor = tuple[4]
+            row = [tuple[0], error_id, t, len(error), hyp, cor]
             other_models = OrderedDict()
             for model in models:
                 other_models[model] = dict()
             for tpl in error_info:
-                other_models[tpl[0]][tpl[1]] = tpl[2]
+                other_models[tpl[1]][tpl[2]] = tpl[3]
             # print(other_models)
             for m in other_models:
                 if hyp in other_models[m].keys():
@@ -496,8 +499,8 @@ def build_rows(error_info, t, error_id, models):
 
 def build_out_table():
     models = [dir for dir in os.listdir(translated) if os.path.isdir(translated + dir)]
-    path_to_errors = 'error_dict_last.pkl'
-    out_file = codecs.open('out_moses_table_filter.csv', 'w')
+    path_to_errors = 'error_dict.pkl'
+    out_file = codecs.open('out_moses_table_last.csv', 'w')
     out_writer = csv.writer(out_file, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
     c = 0
     corrected = 0
@@ -535,10 +538,10 @@ def chunks(lst, n):
 def collect_same_er(l):
     out = []
     for er in l:
-        er_id = er[0]
-        n = len([e for e in l if e[0] == er_id])
+        er_id = er[1]
+        n = len([e for e in l if e[1] == er_id])
         if n > 1:
-            new_er = [er for er in l if er[0] == er_id]
+            new_er = [er for er in l if er[1] == er_id]
             if new_er not in out:
                 out.append(new_er)
         else:
@@ -547,12 +550,12 @@ def collect_same_er(l):
 
 
 def write_folds(folds, models):
-    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds'
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last'
     for i, e in enumerate(folds):
         random.shuffle(e)
         with open(os.path.join(out_dir, 'fold'+str(i)+'.csv'), mode='w') as out_file:
             writer = csv.writer(out_file, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            header = ['error_id', 'type', 'error_length', 'suggestion', 'is_correct']
+            header = ['expected', 'error_id', 'type', 'error_length', 'suggestion', 'is_correct']
             for model in models:
                 header.append(model + '_is_suggested')
                 header.append(model + '_score')
@@ -566,12 +569,12 @@ def write_folds(folds, models):
 
 
 def write_fill_data(full, models):
-    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds'
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last'
     full_data_file = os.path.join(out_dir, 'data.csv')
     with open(full_data_file, mode='w') as full_out:
         random.shuffle(full)
         fwriter = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        header = ['error_id', 'type', 'error_length', 'suggestion', 'is_correct']
+        header = ['expected', 'error_id', 'type', 'error_length', 'suggestion', 'is_correct']
         for model in models:
             header.append(model + '_is_suggested')
             header.append(model + '_score')
@@ -617,7 +620,7 @@ def main():
     print(f'All errors in the data: {all_errors}')
     print(f'All errors which left after filtering broken: {got_suggections}')
     print(f'Corrected by at least one system: {corrected}')
-    # split_table()
+    split_table()
 
 
 if __name__ == '__main__':
