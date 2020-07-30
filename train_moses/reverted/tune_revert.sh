@@ -3,9 +3,9 @@
 set -e
 
 
-MODEL=5_gram
+MODEL=10_gram
 CORPUS=KOKO
-#CHAR='_char'
+CHAR='_char'
 CHAR=''
 
 BASE_DIR=/hltsrv0/a.katinskaia/${CORPUS}
@@ -46,17 +46,17 @@ END=9
 cd $CORPUS_DIR
 for i in $(seq 0 $END)
 do
-    while ! test -f "train-${CORPUS}5fold${i}-de-en.done"
+    while ! test -f "train-${CORPUS}10fold${i}-de-en.done"
     do
         sleep 60
         echo "Still waiting"
     done
     mkdir -p $TUNED_MODELS/fold${i}
-    mv $TUNING_DIR/TUNING-${CORPUS}5fold${i}-de-en.tar.gz $TUNED_MODELS/fold${i}
-    rm -rf $CORPUS_DIR/train-${CORPUS}5fold${i}-de-en.done
-    rm -rf $CORPUS_DIR/train-${CORPUS}5fold${i}-de-en.tar.gz
-    rm -rf $TUNING_DIR/TUNING-${CORPUS}5fold${i}-de-en.done
+    mv $TUNING_DIR/TUNING-${CORPUS}10fold${i}-de-en.tar.gz $TUNED_MODELS/fold${i}
+    rm -rf $CORPUS_DIR/train-${CORPUS}10fold${i}-de-en.done
+    rm -rf $CORPUS_DIR/train-${CORPUS}10fold${i}-de-en.tar.gz
+    rm -rf $TUNING_DIR/TUNING-${CORPUS}10fold${i}-de-en.done
     cd $TUNED_MODELS/fold${i}
-    tar -xzvf TUNING-${CORPUS}5fold${i}-de-en.tar.gz
+    tar -xzvf TUNING-${CORPUS}10fold${i}-de-en.tar.gz
     cd $CORPUS_DIR
 done
