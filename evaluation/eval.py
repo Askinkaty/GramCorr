@@ -23,7 +23,7 @@ error_table_file = '../corpora/LearnerCorpora/Koko/cv/error_coordinates.csv'
 translated = '../translated/Koko_xml/'
 data = '../translate/Koko/word_test'
 proc_data_dir = '../translate/Koko/split_processed'
-error_dict_file = 'error_dict.pkl'
+error_dict_file = 'error_dict_check1.pkl'
 random.seed(42)
 
 
@@ -232,7 +232,7 @@ def collect_lines(source, target, number, char):
 
 def check_hypothesis(correct, error, types, hypothesis):
     corrected = False
-    valid = False
+    not_corrected = False
     new_suggestion = False
     types_result = dict()
     for t in types:
@@ -249,10 +249,10 @@ def check_hypothesis(correct, error, types, hypothesis):
         for t in types:
             types_result[t]['correct'] += 1
     elif error == hypothesis:
-        valid = True
+        not_corrected = True
     else:
         new_suggestion = True
-    return corrected, valid, new_suggestion, types_result
+    return corrected, not_corrected, new_suggestion, types_result
 
 
 def update_dict(old_d, new_d):
@@ -319,6 +319,7 @@ def get_other_hypotheses(line, source_line, target_line, n_best, correction, err
             if not result or pair.broken or pair.skipped:
                 continue
             else:
+                # corrected, not_corrected, new_suggestion, types_result
                 n_c, n_v, new_suggestion, _ = check_hypothesis(correction, error, types,
                                                                pair.hypotheses[i])
                 if pair.hypotheses[i] not in hypotheses.keys():
@@ -333,7 +334,12 @@ def eval():
     err_table = pd.read_csv(error_table_file, delimiter='\t')
     err_table.fillna('', inplace=True)
     error_dict = dict()
+    missing = 0
+    all_av_not_corrected = 0
+    all_av_corrected = 0
     for model in models:
+        # if '5' not in model:
+        #     continue
         print(f'Model: {model}')
         if model == '10_gram':
             char = True
@@ -344,7 +350,7 @@ def eval():
         folds = [dir for dir in os.listdir(model_dir)]
         total_types_result = dict()
         fold_acc = 0
-        fold_valid = 0
+        fold_not_corrected = 0
         fold_sugg = 0
         errors_total = 0
         total_skipped = 0
@@ -352,7 +358,7 @@ def eval():
             print(fold)
             all_errors = 0
             corrected = 0
-            valid = 0
+            not_corrected = 0
             new_suggestions = 0
             cur_line = 0
             number = int(re.search(r'.*([0-9]+)', fold).group(1))
@@ -372,6 +378,7 @@ def eval():
                     # print('Broken: ', pair.broken)
                     continue
                 else:
+
                     all_errors += pair.errors_num
                     for l, h in enumerate(pair.errors):
                         error = clean_error(pair.errors[l])
@@ -393,10 +400,10 @@ def eval():
                             if model not in error_dict[err_id]:
                                 error_dict[err_id][model] = dict()
                             error_dict[err_id][model]['corrected'] = int(c)
-                            error_dict[err_id][model]['valid'] = int(v)
+                            error_dict[err_id][model]['not_corrected'] = int(v)
                             total_types_result = update_dict(total_types_result, types_result)
                             corrected += int(c)
-                            valid += int(v)
+                            not_corrected += int(v)
                             new_suggestions += int(new_suggestion)
                             # print('Corrected:', c)
                             new_hypotheses, score = get_other_hypotheses(cur_line, p[0], p[1], data.n_best,
@@ -410,24 +417,31 @@ def eval():
 
 
             facc = round((corrected * 100) / all_errors)
-            fvalid = round((valid * 100) / all_errors)
+            fnotcorr = round((not_corrected * 100) / all_errors)
             fsugg = round((new_suggestions * 100)/all_errors)
             fold_acc += facc  # from all errors, how many were corrected as expected?
-            fold_valid += fvalid
+            fold_not_corrected += fnotcorr
             fold_sugg += fsugg
             errors_total += all_errors
             print(f'Accuracy for {fold}: {facc}%')
-            print(f'Average not corrected at all {fold}: {fvalid}%')
+            print(f'Average not corrected at all {fold}: {fnotcorr}%')
             print(f'Average new suggestions for {fold}: {fsugg}%')
         av_acc = fold_acc / len(folds)
-        av_valid = fold_valid / len(folds)
+        av_not_corr = fold_not_corrected / len(folds)
         av_sugg = fold_sugg / len(folds)
+        all_av_not_corrected += av_not_corr
+        all_av_corrected += av_acc
         print(f'Skipped: {total_skipped}')
-        print(f'Average accuracy: {av_acc}%')
-        print(f'Average not corrected at all : {av_valid}%')
-        print(f'Average new suggestions : {av_sugg}%')
+        print(f'Average fold accuracy: {av_acc}%')
+        print(f'Average fold not corrected at all : {av_not_corr}%')
+        print(f'Average fold new suggestions : {av_sugg}%')
         # make_type_report(total_types_result)
-    print(f'Error dict: {error_dict}')
+    # print(f'Error dict: {error_dict}')
+    print(f'All errors #: {errors_total}')
+    print(f'Missing errors #: {missing}')
+    print(f'All av. not corrected #: {all_av_not_corrected/4}')
+    print(f'All av. corrected #: {all_av_corrected/4}')
+
     with open(error_dict_file, 'wb') as f:
         pickle.dump(error_dict, f)
 
@@ -615,12 +629,12 @@ def split_table():
 
 def main():
     # get_bleu_score()
-    # eval()
-    all_errors, got_suggections, corrected = build_out_table()
-    print(f'All errors in the data: {all_errors}')
-    print(f'All errors which left after filtering broken: {got_suggections}')
-    print(f'Corrected by at least one system: {corrected}')
-    split_table()
+    eval()
+    # all_errors, got_suggections, corrected = build_out_table()
+    # print(f'All errors in the data: {all_errors}')
+    # print(f'All errors which left after filtering broken: {got_suggections}')
+    # print(f'Corrected by at least one system: {corrected}')
+    # split_table()
 
 
 if __name__ == '__main__':

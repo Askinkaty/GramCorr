@@ -5,65 +5,25 @@ import codecs
 import re
 import csv
 import sys
-import pickle
-from os import listdir
-from os.path import isfile, join
-import pandas as pd
-import nltk
-import nltk.translate.gleu_score as gleu
-import ast
-from collections import OrderedDict
-from collections import namedtuple
-import random
-import numpy as np
-import string
-from spellchecker import SpellChecker
+# import pickle
+# from os import listdir
+# from os.path import isfile, join
+# import pandas as pd
+# import nltk
+# import nltk.translate.gleu_score as gleu
+# import ast
+# from collections import OrderedDict
+# from collections import namedtuple
+# import random
+# import numpy as np
+# import string
+# from spellchecker import SpellChecker
 import Levenshtein
+import random
 
 
 data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last'
 out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell'
-
-
-def add_spellchecker_scores(input):
-    spell = SpellChecker(language='de')
-    n = 0
-    s = 0
-    with codecs.open(os.path.join(data_dir, input), mode='r') as table_file:
-        with codecs.open(os.path.join(out_data_dir, input), mode='w') as full_out:
-            table_reader = csv.reader(table_file, delimiter='\t')
-            writer = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            for i, row in enumerate(table_reader):
-                # print(row)
-                if i == 0:
-                    header = row
-                    writer.writerow(header)
-                else:
-                    expected = row[0]
-                    # suggestion = row[4]
-                    # print(expected)
-                    # print(suggestion)
-                    error = row[0].split('_')[-1]
-                    print('Error: >>>>>>>>', error)
-                    misspelled = spell.unknown([error])
-                    suggections = []
-                    n += 1
-                    for w in misspelled:
-                        suggections.append(spell.correction(w))
-                    distanses = []
-                    suggections = suggections[:5]
-                    print('Suggestions', suggections)
-                    if len(suggections):
-                        s += 1
-                    # for s in suggections:
-                    #     distanses.append(spell.edit_distance_2(s))
-                    # distanses = distanses[:5]
-                    # print('Distances', distanses)
-
-    print('Errors: ', n)
-    print('Suggested:', s)
-            # sys.exit()
-    return True
 
 def collect_errors(file):
     if file == 'data.csv':
@@ -84,7 +44,22 @@ def collect_errors(file):
                     full_out.write(e + '\n')
 
 
-def get_suggections():
+def split_list(all_rows, n):
+    all_folds = []
+    av_len = len(all_rows)/n
+    for i in range(n):
+        new_fold = []
+        if i != n - 1:
+            while len(new_fold) < int(av_len):
+                new_fold.append(all_rows[-1])
+                all_rows = all_rows[:-1]
+            all_folds.append(new_fold)
+        else:
+            all_folds.append(all_rows)
+    return all_folds
+
+
+def get_hunspell_suggestions():
     suggested = codecs.open(os.path.join(out_data_dir, 'hunspell_corrections.txt'), mode='r')
     filtered_lines = []
     for sline in suggested:
@@ -94,7 +69,6 @@ def get_suggections():
         else:
             filtered_lines.append(sline)
 
-    # print(len(filtered_lines))
     suggestion_dict = dict()
     for s in filtered_lines:
         if s.startswith('&'):
@@ -103,50 +77,60 @@ def get_suggections():
             ss = split[1].split(',')
             if error not in suggestion_dict:
                 suggestion_dict[error] = [el.strip() for el in ss]
-
-    # print(suggestion_dict)
     print(len(suggestion_dict))
     for k, v in suggestion_dict.items():
         suggestion_dict[k] = v[:5]
+    return suggestion_dict
 
+
+def get_suggections():
+    suggestion_dict = get_hunspell_suggestions()
     files = os.listdir(data_dir)
-    print(files)
+    all_rows = []
+    header = None
     for file in files:
         if file.endswith('.csv') and 'fold' in file:
             print(file)
             with codecs.open(os.path.join(data_dir, file), mode='r') as table_file:
-                with codecs.open(os.path.join(out_data_dir, file), mode='w') as full_out:
-                    table_reader = csv.reader(table_file, delimiter='\t')
-                    writer = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                    for i, row in enumerate(table_reader):
-                        if i == 0:
-                            header = row
-                            header.append('spellcheker_suggested')
-                            header.append('spellcheker_score')
-                            writer.writerow(header)
+                table_reader = csv.reader(table_file, delimiter='\t')
+                for i, row in enumerate(table_reader):
+                    if i == 0:
+                        header = row
+                        header.append('spellcheker_suggested')
+                        header.append('spellcheker_score')
+                    else:
+                        print(i)
+                        expected = row[0]
+                        error = row[1].split('_')[-1]
+                        if error in suggestion_dict:
+                            for e in suggestion_dict[error]:
+                                new_line = row[:]
+                                if e == expected:
+                                    new_line[4] = e
+                                    new_line[5] = '1'
+                                    new_line.append('1')
+                                else:
+                                    new_line[4] = e
+                                    new_line[5] = '0'
+                                    new_line.append('-1')
+                                distance = Levenshtein.distance(e, expected)
+                                new_line.append(distance)
+                                new_line = new_line[1:]
+                                all_rows.append(new_line)
                         else:
-                            print(i)
-                            if '2' in file:
-                                print(row)
-                            expected = row[0]
-                            error = row[1].split('_')[-1]
-                            if error in suggestion_dict:
-                                for e in suggestion_dict[error]:
-                                    new_line = row
-                                    if e == expected:
-                                        new_line[4] = e
-                                        new_line[5] = '1'
-                                        new_line.append('1')
-                                    else:
-                                        new_line[4] = e
-                                        new_line[5] = '0'
-                                        new_line.append('-1')
-                                    distance = Levenshtein.distance(e, expected)
-                                    new_line.append(distance)
-                                writer.writerow(new_line)
-                            else:
-                                row.extend(['0']*2)
-                                writer.writerow(row)
+                            row.extend(['0']*2)
+                            row = row[1:]
+                            all_rows.append(row)
+    random.shuffle(all_rows)
+    all_folds = split_list(all_rows, len(files))
+    for i, file in enumerate(files):
+        if file.endswith('.csv') and 'fold' in file:
+            with codecs.open(os.path.join(out_data_dir, file), mode='w') as full_out:
+                writer = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(header[1:])
+                for el in all_folds[i]:
+                    writer.writerow(el)
+
 
 
 if __name__ == '__main__':
