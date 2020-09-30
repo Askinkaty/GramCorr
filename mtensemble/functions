@@ -1,10 +1,19 @@
 # vim:ft=sh
 
 INPUT=/Users/katinska/GramCorr/mtensemble/input
-INPUT_READY=${INPUT}/new_folds
+INPUT_READY=${INPUT}/folds_with_spell
 
-#INPUT_RAW=${INPUT}/00_raw         # raw files (copies - if applicable)
-#INPUT_PREPROC=${INPUT}/01_preproc # preprocessed: sanitised
+#INPUT_RAW=${INPUT}/00_raw_last         # raw files (copies - if applicable)
+#INPUT_PREPROC=${INPUT}/01_preproc_last # preprocessed: sanitised
+#INPUT_FEATSET=${INPUT}/features_last
+#INPUT_EXPERIMENT=${INPUT}/input_exp_last
+#OUTPUT=/Users/katinska/GramCorr/mtensemble/output_last
+#OUTPUT_EXPERIMENT=${OUTPUT}/output_exp_last
+
+#INPUT_READY=${INPUT}/new_folds_last
+
+INPUT_RAW=${INPUT}/00_raw         # raw files (copies - if applicable)
+INPUT_PREPROC=${INPUT}/01_preproc # preprocessed: sanitised
 INPUT_FEATSET=${INPUT}/features
 INPUT_EXPERIMENT=${INPUT}/input_exp
 OUTPUT=/Users/katinska/GramCorr/mtensemble/output
@@ -64,8 +73,8 @@ convert01() {
         ${WEKA_CMD} weka.core.converters.CSVLoader "$INFILE" \
                 -F '\t' -E ',' -M '#' \
                 -S 1,2,4 \
-                -N 5,6,8,10,12 \
-                -L "5:0,1" -L "6,8,10,12:-1,0,1" \
+                -N 5,6,8,10,12,14 \
+                -L "5:0,1" -L "6,8,10,12,14:-1,0,1" \
                 -B 100000 | \
         # Filter unused 'columns' from file AND put GOLD column last
         ${WEKA_CMD} weka.filters.unsupervised.attribute.Reorder \
@@ -75,6 +84,33 @@ convert01() {
         echo "[${FUNCNAME[0]}] Doing nothing for ${INFILE}." >&2
     fi
 }
+
+
+#                -F '\t' -E ',' -M '#' \
+#                -S 1,2,4 \
+#                -N 5,6,8,10,12,14 \
+#                -L "5:0,1" -L "6,8,10,12,14:-1,0,1" \
+
+#                -S 1,2,3,5,7,9,11,13,15 \
+#                -N 4,6,8,10,12,14,16 \
+#                -L "4:0,1" -L "6,8,10,12,14,16:-1,0,1" \
+
+#                -S 1,2,4 \
+#                -N 5,6,8,10,12 \
+#                -L "5:0,1" -L "6,8,10,12:-1,0,1" \
+#error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	conf_norm_0	conf_norm_1	conf_norm_2	conf_norm_3	delta_0	delta_1	delta_2	delta_3
+#strings: error_id (1), type (2), suggestion (4)
+#nominals: is_correct(5), 10_gram_is_sugg(6), 1_gram_is_sugg(8), 3_gram_sugg(10), 5_gram_sugg(12).
+# what is -L? How to read this notation
+# what is -R?
+
+#error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
+
+#expected	error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score	conf_norm_0	conf_norm_1	conf_norm_2	conf_norm_3	conf_norm_4	delta_0	delta_1	delta_2	delta_3	delta_4
+#strings: 1, 2, 3, 5, 7, 9, 11, 13, 15
+#nominals: 4, 6, 8, 10, 12, 14, 16
+#doesn't work --> generation of arff files (ask Egon).
+
 
 weka-rf() {
     if [ $# -ne 2 ] && [ $# -ne 3 ]

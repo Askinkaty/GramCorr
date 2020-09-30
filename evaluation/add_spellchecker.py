@@ -2,24 +2,9 @@
 
 import os
 import codecs
-import re
 import csv
-import sys
-# import pickle
-# from os import listdir
-# from os.path import isfile, join
-# import pandas as pd
-# import nltk
-# import nltk.translate.gleu_score as gleu
-# import ast
-# from collections import OrderedDict
-# from collections import namedtuple
-# import random
-# import numpy as np
-# import string
-# from spellchecker import SpellChecker
+
 import Levenshtein
-import random
 
 
 data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last'
@@ -90,7 +75,7 @@ def get_suggections():
     header = None
     for file in files:
         if file.endswith('.csv') and 'fold' in file:
-            print(file)
+            # print(file)
             with codecs.open(os.path.join(data_dir, file), mode='r') as table_file:
                 table_reader = csv.reader(table_file, delimiter='\t')
                 for i, row in enumerate(table_reader):
@@ -98,39 +83,73 @@ def get_suggections():
                         header = row
                         header.append('spellcheker_suggested')
                         header.append('spellcheker_score')
+                        # print(header)
                     else:
-                        print(i)
-                        expected = row[0]
-                        error = row[1].split('_')[-1]
+                        # print(i)
+                        expected = row[-1]
+                        error = row[0].split('_')[-1]
+                        # print(error)
                         if error in suggestion_dict:
                             for e in suggestion_dict[error]:
+                                # suggestion = row[3].strip().split(' ')[0]
                                 new_line = row[:]
+                                # new_line[3] = suggestion
+                                # new_line = new_line[:-1]
+
                                 if e == expected:
-                                    new_line[4] = e
+                                    # new_line[4] = e
                                     new_line[5] = '1'
                                     new_line.append('1')
                                 else:
-                                    new_line[4] = e
+                                    # new_line[4] = e
                                     new_line[5] = '0'
                                     new_line.append('-1')
                                 distance = Levenshtein.distance(e, expected)
                                 new_line.append(distance)
-                                new_line = new_line[1:]
+                                # new_line = new_line[1:]
+                                # assert ' ' not in new_line[3]
+                                # print(new_line[3])
+                                # print(new_line[4])
+                                ### VERY HACKY
+                                # try:
+                                #     assert isinstance(new_line[4], int)
+                                # except:
+                                #     if new_line[3] == '' and len(new_line[4]):
+                                #         new_line = new_line[:3] + [new_line[4]] + new_line[5:]
+                                #     elif isinstance(new_line[3], str) and len(new_line[3]):
+                                #         new_line[3:5] = new_line[3]
+                                        # new_line = new_line[:4] + new_line[5:]
+                                    # print(new_line)
+                                    # break
                                 all_rows.append(new_line)
                         else:
-                            row.extend(['0']*2)
-                            row = row[1:]
-                            all_rows.append(row)
-    random.shuffle(all_rows)
+                            # suggestion = row[3].strip().split(' ')[0]
+                            new_line = row[:]
+                            # new_line[3] = suggestion
+                            # new_line = new_line[:-1]
+                            new_line.extend(['0']*2)
+                            # print(new_line[3])
+                            # print(new_line[4])
+                            ### VERY HACKY
+                            # try:
+                            #     assert(isinstance(new_line[4], int))
+                            # except:
+                            #     if new_line[3] == '' and len(new_line[4]):
+                            #         new_line = new_line[:3] + [new_line[4]] + new_line[5:]
+                            #     elif isinstance(new_line[3], str) and len(new_line[3]):
+                            #         new_line = new_line[:4] + new_line[5:]
+                                # print(new_line)
+                                # break
+                            # assert ' ' not in new_line[3]
+                            all_rows.append(new_line)
     all_folds = split_list(all_rows, len(files))
     for i, file in enumerate(files):
         if file.endswith('.csv') and 'fold' in file:
             with codecs.open(os.path.join(out_data_dir, file), mode='w') as full_out:
                 writer = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                writer.writerow(header[1:])
+                writer.writerow(header)
                 for el in all_folds[i]:
                     writer.writerow(el)
-
 
 
 if __name__ == '__main__':
