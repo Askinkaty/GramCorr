@@ -1,0 +1,2 @@
+BASE_WEKA=${BASE_WEKA:-"${HOME}/Downloads/weka-3-8-3"}
+WEKA_CMD="java -Xmx2g -classpath ${BASE_WEKA}/weka.jar"
