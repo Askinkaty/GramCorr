@@ -1,0 +1,42 @@
+orth: : 0.0, 0/1
+orth: 26 missing or incorrect use of apostrophes : 0.0, 0/4
+ommi: incomplete_phrase : 0.0, 0/5
+orth: 10 missing or unnecessary hyphen : 0.3, 3/10
+infl: others : 0.32, 13/41
+orth: 07 sep instead of tog: other cases : 0.38, 3/8
+orth: 16 insertions: of a vowel: (ie) instead of (i) : 0.44, 15/34
+orth: 13 omissions: of graphemecluster : 0.46, 6/13
+orth: 09 tog instead of sep: other cases : 0.48, 80/165
+corr: incorrect_preposition_(other_complements) : 0.5, 1/2
+infl: weak_instead_of_strong : 0.5, 1/2
+orth: 06 sep instead of tog: compounds : 0.5, 2/4
+corr: number : 0.5, 82/165
+orth: 28 Eigennamen : 0.51, 92/181
+corr: case : 0.54, 176/324
+corr: unknown : 0.56, 18/32
+orth: 14 omissions: of one grapheme : 0.56, 119/212
+infl: comparision : 0.57, 4/7
+orth: 24 transpositions: of (ss) and (ß) : 0.57, 21/37
+orth: 27 abbreviations : 0.57, 44/77
+orth: 03 cap instead of lcp : 0.57, 469/823
+orth: 23 transpositions: of consonants: other cases : 0.58, 75/129
+orth: 19 transpositions: of (e/ä) / (ä/e) : 0.59, 16/27
+orth: 21 transpositions: of vowel and umlaut : 0.61, 35/57
+orth: 02 lcp instead of cap: other cases : 0.61, 444/723
+orth: Unknown : 0.62, 5/8
+infl: strong_instead_of_weak : 0.64, 9/14
+orth: 11 omissions: of double consonants : 0.64, 661/1035
+corr: inflection_paradigm : 0.65, 54/83
+orth: 04 lcp/cap behind punctuation marks : 0.65, 68/105
+orth: 08 tog instead of sep: minimal phraseologism : 0.66, 227/342
+corr: incorrect_preposition_(po) : 0.67, 12/18
+orth: 17 insertions: other cases : 0.67, 40/60
+orth: 15 insertions: of double consonants : 0.7, 163/232
+orth: 12 omissions: of a vowel: (i) instead of (ie) : 0.71, 29/41
+orth: 01 lcp instead of cap: polite form : 0.74, 28/38
+orth: 22 transpositions: of consonants: Fortis/Lenis : 0.75, 52/69
+corr: gender : 0.75, 115/153
+corr: incorrect_adjunctor : 0.79, 11/14
+orth: 18 transpositions: of vowels : 0.88, 38/43
+corr: other : 0.92, 12/13
+orth: 25 incorrect positioning of two graphemes : 1.0, 4/4

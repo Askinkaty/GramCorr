@@ -1,0 +1,57 @@
+woor: v2_instead_of_v1 : 0.0, 0/1
+corr: ambiguous_reference : 0.0, 0/1
+corr: ambiguous_pronominal_adverb : 0.0, 0/2
+orth: : 0.0, 0/2
+ommi: others : 0.0, 0/2
+corr: person : 0.0, 0/3
+infl: weak_instead_of_strong : 0.0, 0/7
+woor: v1_instead_of_v2 : 0.0, 0/8
+woor: vl_instead_of_v2 : 0.0, 0/9
+woor: other : 0.0, 0/10
+corr: incorrect_pronominal_adverb : 0.0, 0/12
+corr: incorrect_preposition_(other_complements) : 0.0, 0/12
+woor: v2_instead_of_vl : 0.0, 0/14
+woor: deviating : 0.0, 0/28
+ommi: ellipses : 0.0, 0/67
+corr: incorrect_preposition_(po) : 0.0, 0/74
+ommi: incomplete_phrase : 0.0, 0/100
+ommi: incomplete_clause : 0.0, 0/119
+corr: inflection_paradigm : 0.02, 3/122
+corr: other : 0.03, 1/29
+orth: 10 missing or unnecessary hyphen : 0.04, 5/140
+corr: gender : 0.04, 8/188
+corr: case : 0.04, 22/517
+orth: 01 lcp instead of cap: polite form : 0.05, 2/43
+corr: unknown : 0.06, 4/68
+orth: 20 transpositions: of (i/e) / (e/i) : 0.08, 1/12
+orth: 04 lcp/cap behind punctuation marks : 0.09, 13/137
+infl: strong_instead_of_weak : 0.11, 5/45
+orth: Unknown : 0.11, 6/57
+orth: 13 omissions: of graphemecluster : 0.14, 10/69
+corr: number : 0.14, 40/289
+corr: incorrect_adjunctor : 0.19, 4/21
+infl: comparision : 0.2, 8/40
+infl: others : 0.22, 26/120
+orth: 17 insertions: other cases : 0.31, 102/330
+orth: 21 transpositions: of vowel and umlaut : 0.38, 81/212
+orth: 14 omissions: of one grapheme : 0.38, 255/669
+orth: 25 incorrect positioning of two graphemes : 0.4, 4/10
+orth: 19 transpositions: of (e/ä) / (ä/e) : 0.41, 45/111
+orth: 15 insertions: of double consonants : 0.41, 160/393
+orth: 06 sep instead of tog: compounds : 0.45, 491/1094
+orth: 11 omissions: of double consonants : 0.48, 577/1212
+orth: 03 cap instead of lcp : 0.51, 758/1485
+orth: 02 lcp instead of cap: other cases : 0.51, 1104/2165
+orth: 18 transpositions: of vowels : 0.52, 54/103
+orth: 22 transpositions: of consonants: Fortis/Lenis : 0.52, 129/247
+orth: 27 abbreviations : 0.53, 63/118
+orth: 09 tog instead of sep: other cases : 0.55, 197/359
+orth: 07 sep instead of tog: other cases : 0.55, 285/516
+orth: 16 insertions: of a vowel: (ie) instead of (i) : 0.58, 55/95
+orth: 23 transpositions: of consonants: other cases : 0.59, 221/373
+orth: 05 lcp/cap in combination with sep instead of tog/tog instead of sep : 0.6, 32/53
+orth: 24 transpositions: of (ss) and (ß) : 0.62, 50/80
+orth: 26 missing or incorrect use of apostrophes : 0.65, 49/75
+orth: 12 omissions: of a vowel: (i) instead of (ie) : 0.66, 53/80
+orth: 28 Eigennamen : 0.88, 327/372
+orth: 08 tog instead of sep: minimal phraseologism : 0.89, 358/401
