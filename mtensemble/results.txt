@@ -327,6 +327,86 @@ Precision** 31.857 (187/587)             Accuracy**   23.611 (187/792)
 
 
 
+spell only *******************************
+
+*** prediction ***
+Precision   64.580 (361/559)             Accuracy   44.458 (361/812)
+Precision*  64.580 (361/559)             Accuracy*  44.458 (361/812)
+Precision** 64.580 (361/559)             Accuracy**   44.458 (361/812)
+
+
+
+
+*** prediction ***
+Precision   65.849 (376/571)             Accuracy   52.222 (376/720)
+Precision*  65.849 (376/571)             Accuracy*  52.222 (376/720)
+Precision** 65.849 (376/571)             Accuracy**   52.222 (376/720)
+
+
+
+
+*** prediction ***
+Precision   73.059 (461/631)             Accuracy   54.621 (461/844)
+Precision*  73.059 (461/631)             Accuracy*  54.621 (461/844)
+Precision** 73.059 (461/631)             Accuracy**   54.621 (461/844)
+
+
+
+
+*** prediction ***
+Precision   66.427 (370/557)             Accuracy   50.340 (370/735)
+Precision*  66.427 (370/557)             Accuracy*  50.340 (370/735)
+Precision** 66.427 (370/557)             Accuracy**   50.340 (370/735)
+
+
+
+
+*** prediction ***
+Precision   67.434 (410/608)             Accuracy   52.835 (410/776)
+Precision*  67.434 (410/608)             Accuracy*  52.835 (410/776)
+Precision** 67.434 (410/608)             Accuracy**   52.835 (410/776)
+
+
+
+
+*** prediction ***
+Precision   67.086 (373/556)             Accuracy   49.404 (373/755)
+Precision*  67.086 (373/556)             Accuracy*  49.404 (373/755)
+Precision** 67.086 (373/556)             Accuracy**   49.404 (373/755)
+
+
+
+
+*** prediction ***
+Precision   71.300 (477/669)             Accuracy   58.889 (477/810)
+Precision*  71.300 (477/669)             Accuracy*  58.889 (477/810)
+Precision** 71.300 (477/669)             Accuracy**   58.889 (477/810)
+
+
+
+
+*** prediction ***
+Precision   75.764 (347/458)             Accuracy   55.343 (347/627)
+Precision*  75.764 (347/458)             Accuracy*  55.343 (347/627)
+Precision** 75.764 (347/458)             Accuracy**   55.343 (347/627)
+
+
+
+
+*** prediction ***
+Precision   74.468 (350/470)             Accuracy   53.030 (350/660)
+Precision*  74.468 (350/470)             Accuracy*  53.030 (350/660)
+Precision** 74.468 (350/470)             Accuracy**   53.030 (350/660)
+
+
+
+
+*** prediction ***
+Precision   38.023 (200/526)             Accuracy   24.038 (200/832)
+Precision*  38.023 (200/526)             Accuracy*  24.038 (200/832)
+Precision** 38.023 (200/526)             Accuracy**   24.038 (200/832)
+
+
 10 char + 1 gram **************************
 
 *** prediction ***
