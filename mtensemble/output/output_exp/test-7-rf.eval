@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 1276255017 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 1975582674 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'train-7-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -39,22 +39,22 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1276255017 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1975582674 -do-not-check-capabilities
 
-Time taken to build model: 2.26 seconds
+Time taken to build model: 2.28 seconds
 
-Time taken to test model on training data: 0.55 seconds
+Time taken to test model on training data: 0.43 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances        7704              100      %
+Correctly Classified Instances        6788              100      %
 Incorrectly Classified Instances         0                0      %
 Kappa statistic                          1     
-Mean absolute error                      0.0661
-Root mean squared error                  0.117 
-Relative absolute error                 13.8087 %
-Root relative squared error             23.9087 %
-Total Number of Instances             7704     
+Mean absolute error                      0.0649
+Root mean squared error                  0.1168
+Relative absolute error                 13.2285 %
+Root relative squared error             23.5803 %
+Total Number of Instances             6788     
 
 
 === Detailed Accuracy By Class ===
@@ -68,34 +68,34 @@ Weighted Avg.    1,000    0,000    1,000      1,000    1,000      1,000    1,000
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 3060    0 |    a = 0
-    0 4644 |    b = 1
+ 2933    0 |    a = 0
+    0 3855 |    b = 1
 
-Time taken to test model on test data: 0.03 seconds
+Time taken to test model on test data: 0.04 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances         635               89.9433 %
-Incorrectly Classified Instances        71               10.0567 %
-Kappa statistic                          0.7598
-Mean absolute error                      0.1542
-Root mean squared error                  0.2811
-Relative absolute error                 33.4804 %
-Root relative squared error             59.7655 %
-Total Number of Instances              706     
+Correctly Classified Instances         657               86.6755 %
+Incorrectly Classified Instances       101               13.3245 %
+Kappa statistic                          0.7278
+Mean absolute error                      0.1712
+Root mean squared error                  0.3081
+Relative absolute error                 34.7726 %
+Root relative squared error             61.9978 %
+Total Number of Instances              758     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0,803    0,057    0,862      0,803    0,831      0,761    0,938     0,909     0
-                 0,943    0,197    0,915      0,943    0,928      0,761    0,938     0,962     1
-Weighted Avg.    0,899    0,154    0,898      0,899    0,898      0,761    0,938     0,945     
+                 0,810    0,088    0,880      0,810    0,843      0,730    0,938     0,931     0
+                 0,912    0,190    0,857      0,912    0,884      0,730    0,938     0,934     1
+Weighted Avg.    0,867    0,145    0,868      0,867    0,866      0,730    0,938     0,933     
 
 
 === Confusion Matrix ===
 
    a   b   <-- classified as
- 175  43 |   a = 0
-  28 460 |   b = 1
+ 272  64 |   a = 0
+  37 385 |   b = 1
 

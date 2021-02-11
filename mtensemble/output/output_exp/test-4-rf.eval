@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -526267065 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -2067850729 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'train-4-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -39,22 +39,22 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -526267065 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -2067850729 -do-not-check-capabilities
 
-Time taken to build model: 2.21 seconds
+Time taken to build model: 2.25 seconds
 
-Time taken to test model on training data: 0.5 seconds
+Time taken to test model on training data: 0.43 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances        7524              100      %
+Correctly Classified Instances        6786              100      %
 Incorrectly Classified Instances         0                0      %
 Kappa statistic                          1     
-Mean absolute error                      0.0653
-Root mean squared error                  0.1167
-Relative absolute error                 13.6306 %
-Root relative squared error             23.8418 %
-Total Number of Instances             7524     
+Mean absolute error                      0.064 
+Root mean squared error                  0.1147
+Relative absolute error                 13.0187 %
+Root relative squared error             23.1353 %
+Total Number of Instances             6786     
 
 
 === Detailed Accuracy By Class ===
@@ -68,34 +68,34 @@ Weighted Avg.    1,000    0,000    1,000      1,000    1,000      1,000    1,000
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 2987    0 |    a = 0
-    0 4537 |    b = 1
+ 2951    0 |    a = 0
+    0 3835 |    b = 1
 
 Time taken to test model on test data: 0.04 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances         767               86.5688 %
-Incorrectly Classified Instances       119               13.4312 %
-Kappa statistic                          0.6942
-Mean absolute error                      0.1973
-Root mean squared error                  0.3184
-Relative absolute error                 42.4649 %
-Root relative squared error             67.0939 %
-Total Number of Instances              886     
+Correctly Classified Instances         650               85.5263 %
+Incorrectly Classified Instances       110               14.4737 %
+Kappa statistic                          0.6989
+Mean absolute error                      0.1831
+Root mean squared error                  0.3242
+Relative absolute error                 37.4129 %
+Root relative squared error             65.6875 %
+Total Number of Instances              760     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0,787    0,096    0,801      0,787    0,794      0,694    0,907     0,880     0
-                 0,904    0,213    0,897      0,904    0,900      0,694    0,907     0,926     1
-Weighted Avg.    0,866    0,175    0,865      0,866    0,865      0,694    0,907     0,911     
+                 0,783    0,093    0,859      0,783    0,819      0,701    0,921     0,905     0
+                 0,907    0,217    0,853      0,907    0,879      0,701    0,921     0,926     1
+Weighted Avg.    0,855    0,165    0,855      0,855    0,854      0,701    0,921     0,917     
 
 
 === Confusion Matrix ===
 
    a   b   <-- classified as
- 229  62 |   a = 0
-  57 538 |   b = 1
+ 249  69 |   a = 0
+  41 401 |   b = 1
 
