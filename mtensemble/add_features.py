@@ -2,10 +2,12 @@
 """
 Read a moses output csv file, calculate additional features (per error id) and
 add the columns to the input. Calculations are done on the confidence scores of
-each guesser and the following featurea are calculated:
+each guesser and the following features are calculated:
 - normalize
 - StandardScaler
 - MaxAbsScaled
+(scaling features is done by considering sets of lines belonging to identical
+error_ids)
 
 
 # Data format (2020)
@@ -41,6 +43,7 @@ import argparse
 import sys
 
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
 
 NUM_INFO_COLUMNS = 5    # Fix the number of 'info' columns
@@ -53,6 +56,11 @@ def init_argparse() -> argparse.ArgumentParser:
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
+    parser.add_argument(
+        "--guesser_ids", required=False,
+        help="Comma seperated list of guessers for which to output the \
+        corresponding columns", metavar="0,2,..."
+    )
     return parser
 
 
@@ -60,16 +68,24 @@ parser = init_argparse()
 args = parser.parse_args()
 
 # read the data into a pandas DataFrame
-data = pd.read_csv(sys.stdin, sep='\t', header=0)
+data = pd.read_csv(sys.stdin, sep='\t', header=0)[0:100]
+
 # make sure (some) columns have predictable names
 data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
             inplace=True)
+
 # try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
 num_guessers = (len(data.columns) - 5) / 2
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
 print(f"{num_guessers} guessers detected.", file=sys.stderr)
+
+if args.guesser_ids:
+    guesser_ids = [int(gid.strip()) for gid in args.guesser_ids.split(',')]
+else:
+    guesser_ids = list(range(num_guessers))
+assert max(guesser_ids) <= num_guessers
 
 # spellchecker_score is inverse to the others: 0 is good and ]0,+inf[ is bad
 # where as others are ]-inf,0[ bad and 0 is good. fix this here:
@@ -127,4 +143,21 @@ for err_id in data["err_id"].unique():
         scores_maxabs = preprocessing.MaxAbsScaler().fit_transform(scores_updated.to_frame())
         data.loc[(data["err_id"] == err_id), f"maxabs_{guess_id}"] = scores_maxabs
 
-data.to_csv(sys.stdout, index=False)
+num_features = (len(data.columns) - NUM_INFO_COLUMNS - num_guessers*2) / num_guessers
+assert num_features == int(num_features)
+num_features = int(num_features)
+
+range_info_columns = list(range(NUM_INFO_COLUMNS))
+range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*2 for gid in guesser_ids])
+range_org_columns_score = range_org_columns_suggested + 1
+range_feats = np.array([NUM_INFO_COLUMNS+2*num_guessers+gid*num_features for gid in guesser_ids])
+range_feats = [elem for fid in range(num_features) for elem in list(range_feats + fid)]
+
+# print(range_info_columns + list(range_org_columns_suggested) +
+#       list(range_org_columns_score) + range_feats)
+
+guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) +
+                         list(range_org_columns_suggested) +
+                         list(range_org_columns_score) + list(range_feats))]
+
+data.to_csv(sys.stdout, index=False, columns=guesser_columns)
