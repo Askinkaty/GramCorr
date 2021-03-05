@@ -109,9 +109,11 @@ if "spellcheker_score" in data.columns:
     data["spellcheker_score"] = data["spellcheker_score"] * -1
     log.debug("Inverted 'spellchecker_score'.")
 
-for err_id in data["err_id"].unique():
-    # print(err_id, file=sys.stderr)
-    for guess_id in range(num_guessers):
+err_ids = list(data["err_id"].unique())
+for err_num, err_id in enumerate(err_ids):
+    # log.debug(f"{err_id}")
+    if err_num % 100 == 0:
+        log.debug(f"{err_num} of {len(err_ids)}.")
 
         scores = data[data["err_id"] == err_id].iloc[:, NUM_INFO_COLUMNS + 1 +
                                                      (guess_id * 2)]
