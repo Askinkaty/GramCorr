@@ -49,6 +49,7 @@ import numpy as np
 from sklearn import preprocessing
 
 NUM_INFO_COLUMNS = 5    # Fix the number of 'info' columns
+UNKNOWN_VALUE = "?"     # Set the character to represent missing/unknown values
 
 
 def init_argparse() -> argparse.ArgumentParser:
@@ -181,4 +182,4 @@ guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) 
                          list(range_org_columns_suggested) +
                          list(range_org_columns_score) + list(range_feats))]
 
-data.to_csv(sys.stdout, index=False, sep="\t", columns=guesser_columns)
+data.to_csv(sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE, columns=guesser_columns)
