@@ -41,6 +41,7 @@ error_ids)
 #
 
 import argparse
+import logging
 import sys
 
 import pandas as pd
@@ -65,6 +66,13 @@ def init_argparse() -> argparse.ArgumentParser:
     return parser
 
 
+logging.basicConfig(
+    stream=sys.stderr,
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(module)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+log = logging.getLogger(__name__)
 parser = init_argparse()
 args = parser.parse_args()
 
@@ -80,7 +88,7 @@ data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
 num_guessers = (len(data.columns) - 5) / 2
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
-print(f"{num_guessers} guessers detected.", file=sys.stderr)
+log.debug(f"{num_guessers} guessers detected.")
 
 # Set the guesser_ids to use when writing the output
 if args.guesser_ids:
@@ -93,7 +101,7 @@ assert max(guesser_ids) <= num_guessers
 # where as others are ]-inf,0[ bad and 0 is good. fix this here:
 if "spellcheker_score" in data.columns:
     data["spellcheker_score"] = data["spellcheker_score"] * -1
-    # print("Inverted 'spellchecker_score'.")
+    log.debug("Inverted 'spellchecker_score'.")
 
 for err_id in data["err_id"].unique():
     # print(err_id, file=sys.stderr)
