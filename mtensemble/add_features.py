@@ -115,9 +115,11 @@ for err_num, err_id in enumerate(err_ids):
     if err_num % 100 == 0:
         log.debug(f"{err_num} of {len(err_ids)}.")
 
-        scores = data[data["err_id"] == err_id].iloc[:, NUM_INFO_COLUMNS + 1 +
-                                                     (guess_id * 2)]
+    for guess_id in range(num_guessers):
 
+        err_id_selector = data.err_id.isin([err_id])
+        scores = data[err_id_selector][data.columns[NUM_INFO_COLUMNS + 1 +
+                                                    (guess_id * 2)]]
         # print("scores: ", list(scores))
         # print(scores.min(), scores.max())
 
@@ -125,7 +127,7 @@ for err_num, err_id in enumerate(err_ids):
         # print("classes: ", list(classes))
 
         # Copy the scores to a new column
-        data.loc[(data["err_id"] == err_id), f"conf_norm_{guess_id}"] = scores
+        data.loc[err_id_selector, f"conf_norm_{guess_id}"] = scores
         # Set the values of the new column to min(scores of err_id) for all
         # rows where the guesser did not suggest any correction
         # (i.e. instead of knowing nothing - because of an empty value - for
@@ -137,35 +139,36 @@ for err_num, err_id in enumerate(err_ids):
         #  * confval: my best suported correction
         # to
         #  * confval: min of this guesser's supported corrections for this error_id
-        data.loc[
-            (data["err_id"] == err_id) &
-            (data.iloc[:, NUM_INFO_COLUMNS + (guess_id * 2)] == -1),
-            f"conf_norm_{guess_id}"] = scores.min()
-        # update scores with new values
-        scores_updated = data[data["err_id"] == err_id][f"conf_norm_{guess_id}"]
+        class_minus_1_selector = data[
+            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
+        data.loc[err_id_selector & class_minus_1_selector,
+                 f"conf_norm_{guess_id}"] = scores.min()
+        # Update scores with new values
+        scores_updated = data[err_id_selector][f"conf_norm_{guess_id}"]
         # print(list(scores_updated))
 
         scores_norm = preprocessing.normalize(scores_updated.to_frame(), norm='l2', axis=0)
-        data.loc[(data["err_id"] == err_id), f"conf_norm_{guess_id}"] = scores_norm
+        data.loc[err_id_selector, f"conf_norm_{guess_id}"] = scores_norm
 
         scores_std = preprocessing.StandardScaler().fit_transform(scores_updated.to_frame())
-        data.loc[(data["err_id"] == err_id), f"std_{guess_id}"] = scores_std
+        data.loc[err_id_selector, f"std_{guess_id}"] = scores_std
 
         # scores_delta = 1 - scores_norm
-        # data.loc[(data["err_id"] == err_id), f"delta_{guess_id}"] = scores_delta
+        # data.loc[err_id_selector, f"delta_{guess_id}"] = scores_delta
 
         # scores_quant = preprocessing.QuantileTransformer(n_quantiles=10,
         #                                                  random_state=0).fit_transform(scores_updated.to_frame())
-        # data.loc[(data["err_id"] == err_id), f"quant_{guess_id}"] = scores_quant
+        # data.loc[err_id_selector, f"quant_{guess_id}"] = scores_quant
 
         scores_maxabs = preprocessing.MaxAbsScaler().fit_transform(scores_updated.to_frame())
-        data.loc[(data["err_id"] == err_id), f"maxabs_{guess_id}"] = scores_maxabs
+        data.loc[err_id_selector, f"maxabs_{guess_id}"] = scores_maxabs
 
 num_features = (len(data.columns) - NUM_INFO_COLUMNS - num_guessers*2) / num_guessers
 assert num_features == int(num_features)
 num_features = int(num_features)
 
 range_info_columns = list(range(NUM_INFO_COLUMNS))
+# range_info_columns = [0, 2, 4]    # only a selection of list(range(NUM_INFO_COLUMNS))
 range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*2 for gid in guesser_ids])
 range_org_columns_score = range_org_columns_suggested + 1
 range_feats = np.array([NUM_INFO_COLUMNS+2*num_guessers+gid*num_features for gid in guesser_ids])
