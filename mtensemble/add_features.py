@@ -76,8 +76,8 @@ log = logging.getLogger(__name__)
 parser = init_argparse()
 args = parser.parse_args()
 
-data = pd.read_csv(sys.stdin, sep='\t', header=0)[0:100]
 # Read the data into a pandas DataFrame
+data = pd.read_csv(sys.stdin, sep='\t', header=0)
 
 # Make sure (some) columns have predictable names
 data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
