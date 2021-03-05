@@ -12,11 +12,11 @@ error_ids)
 
 # Data format (2020)
 
- --- column ---        --- index:type ---
- error_id(err_id)      # 1:str
- type                  # 2:str
+ --- column ---        --- in_index:type:range ---
+ *error_id(err_id)     # 1:str
+ *type                 # 2:str
  error_length          # 3:int:[1-
- suggestion            # 4:str
+ *suggestion           # 4:str
  is_correct(class)     # 5:int:{0,1}
  --- GUESSERS (2 columns per guesser: 1,0,-1 and confidence score)
  10_gram_is_suggested    10_gram_score     # cols  6, 7
@@ -27,8 +27,9 @@ error_ids)
 
 
 # Note
-ideally (if input files corespond to splits in the dataset), lines belonging to
-one error_id should all be within one file.
+- ideally (if input files corespond to splits in the dataset), lines belonging
+  to one error_id should all be within one file.
+- (*) for the output the columns err_id, type, and suggestion are sanitized.
 """
 # old data (from 2018)
 #
@@ -52,7 +53,7 @@ NUM_INFO_COLUMNS = 5    # Fix the number of 'info' columns
 def init_argparse() -> argparse.ArgumentParser:
     """Parse arguments. """
     parser = argparse.ArgumentParser(
-        usage="%(prog)s [OPTION]",
+        usage="%(prog)s [OPTION] < INPUT > OUTPUT",
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -67,20 +68,21 @@ def init_argparse() -> argparse.ArgumentParser:
 parser = init_argparse()
 args = parser.parse_args()
 
-# read the data into a pandas DataFrame
 data = pd.read_csv(sys.stdin, sep='\t', header=0)[0:100]
+# Read the data into a pandas DataFrame
 
-# make sure (some) columns have predictable names
+# Make sure (some) columns have predictable names
 data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
             inplace=True)
 
-# try to infer the number of guessers in the input file and do a sanity check
+# Try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
 num_guessers = (len(data.columns) - 5) / 2
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
 print(f"{num_guessers} guessers detected.", file=sys.stderr)
 
+# Set the guesser_ids to use when writing the output
 if args.guesser_ids:
     guesser_ids = [int(gid.strip()) for gid in args.guesser_ids.split(',')]
 else:
@@ -106,9 +108,9 @@ for err_id in data["err_id"].unique():
         # classes = data[data["err_id"] == err_id]["class"]
         # print("classes: ", list(classes))
 
-        # copy the scores to a new column
+        # Copy the scores to a new column
         data.loc[(data["err_id"] == err_id), f"conf_norm_{guess_id}"] = scores
-        # set the values of the new column to min(scores of err_id) for all
+        # Set the values of the new column to min(scores of err_id) for all
         # rows where the guesser did not suggest any correction
         # (i.e. instead of knowing nothing - because of an empty value - for
         # suggestions from *other* guessers, regard the suggestion as equal to
