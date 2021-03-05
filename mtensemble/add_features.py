@@ -160,4 +160,4 @@ guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) 
                          list(range_org_columns_suggested) +
                          list(range_org_columns_score) + list(range_feats))]
 
-data.to_csv(sys.stdout, index=False, columns=guesser_columns)
+data.to_csv(sys.stdout, index=False, sep="\t", columns=guesser_columns)
