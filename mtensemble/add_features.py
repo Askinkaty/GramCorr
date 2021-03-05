@@ -2,12 +2,12 @@
 """
 Read a moses output csv file, calculate additional features (per error id) and
 add the columns to the input. Calculations are done on the confidence scores of
-each guesser and the following features are calculated:
+each guesser individually and the following features are calculated:
 - normalize
 - StandardScaler
 - MaxAbsScaled
-(scaling features is done by considering sets of lines belonging to identical
-error_ids)
+(scaling features is done by considering sets of lines that belong to identical
+error_ids and where the guesser suggested a correction)
 
 
 # Data format (2020)
@@ -118,52 +118,57 @@ for err_num, err_id in enumerate(err_ids):
 
     for guess_id in range(num_guessers):
 
+        # Construct a few vectorized selectors to speed up look-ups
         err_id_selector = data.err_id.isin([err_id])
-        scores = data[err_id_selector][data.columns[NUM_INFO_COLUMNS + 1 +
-                                                    (guess_id * 2)]]
+        class_minus_1_selector = data[
+            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
+        scores_selector = err_id_selector & ~class_minus_1_selector
+        scores_selector_sum = scores_selector.sum()
+        scores_unknown_selector = err_id_selector & class_minus_1_selector
+
+        scores = data[scores_selector][
+                          data.columns[NUM_INFO_COLUMNS + 1 + (guess_id * 2)]]
+        scores_unknown = scores_unknown_selector.sum() * [UNKNOWN_VALUE]
         # print("scores: ", list(scores))
         # print(scores.min(), scores.max())
 
-        # classes = data[data["err_id"] == err_id]["class"]
+        # classes = data[scores_selector]["class"]
         # print("classes: ", list(classes))
 
-        # Copy the scores to a new column
-        data.loc[err_id_selector, f"conf_norm_{guess_id}"] = scores
-        # Set the values of the new column to min(scores of err_id) for all
-        # rows where the guesser did not suggest any correction
-        # (i.e. instead of knowing nothing - because of an empty value - for
-        # suggestions from *other* guessers, regard the suggestion as equal to
-        # the least likely one from this guesser.
-        #
-        # SET:
-        #  * where class: -1 (i did not propose this correction)
-        #  * confval: my best suported correction
-        # to
-        #  * confval: min of this guesser's supported corrections for this error_id
-        class_minus_1_selector = data[
-            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
-        data.loc[err_id_selector & class_minus_1_selector,
-                 f"conf_norm_{guess_id}"] = scores.min()
-        # Update scores with new values
-        scores_updated = data[err_id_selector][f"conf_norm_{guess_id}"]
-        # print(list(scores_updated))
+        column = f"conf_norm_{guess_id}"
+        data.loc[scores_unknown_selector, column] = scores_unknown
+        if scores_selector_sum > 0:
+            scores_feat = preprocessing.normalize(scores.to_frame(), norm='l2', axis=0)
+            # scores_norm = scores_feat
+            data.loc[scores_selector, column] = scores_feat
 
-        scores_norm = preprocessing.normalize(scores_updated.to_frame(), norm='l2', axis=0)
-        data.loc[err_id_selector, f"conf_norm_{guess_id}"] = scores_norm
+        column = f"std_{guess_id}"
+        data.loc[scores_unknown_selector, column] = scores_unknown
+        if scores_selector_sum > 0:
+            scores_feat = preprocessing.StandardScaler().fit_transform(scores.to_frame())
+            data.loc[scores_selector, column] = scores_feat
 
-        scores_std = preprocessing.StandardScaler().fit_transform(scores_updated.to_frame())
-        data.loc[err_id_selector, f"std_{guess_id}"] = scores_std
+        # column = f"delta_{guess_id}"
+        # data.loc[scores_unknown_selector, column] = scores_unknown
+        # if scores_selector_sum > 0:
+        #     scores_feat = 1 - scores_norm
+        #     data.loc[scores_selector, column] = scores_feat
 
-        # scores_delta = 1 - scores_norm
-        # data.loc[err_id_selector, f"delta_{guess_id}"] = scores_delta
+        # column = f"quant_{guess_id}"
+        # data.loc[scores_unknown_selector, column] = scores_unknown
+        # if scores_selector_sum > 0:
+        #     scores_feat = preprocessing.QuantileTransformer(
+        #         n_quantiles=10, random_state=0).fit_transform(scores.to_frame())
+        #     data.loc[scores_selector, column] = scores_feat
 
-        # scores_quant = preprocessing.QuantileTransformer(n_quantiles=10,
-        #                                                  random_state=0).fit_transform(scores_updated.to_frame())
-        # data.loc[err_id_selector, f"quant_{guess_id}"] = scores_quant
+        column = f"maxabs_{guess_id}"
+        data.loc[scores_unknown_selector, column] = scores_unknown
+        if scores_selector_sum > 0:
+            scores_feat = preprocessing.MaxAbsScaler().fit_transform(scores.to_frame())
+            data.loc[scores_selector, column] = scores_feat
 
-        scores_maxabs = preprocessing.MaxAbsScaler().fit_transform(scores_updated.to_frame())
-        data.loc[err_id_selector, f"maxabs_{guess_id}"] = scores_maxabs
-
+# Instead of relying on setting this value, it's (quite) safe to calculate the
+# number of added features.
 num_features = (len(data.columns) - NUM_INFO_COLUMNS - num_guessers*2) / num_guessers
 assert num_features == int(num_features)
 num_features = int(num_features)
@@ -175,11 +180,9 @@ range_org_columns_score = range_org_columns_suggested + 1
 range_feats = np.array([NUM_INFO_COLUMNS+2*num_guessers+gid*num_features for gid in guesser_ids])
 range_feats = [elem for fid in range(num_features) for elem in list(range_feats + fid)]
 
-# print(range_info_columns + list(range_org_columns_suggested) +
-#       list(range_org_columns_score) + range_feats)
+guesser_columns = [data.columns[cid] for cid in sorted(
+    list(range_info_columns) + list(range_org_columns_suggested) +
+    list(range_org_columns_score) + list(range_feats))]
 
-guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) +
-                         list(range_org_columns_suggested) +
-                         list(range_org_columns_score) + list(range_feats))]
-
-data.to_csv(sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE, columns=guesser_columns)
+data.to_csv(sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE,
+            columns=guesser_columns)
