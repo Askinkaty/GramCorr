@@ -83,6 +83,12 @@ data = pd.read_csv(sys.stdin, sep='\t', header=0)
 data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
             inplace=True)
 
+# Sanitize the err_id column (remove space chars)
+data.err_id.replace(to_replace=" ", value="_", regex=True, inplace=True)
+data.type.replace(to_replace=r"[\ \"']", value="_", regex=True, inplace=True)
+data.suggestion.replace(to_replace=r"[\ \"']", value="_", regex=True, inplace=True)
+log.debug(f"Sanitized err_id,type,suggestion column(s).")
+
 # Try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
 num_guessers = (len(data.columns) - 5) / 2
