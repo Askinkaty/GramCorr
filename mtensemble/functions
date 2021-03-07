@@ -102,7 +102,7 @@ csv2arff() {
         | awk '{ if ( $1 ~ /@attribute/ && $2 ~ /conf_|std_|maxabs_|_score/ ) { print $1,$2,"numeric" } else { print } }' \
         > "$OUTFILE"
         if [[ -s "$ERRLOG" ]]; then
-            echo "FAIL: $ERRLOG is not empty."
+            echo "FAIL: $ERRLOG is not empty." >&2
             rm -f $ERRLOG
             return 1
         else
@@ -143,7 +143,7 @@ weka_rf() {
     local WEKA_OPTS=""
     if [ -n "$TEST_DATA" ]
     then
-        echo "Creating $PREDS_OUTFILE"
+        echo "Creating $PREDS_OUTFILE" >&2
         WEKA_OPTS=( "-T" "${TEST_DATA}" )
         eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
 
@@ -153,7 +153,7 @@ weka_rf() {
         EVAL_OUTFILE=/dev/null
         eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
     else
-        echo "Creating $EVAL_OUTFILE"
+        echo "Creating $EVAL_OUTFILE" >&2
         WEKA_OPTS=( -v -o -s 1 -x 10 )
         eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
     fi
