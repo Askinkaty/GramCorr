@@ -5,50 +5,68 @@ set -o pipefail
 
 source functions
 
-mkdir -p "${INPUT_EXPERIMENT}"
-mkdir -p "${OUTPUT_EXPERIMENT}"
-
-### Run 10-fold CV on the 'largest' data set
-#
-#
-
-FEATSET=${INPUT_FEATSET}/data.arff
-TRAIN_DATA=${INPUT_EXPERIMENT}/data.arff
-ln -f -s "${FEATSET}" "${TRAIN_DATA}"
-OUTFILE="${OUTPUT_EXPERIMENT}/data-rf"
-[ -e "$OUTFILE".eval ] || weka-rf "$TRAIN_DATA" "$OUTFILE"
-
-
-END=9
-
-for i in $(seq 0 $END)
+### Run 10-fold CV on the 'largest' data set(s)
+for INDIR in "${INPUT_EXPERIMENT}"/*-full/*
 do
-    echo 'fold: '${i}
-    mkdir -p ${INPUT_EXPERIMENT}/TMP/TRAIN
-    mkdir -p ${INPUT_EXPERIMENT}/TMP/TEST
+    INDIR_GUESSER_IDS=$(basename "$INDIR")
+    INDIR_BASE=$(basename "$(dirname "$INDIR")")
 
-    cp ${INPUT_FEATSET}/fold${i}.csv ${INPUT_EXPERIMENT}/TMP/TEST
-    cd ${INPUT_EXPERIMENT}/TMP/TEST
-    convert01 fold${i}.csv test-${i}.arff
-    TEST_DATA=${INPUT_EXPERIMENT}/TMP/TEST/test-${i}.arff
-
-    touch ${INPUT_EXPERIMENT}/TMP/TRAIN/train-${i}.csv
-    head -1 ${INPUT_FEATSET}/fold${i}.csv > ${INPUT_EXPERIMENT}/TMP/TRAIN/train-${i}.csv
-    chmod -R 755 ${INPUT_EXPERIMENT}
-
-    for j in $(seq 0 $END)
+    for INFILE in "${INDIR}"/*.arff
     do
-        if [[ ${j} -ne ${i} ]]
+        OUTDIR="${OUTPUT_EXPERIMENT}/${INDIR_BASE}/${INDIR_GUESSER_IDS}"
+        OUTFILE="${OUTDIR}/$(basename "${INFILE}" .arff)"
+
+        echo "[$(basename "$0")] ${INFILE} ---> ${OUTFILE}" >&2
+        if [ "${INFILE}" -nt "${OUTFILE}.eval" ]
         then
-            echo 'train set: '${j}
-            cat ${INPUT_FEATSET}/fold${j}.csv | sed 1d >> ${INPUT_EXPERIMENT}/TMP/TRAIN/train-${i}.csv
+            mkdir -p "${OUTDIR}"
+            weka_rf "${INFILE}" "${OUTFILE}" \
+            || { rm "${OUTFILE}.eval"; exit 1; }
+        else
+            echo "[$(basename "$0")] ${OUTFILE}.eval exists." >&2
         fi
     done
-    cd ${INPUT_EXPERIMENT}/TMP/TRAIN
-    convert01 train-${i}.csv train-${i}.arff
-    TRAIN_DATA=${INPUT_EXPERIMENT}/TMP/TRAIN/train-${i}.arff
-    OUT_BASE=$(basename "$TEST_DATA" .arff)
-    OUTFILE=${OUTPUT_EXPERIMENT}/${OUT_BASE}-rf
-    weka-rf "$TRAIN_DATA" "$OUTFILE" "$TEST_DATA"
-#    rm -r ${INPUT_EXPERIMENT}/TMP
+done
+
+### Run 10-fold CV on the '-fold' data set(s)
+for INDIR in "${INPUT_EXPERIMENT}"/*folds/*
+do
+    INDIR_GUESSER_IDS=$(basename "$INDIR")
+    INDIR_BASE=$(basename "$(dirname "$INDIR")")
+
+    FOLD_FILES=( "${INDIR}"/*.arff )
+
+    for FOLD in $(seq 0 $(( ${#FOLD_FILES[@]} - 1 ))  )
+    do
+        echo "Fold: $FOLD"
+        TST_IDX=FOLD
+        TST_FILE=${FOLD_FILES[$TST_IDX]}
+
+        TRN_IDX_BGN=$(( FOLD + 1 ))
+        TRN_IDX_END=$(( FOLD + ${#FOLD_FILES[@]} - 1 ))
+        TRN_IDX=( $(for IDX in $(seq ${TRN_IDX_BGN} ${TRN_IDX_END}); do echo $(( IDX % ${#FOLD_FILES[@]} )); done ) )
+        TRN_FILES=( $(for IDX in ${TRN_IDX[@]}; do echo "${FOLD_FILES[$IDX]}"; done) )
+
+        #echo $FOLD $TRN_IDX_BGN $TRN_IDX_END
+        #echo ${TST_FILE}
+        #echo "${TRN_FILES[@]}"
+
+        OUTDIR="${OUTPUT_EXPERIMENT}/${INDIR_BASE}/${INDIR_GUESSER_IDS}"
+        OUTFILE="${OUTDIR}/$(basename "${TST_FILE}" .arff)"
+
+        echo "[$(basename "$0")] ${TST_FILE} ---> ${OUTFILE}" >&2
+        if [ "${TST_FILE}" -nt "${OUTFILE}.eval" ]
+        then
+            mkdir -p "${OUTDIR}"
+
+            arffs2arff "${TRN_FILES[@]}" > "${OUTFILE}_trn.arff" && \
+            echo "Created training file:${OUTFILE}_trn.arff" \
+            && weka_rf "${OUTFILE}_trn.arff" "${OUTFILE}" "${TST_FILE}" \
+            && rm "${OUTFILE}_trn.arff" \
+            || { rm "${OUTFILE}.eval"; exit 1; }
+        else
+            echo "[$(basename "$0")] ${OUTFILE}.eval exists." >&2
+        fi
+
+    done
 done
