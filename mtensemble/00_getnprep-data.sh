@@ -11,7 +11,7 @@ set -o pipefail
 source functions
 
 ## Add features to data (cf. add_features.py for details).
-for INDIR in "${INPUT_PREPROC}"/5_guessers # "${INPUT_PREPROC}"/5_guessers-10_folds
+for INDIR in "${INPUT_PREPROC}"/*-full "${INPUT_PREPROC}"/*folds
 do
     INDIR_BASE=$(basename "$INDIR")
 
@@ -87,8 +87,8 @@ do
             esac
 
             # Convert .csv feature set file to .arff input file.
-            OUTDIR="${INPUT_EXPERIMENT}/${INDIR_BASE}"
-            OUTFILE="${OUTDIR}/${GUESSER_IDS}_$(basename "${INFILE}" .csv).arff"
+            OUTDIR="${INPUT_EXPERIMENT}/${INDIR_BASE}/${GUESSER_IDS}"
+            OUTFILE="${OUTDIR}/$(basename "${INFILE}" .csv).arff"
 
             echo "[$(basename "$0")] ${INFILE} ---> ${OUTFILE}" >&2
             if [ "${INFILE}" -nt "${OUTFILE}" ]
