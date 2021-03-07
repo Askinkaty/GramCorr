@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
+set -o pipefail
 
-. functions
-. local
+source functions
 
 mkdir -p "${INPUT_EXPERIMENT}"
 mkdir -p "${OUTPUT_EXPERIMENT}"
