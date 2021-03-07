@@ -1,0 +1,30 @@
+
+Time taken to perform cross-validation: 321.48 seconds
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances       61130               97.7017 %
+Incorrectly Classified Instances      1438                2.2983 %
+Kappa statistic                          0.9301
+Mean absolute error                      0.0363
+Root mean squared error                  0.1341
+Relative absolute error                 10.9463 %
+Root relative squared error             32.9421 %
+Total Number of Instances            62568     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.988    0.066    0.983      0.988    0.986      0.930    0.993     0.997     0
+                 0.934    0.012    0.955      0.934    0.945      0.930    0.993     0.984     1
+Weighted Avg.    0.977    0.055    0.977      0.977    0.977      0.930    0.993     0.995     
+
+
+=== Confusion Matrix ===
+
+     a     b   <-- classified as
+ 48877   573 |     a = 0
+   865 12253 |     b = 1
+
