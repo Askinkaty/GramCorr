@@ -94,9 +94,12 @@ csv2arff() {
         2> >(tee -a ${ERRLOG} >&2) \
         | \
         # Filter unused 'columns' from file AND put GOLD column last
+        # FIXME: The awk is a hack to make sure weka attributes 'numeric' values to our numeric values.
+        #        It might be, that a '?' in the very first line overwrites the -R option from above! 
         ${WEKA_CMD} weka.filters.unsupervised.attribute.Reorder \
                 -R 1,3,6-last,5 \
         2> >(tee -a ${ERRLOG} >&2) \
+        | awk '{ if ( $1 ~ /@attribute/ && $2 ~ /conf_|std_|maxabs_|_score/ ) { print $1,$2,"numeric" } else { print } }' \
         > "$OUTFILE"
         if [[ -s "$ERRLOG" ]]; then
             echo "FAIL: $ERRLOG is not empty."
