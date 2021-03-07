@@ -40,7 +40,7 @@ do
     for INFILE in "${INDIR}"/*.csv
     do
 
-        for GUESSER_IDS in 0 1 2 3 4 0_4 2_3 ALL
+        for GUESSER_IDS in 0 1 2 3 4 0_1 0_2 0_3 0_4 1_2 1_3 1_4 2_3 2_4 3_4 0_1_2 0_1_3 0_1_4 0_2_3 0_2_4 0_3_4 1_2_3 1_2_4 1_3_4 2_3_4 0_1_2_3 0_1_2_4 0_1_3_4 0_2_3_4 1_2_3_4 ALL
         do
             case $GUESSER_IDS in
                 ALL)
