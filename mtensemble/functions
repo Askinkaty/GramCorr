@@ -145,16 +145,39 @@ weka_rf() {
     then
         echo "Creating $PREDS_OUTFILE" >&2
         WEKA_OPTS=( "-T" "${TEST_DATA}" )
-        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
+        local ERRLOG=$(mktemp)
+
+        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}" \
+        2> >(tee -a ${ERRLOG} >&2)
 
         WEKA_OPTS+=( \
             "-classifications" \
             "weka.classifiers.evaluation.output.prediction.CSV -p 1 -file ${PREDS_OUTFILE} -suppress" )
         EVAL_OUTFILE=/dev/null
-        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
+        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}" \
+        2> >(tee -a ${ERRLOG} >&2)
+
+        if [[ -s "$ERRLOG" ]]; then
+            echo "FAIL: $ERRLOG is not empty." >&2
+            # rm -f $ERRLOG
+            return 1
+        else
+            rm -f $ERRLOG
+        fi
     else
         echo "Creating $EVAL_OUTFILE" >&2
         WEKA_OPTS=( -v -o -s 1 -x 10 )
-        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}"
+        # Weka seems to be exiting with 0 - even in case of failure :(
+        # but there is (usually) output on stderr. So, check for output there...
+        local ERRLOG=$(mktemp)
+        eval "${RUN_WEKA}" > "${EVAL_OUTFILE}" \
+        2> >(tee -a ${ERRLOG} >&2)
+        if [[ -s "$ERRLOG" ]]; then
+            echo "FAIL: $ERRLOG is not empty." >&2
+            rm -f $ERRLOG
+            return 1
+        else
+            rm -f $ERRLOG
+        fi
     fi
 }
