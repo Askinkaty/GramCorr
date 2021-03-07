@@ -182,10 +182,10 @@ weka_rf() {
     fi
 }
 
+# Concatenate a list of arff files into one file
 arffs2arff() {
     set -e
     set -o pipefail
-    # Concatenate a list of arff files into one file
     if [ $# -eq 2 ]
     then
         local ERRLOG=$(mktemp)
