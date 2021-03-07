@@ -181,3 +181,44 @@ weka_rf() {
         fi
     fi
 }
+
+arffs2arff() {
+    set -e
+    set -o pipefail
+    # Concatenate a list of arff files into one file
+    if [ $# -eq 2 ]
+    then
+        local ERRLOG=$(mktemp)
+        ${WEKA_CMD} weka.core.Instances append "$1" "$2" \
+        2> >(tee -a ${ERRLOG} >&2)
+        if [[ -s "$ERRLOG" ]]; then
+            echo "FAIL: $ERRLOG is not empty." >&2
+            rm -f $ERRLOG
+            return 1
+        else
+            rm -f $ERRLOG
+        fi
+    elif [ $# -gt 2 ]
+    then
+        local ERRLOG=$(mktemp)
+        local FILE_ONE=$1
+        shift
+        local ARFF_FILE=$(mktemp --tmpdir tmp.XXXXXXXX.arff)
+        [ -e "$ARFF_FILE" ] || return 1
+        arffs2arff "$@" > $ARFF_FILE && \
+        ${WEKA_CMD} weka.core.Instances append "$FILE_ONE" "$ARFF_FILE" \
+        2> >(tee -a ${ERRLOG} >&2)
+        # rm -f "$ARFF_FILE"
+        if [[ -s "$ERRLOG" ]]; then
+            echo "FAIL: $ERRLOG is not empty." >&2
+            rm -f $ERRLOG
+            return 1
+        else
+            rm -f $ERRLOG
+        fi
+    else
+        echo "Usage: ${FUNCNAME[0]} FILE.arff FILE.arff ..." >&2
+        echo "Concatenate all FILE.arff into one on stdout." >&2
+        return 1
+    fi
+}
