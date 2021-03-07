@@ -208,7 +208,7 @@ arffs2arff() {
         arffs2arff "$@" > $ARFF_FILE && \
         ${WEKA_CMD} weka.core.Instances append "$FILE_ONE" "$ARFF_FILE" \
         2> >(tee -a ${ERRLOG} >&2)
-        # rm -f "$ARFF_FILE"
+        rm -f "$ARFF_FILE"
         if [[ -s "$ERRLOG" ]]; then
             echo "FAIL: $ERRLOG is not empty." >&2
             rm -f $ERRLOG
