@@ -104,12 +104,6 @@ else:
     guesser_ids = list(range(num_guessers))
 assert max(guesser_ids) <= num_guessers
 
-# spellchecker_score is inverse to the others: 0 is good and ]0,+inf[ is bad
-# where as others are ]-inf,0[ bad and 0 is good. fix this here:
-if "spellcheker_score" in data.columns:
-    data["spellcheker_score"] = data["spellcheker_score"] * -1
-    log.debug("Inverted 'spellchecker_score'.")
-
 err_ids = list(data["err_id"].unique())
 for err_num, err_id in enumerate(err_ids):
     # log.debug(f"{err_id}")
@@ -148,6 +142,7 @@ for err_num, err_id in enumerate(err_ids):
             scores_feat = preprocessing.StandardScaler().fit_transform(scores.to_frame())
             data.loc[scores_selector, column] = scores_feat
 
+        # Note: Make sure the scores are all aligned along the same axis/range.
         # column = f"delta_{guess_id}"
         # data.loc[scores_unknown_selector, column] = scores_unknown
         # if scores_selector_sum > 0:
