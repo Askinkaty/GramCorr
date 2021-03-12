@@ -24,7 +24,7 @@ do
         if [ "${INFILE}" -nt "${OUTFILE}" ]
         then
             mkdir -p "${OUTDIR}"
-            ./add_features.py < "${INFILE}" > "${OUTFILE}" \
+            ./add_features.py ${ADD_FEATURES_EXTRA_ARGS} < "${INFILE}" > "${OUTFILE}" \
             || { rm "${OUTFILE}"; exit 1; }
         else
             echo "[$(basename "$0")] ${OUTFILE} exists." >&2

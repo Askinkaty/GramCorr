@@ -60,6 +60,10 @@ def init_argparse() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
+        "-v", "--verbose",
+        action="count",
+        help="Increase verbosity")
+    parser.add_argument(
         "--guesser_ids", required=False,
         help="Comma seperated list of guessers for which to output the \
         corresponding columns", metavar="0,2,..."
@@ -67,15 +71,20 @@ def init_argparse() -> argparse.ArgumentParser:
     return parser
 
 
+parser = init_argparse()
+args = parser.parse_args()
+if not args.verbose:
+    log_level = logging.INFO
+else:
+    log_level = logging.DEBUG
+
 logging.basicConfig(
     stream=sys.stderr,
-    level=logging.DEBUG,
+    level=log_level,
     format='%(asctime)s %(levelname)s %(module)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 log = logging.getLogger(__name__)
-parser = init_argparse()
-args = parser.parse_args()
 
 # Read the data into a pandas DataFrame
 data = pd.read_csv(sys.stdin, sep='\t', header=0)
@@ -88,14 +97,14 @@ data.rename(columns={data.columns[0]: "err_id", data.columns[4]: "class"},
 data.err_id.replace(to_replace=" ", value="_", regex=True, inplace=True)
 data.type.replace(to_replace=r"[\ \"']", value="_", regex=True, inplace=True)
 data.suggestion.replace(to_replace=r"[\ \"']", value="_", regex=True, inplace=True)
-log.debug(f"Sanitized err_id,type,suggestion column(s).")
+log.info(f"Sanitized err_id,type,suggestion column(s).")
 
 # Try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
 num_guessers = (len(data.columns) - NUM_INFO_COLUMNS) / 2
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
-log.debug(f"{num_guessers} guessers detected.")
+log.info(f"{num_guessers} guessers detected.")
 
 # Set the guesser_ids to use when writing the output
 if args.guesser_ids:
@@ -106,9 +115,9 @@ assert max(guesser_ids) <= num_guessers
 
 err_ids = list(data["err_id"].unique())
 for err_num, err_id in enumerate(err_ids):
-    # log.debug(f"{err_id}")
+    log.debug(f"{err_id}")
     if err_num % 100 == 0:
-        log.debug(f"{err_num} of {len(err_ids)}.")
+        log.info(f"{err_num} of {len(err_ids)}.")
 
     for guess_id in range(num_guessers):
 
@@ -123,8 +132,8 @@ for err_num, err_id in enumerate(err_ids):
         scores = data[scores_selector][
                           data.columns[NUM_INFO_COLUMNS + 1 + (guess_id * 2)]]
         scores_unknown = scores_unknown_selector.sum() * [UNKNOWN_VALUE]
-        # print("scores: ", list(scores))
-        # print(scores.min(), scores.max())
+        log.debug("scores: %s", list(scores))
+        log.debug("scores: min/max: %s/%s ", scores.min(), scores.max())
 
         # classes = data[scores_selector]["class"]
         # print("classes: ", list(classes))
