@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -318440984 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -856560403 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold9.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -29,63 +29,63 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -318440984 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -856560403 -do-not-check-capabilities
 
-Time taken to build model: 12.86 seconds
+Time taken to build model: 10.29 seconds
 
-Time taken to test model on training data: 4.28 seconds
+Time taken to test model on training data: 3.61 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       44836               98.3246 %
-Incorrectly Classified Instances       764                1.6754 %
-Kappa statistic                          0.9552
-Mean absolute error                      0.0351
-Root mean squared error                  0.118 
-Relative absolute error                  9.2749 %
-Root relative squared error             27.1424 %
-Total Number of Instances            45600     
+Correctly Classified Instances       38923               98.5193 %
+Incorrectly Classified Instances       585                1.4807 %
+Kappa statistic                          0.9596
+Mean absolute error                      0.0345
+Root mean squared error                  0.1141
+Relative absolute error                  9.3278 %
+Root relative squared error             26.5193 %
+Total Number of Instances            39508     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.994    0.049    0.984      0.994    0.989      0.955    0.998     0.999     0
-                 0.951    0.006    0.982      0.951    0.966      0.955    0.998     0.995     1
-Weighted Avg.    0.983    0.038    0.983      0.983    0.983      0.955    0.998     0.998     
+                 0.994    0.043    0.986      0.994    0.990      0.960    0.999     0.999     0
+                 0.957    0.006    0.982      0.957    0.969      0.960    0.999     0.995     1
+Weighted Avg.    0.985    0.034    0.985      0.985    0.985      0.960    0.999     0.998     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 33850   199 |     a = 0
-   565 10986 |     b = 1
+ 29661   165 |     a = 0
+   420  9262 |     b = 1
 
-Time taken to test model on test data: 0.51 seconds
+Time taken to test model on test data: 0.44 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        4993               94.6002 %
-Incorrectly Classified Instances       285                5.3998 %
-Kappa statistic                          0.8518
-Mean absolute error                      0.0727
-Root mean squared error                  0.1906
-Relative absolute error                 19.6018 %
-Root relative squared error             44.6848 %
-Total Number of Instances             5278     
+Correctly Classified Instances        4420               94.9721 %
+Incorrectly Classified Instances       234                5.0279 %
+Kappa statistic                          0.8594
+Mean absolute error                      0.0698
+Root mean squared error                  0.1866
+Relative absolute error                 19.2268 %
+Root relative squared error             44.2068 %
+Total Number of Instances             4654     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.963    0.110    0.966      0.963    0.964      0.852    0.986     0.994     0
-                 0.890    0.037    0.884      0.890    0.887      0.852    0.986     0.961     1
-Weighted Avg.    0.946    0.092    0.946      0.946    0.946      0.852    0.986     0.987     
+                 0.966    0.103    0.969      0.966    0.967      0.859    0.988     0.996     0
+                 0.897    0.034    0.887      0.897    0.892      0.859    0.988     0.964     1
+Weighted Avg.    0.950    0.087    0.950      0.950    0.950      0.859    0.988     0.989     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 3871  147 |    a = 0
-  138 1122 |    b = 1
+ 3452  123 |    a = 0
+  111  968 |    b = 1
 

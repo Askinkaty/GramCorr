@@ -1,30 +1,30 @@
 
-Time taken to perform cross-validation: 145.55 seconds
+Time taken to perform cross-validation: 134.46 seconds
 
 
 === Stratified cross-validation ===
 
-Correctly Classified Instances       49539               90.1594 %
-Incorrectly Classified Instances      5407                9.8406 %
-Kappa statistic                          0.6807
-Mean absolute error                      0.1397
-Root mean squared error                  0.2806
-Relative absolute error                 42.0337 %
-Root relative squared error             68.8393 %
-Total Number of Instances            54946     
+Correctly Classified Instances       44306               89.4204 %
+Incorrectly Classified Instances      5242               10.5796 %
+Kappa statistic                          0.6383
+Mean absolute error                      0.1486
+Root mean squared error                  0.2915
+Relative absolute error                 46.7358 %
+Root relative squared error             73.1095 %
+Total Number of Instances            49548     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.964    0.333    0.916      0.964    0.939      0.687    0.915     0.971     0
-                 0.667    0.036    0.832      0.667    0.741      0.687    0.915     0.821     1
-Weighted Avg.    0.902    0.270    0.898      0.902    0.897      0.687    0.915     0.939     
+                 0.960    0.373    0.912      0.960    0.936      0.645    0.898     0.966     0
+                 0.627    0.040    0.796      0.627    0.701      0.645    0.898     0.779     1
+Weighted Avg.    0.894    0.307    0.889      0.894    0.889      0.645    0.898     0.929     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 41822  1561 |     a = 0
-  3846  7717 |     b = 1
+ 38148  1578 |     a = 0
+  3664  6158 |     b = 1
 

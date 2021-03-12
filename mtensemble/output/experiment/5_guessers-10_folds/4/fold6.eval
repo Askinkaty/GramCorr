@@ -26,7 +26,7 @@ Bagging with 100 iterations and base learner
 
 weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 948512312 -do-not-check-capabilities
 
-Time taken to build model: 2.43 seconds
+Time taken to build model: 2.24 seconds
 
 Time taken to test model on training data: 0.51 seconds
 
