@@ -40,13 +40,12 @@ do
     for INFILE in "${INDIR}"/*.csv
     do
 
-        for GUESSER_IDS in 0 1 2 3 4 0_1 0_2 0_3 0_4 1_2 1_3 1_4 2_3 2_4 3_4 0_1_2 0_1_3 0_1_4 0_2_3 0_2_4 0_3_4 1_2_3 1_2_4 1_3_4 2_3_4 0_1_2_3 0_1_2_4 0_1_3_4 0_2_3_4 1_2_3_4 ALL
+        for GUESSER_IDS in 0 1 2 3 4 0_1 0_2 0_3 0_4 1_2 1_3 1_4 2_3 2_4 3_4 0_1_2 0_1_3 0_1_4 0_2_3 0_2_4 0_3_4 1_2_3 1_2_4 1_3_4 2_3_4 0_1_2_3 0_1_2_4 0_1_3_4 0_2_3_4 1_2_3_4 0_1_2_3_4
         do
             case $GUESSER_IDS in
                 ALL)
-                    ADD_FEATURES_ARGS=()
-                    SELECT_GUESSERS_ARGS=()
-                    CSVLOADER_EXTRA_ARGS=()
+                    echo "ERROR: Option 'ALL' has been discontinued."
+                    exit 1
                     ;;
                 ?)
                     ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
@@ -82,6 +81,15 @@ do
                         -N "6,8,10,12" \
                         -L "6,8,10,12:-1,0,1" \
                         -R "7,9,11,13" \
+                    )
+                    ;;
+                ?_?_?_?_?)
+                    ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
+                    SELECT_GUESSERS_ARGS=("${ADD_FEATURES_ARGS[@]}")
+                    CSVLOADER_EXTRA_ARGS=( \
+                        -N "6,8,10,12,14" \
+                        -L "6,8,10,12,14:-1,0,1" \
+                        -R "7,9,11,13,15" \
                     )
                     ;;
             esac
