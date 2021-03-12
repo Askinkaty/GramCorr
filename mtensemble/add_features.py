@@ -92,7 +92,7 @@ log.debug(f"Sanitized err_id,type,suggestion column(s).")
 
 # Try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
-num_guessers = (len(data.columns) - 5) / 2
+num_guessers = (len(data.columns) - NUM_INFO_COLUMNS) / 2
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
 log.debug(f"{num_guessers} guessers detected.")
