@@ -25,6 +25,11 @@ error_ids and where the guesser suggested a correction)
  5_gram_is_suggested     5_gram_score      # ...  12,13
  spellcheker_suggested   spellcheker_score # ...  14,15
 
+The values in the *_is_suggestd columns mean:
+*  1: this is the best suggested correction from this system
+* -1: this correction was suggested by the system but not as the best one
+*  0: the system had NO suggestion for this error_id (and the score is also 0)
+
 
 # Note
 - ideally (if input files corespond to splits in the dataset), lines belonging
@@ -123,11 +128,13 @@ for err_num, err_id in enumerate(err_ids):
 
         # Construct a few vectorized selectors to speed up look-ups
         err_id_selector = data.err_id.isin([err_id])
-        class_minus_1_selector = data[
-            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
-        scores_selector = err_id_selector & ~class_minus_1_selector
-        scores_selector_sum = scores_selector.sum()
-        scores_unknown_selector = err_id_selector & class_minus_1_selector
+        # class_minus_1_selector = data[
+        #     data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
+        class_0_selector = data[
+            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([0])
+        scores_selector = err_id_selector & ~class_0_selector
+        scores_selector_sum = scores_selector.abs().sum()
+        scores_unknown_selector = err_id_selector & class_0_selector
 
         scores = data[scores_selector][
                           data.columns[NUM_INFO_COLUMNS + 1 + (guess_id * 2)]]

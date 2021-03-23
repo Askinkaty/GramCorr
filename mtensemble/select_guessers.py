@@ -65,6 +65,6 @@ guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) 
                          list(range_org_columns_suggested) +
                          list(range_org_columns_score) + list(range_feats))]
 
-data[(data.iloc[:, range_org_columns_suggested] != -1).any(axis=1)].to_csv(
+data[(data.iloc[:, range_org_columns_suggested] != 0).any(axis=1)].to_csv(
     sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE,
     columns=guesser_columns)
