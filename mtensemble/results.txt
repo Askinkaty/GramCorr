@@ -897,83 +897,82 @@ Precision** 45.652 (189/414)             Accuracy**   23.864 (189/792)
 
 10 char + 1 gram + 3 gram + 5 gram + spellcheker ********************
 
-
 *** prediction ***
-Precision   87.648 (369/421)             Accuracy   55.322 (369/667)
-Precision*  87.648 (369/421)             Accuracy*  55.322 (369/667)
-Precision** 87.648 (369/421)             Accuracy**   55.322 (369/667)
-
-
-
-
-*** prediction ***
-Precision   84.735 (383/452)             Accuracy   54.173 (383/707)
-Precision*  84.735 (383/452)             Accuracy*  54.173 (383/707)
-Precision** 84.735 (383/452)             Accuracy**   54.173 (383/707)
+Precision   86.688 (534/616)             Accuracy   57.730 (534/925)
+Precision*  86.688 (534/616)             Accuracy*  57.730 (534/925)
+Precision** 86.688 (534/616)             Accuracy**   57.730 (534/925)
 
 
 
 
 *** prediction ***
-Precision   88.206 (531/602)             Accuracy   62.766 (531/846)
-Precision*  88.206 (531/602)             Accuracy*  62.766 (531/846)
-Precision** 88.206 (531/602)             Accuracy**   62.766 (531/846)
+Precision   88.608 (490/553)             Accuracy   53.728 (490/912)
+Precision*  88.608 (490/553)             Accuracy*  53.728 (490/912)
+Precision** 88.608 (490/553)             Accuracy**   53.728 (490/912)
 
 
 
 
 *** prediction ***
-Precision   86.847 (449/517)             Accuracy   60.676 (449/740)
-Precision*  86.847 (449/517)             Accuracy*  60.676 (449/740)
-Precision** 86.847 (449/517)             Accuracy**   60.676 (449/740)
+Precision   87.593 (473/540)             Accuracy   59.051 (473/801)
+Precision*  87.593 (473/540)             Accuracy*  59.051 (473/801)
+Precision** 87.593 (473/540)             Accuracy**   59.051 (473/801)
 
 
 
 
 *** prediction ***
-Precision   85.558 (468/547)             Accuracy   60.232 (468/777)
-Precision*  85.558 (468/547)             Accuracy*  60.232 (468/777)
-Precision** 85.558 (468/547)             Accuracy**   60.232 (468/777)
+Precision   84.589 (494/584)             Accuracy   60.244 (494/820)
+Precision*  84.589 (494/584)             Accuracy*  60.244 (494/820)
+Precision** 84.589 (494/584)             Accuracy**   60.244 (494/820)
 
 
 
 
 *** prediction ***
-Precision   79.083 (431/545)             Accuracy   58.008 (431/743)
-Precision*  79.083 (431/545)             Accuracy*  58.008 (431/743)
-Precision** 79.083 (431/545)             Accuracy**   58.008 (431/743)
+Precision   89.667 (538/600)             Accuracy   60.722 (538/886)
+Precision*  89.667 (538/600)             Accuracy*  60.722 (538/886)
+Precision** 89.667 (538/600)             Accuracy**   60.722 (538/886)
 
 
 
 
 *** prediction ***
-Precision   89.336 (444/497)             Accuracy   56.705 (444/783)
-Precision*  89.336 (444/497)             Accuracy*  56.705 (444/783)
-Precision** 89.336 (444/497)             Accuracy**   56.705 (444/783)
+Precision   81.803 (499/610)             Accuracy   58.226 (499/857)
+Precision*  81.803 (499/610)             Accuracy*  58.226 (499/857)
+Precision** 81.803 (499/610)             Accuracy**   58.226 (499/857)
 
 
 
 
 *** prediction ***
-Precision   90.427 (529/585)             Accuracy   66.793 (529/792)
-Precision*  90.427 (529/585)             Accuracy*  66.793 (529/792)
-Precision** 90.427 (529/585)             Accuracy**   66.793 (529/792)
+Precision   86.339 (474/549)             Accuracy   53.681 (474/883)
+Precision*  86.339 (474/549)             Accuracy*  53.681 (474/883)
+Precision** 86.339 (474/549)             Accuracy**   53.681 (474/883)
 
 
 
 
 *** prediction ***
-Precision   91.405 (436/477)             Accuracy   64.212 (436/679)
-Precision*  91.405 (436/477)             Accuracy*  64.212 (436/679)
-Precision** 91.405 (436/477)             Accuracy**   64.212 (436/679)
+Precision   91.451 (460/503)             Accuracy   65.156 (460/706)
+Precision*  91.451 (460/503)             Accuracy*  65.156 (460/706)
+Precision** 91.451 (460/503)             Accuracy**   65.156 (460/706)
 
 
 
 
 *** prediction ***
-Precision   40.501 (194/479)             Accuracy   24.495 (194/792)
-Precision*  40.501 (194/479)             Accuracy*  24.495 (194/792)
-Precision** 40.501 (194/479)             Accuracy**   24.495 (194/792)
+Precision   92.830 (492/530)             Accuracy   67.121 (492/733)
+Precision*  92.830 (492/530)             Accuracy*  67.121 (492/733)
+Precision** 92.830 (492/530)             Accuracy**   67.121 (492/733)
+
+
+
+
+*** prediction ***
+Precision   36.989 (226/611)             Accuracy   25.479 (226/887)
+Precision*  36.989 (226/611)             Accuracy*  25.479 (226/887)
+Precision** 36.989 (226/611)             Accuracy**   25.479 (226/887)
 
 
 
@@ -1458,161 +1457,163 @@ Precision** 42.944 (213/496)             Accuracy**   25.601 (213/832)
 10 char + 3 gram + 5 gram + spell
 
 *** prediction ***
-Precision   86.947 (413/475)             Accuracy   50.862 (413/812)
-Precision*  86.947 (413/475)             Accuracy*  50.862 (413/812)
-Precision** 86.947 (413/475)             Accuracy**   50.862 (413/812)
+Precision   86.452 (536/620)             Accuracy   57.946 (536/925)
+Precision*  86.452 (536/620)             Accuracy*  57.946 (536/925)
+Precision** 86.452 (536/620)             Accuracy**   57.946 (536/925)
 
 
 
 
 *** prediction ***
-Precision   85.484 (424/496)             Accuracy   58.889 (424/720)
-Precision*  85.484 (424/496)             Accuracy*  58.889 (424/720)
-Precision** 85.484 (424/496)             Accuracy**   58.889 (424/720)
+Precision   88.448 (490/554)             Accuracy   53.728 (490/912)
+Precision*  88.448 (490/554)             Accuracy*  53.728 (490/912)
+Precision** 88.448 (490/554)             Accuracy**   53.728 (490/912)
 
 
 
 
 *** prediction ***
-Precision   89.775 (518/577)             Accuracy   61.374 (518/844)
-Precision*  89.775 (518/577)             Accuracy*  61.374 (518/844)
-Precision** 89.775 (518/577)             Accuracy**   61.374 (518/844)
+Precision   87.941 (474/539)             Accuracy   59.176 (474/801)
+Precision*  87.941 (474/539)             Accuracy*  59.176 (474/801)
+Precision** 87.941 (474/539)             Accuracy**   59.176 (474/801)
 
 
 
 
 *** prediction ***
-Precision   85.111 (423/497)             Accuracy   57.551 (423/735)
-Precision*  85.111 (423/497)             Accuracy*  57.551 (423/735)
-Precision** 85.111 (423/497)             Accuracy**   57.551 (423/735)
+Precision   84.471 (495/586)             Accuracy   60.366 (495/820)
+Precision*  84.471 (495/586)             Accuracy*  60.366 (495/820)
+Precision** 84.471 (495/586)             Accuracy**   60.366 (495/820)
 
 
 
 
 *** prediction ***
-Precision   84.730 (455/537)             Accuracy   58.634 (455/776)
-Precision*  84.730 (455/537)             Accuracy*  58.634 (455/776)
-Precision** 84.730 (455/537)             Accuracy**   58.634 (455/776)
+Precision   90.646 (533/588)             Accuracy   60.158 (533/886)
+Precision*  90.646 (533/588)             Accuracy*  60.158 (533/886)
+Precision** 90.646 (533/588)             Accuracy**   60.158 (533/886)
 
 
 
 
 *** prediction ***
-Precision   81.214 (428/527)             Accuracy   56.689 (428/755)
-Precision*  81.214 (428/527)             Accuracy*  56.689 (428/755)
-Precision** 81.214 (428/527)             Accuracy**   56.689 (428/755)
+Precision   82.459 (503/610)             Accuracy   58.693 (503/857)
+Precision*  82.459 (503/610)             Accuracy*  58.693 (503/857)
+Precision** 82.459 (503/610)             Accuracy**   58.693 (503/857)
 
 
 
 
 *** prediction ***
-Precision   91.304 (462/506)             Accuracy   57.037 (462/810)
-Precision*  91.304 (462/506)             Accuracy*  57.037 (462/810)
-Precision** 91.304 (462/506)             Accuracy**   57.037 (462/810)
+Precision   84.397 (476/564)             Accuracy   53.907 (476/883)
+Precision*  84.397 (476/564)             Accuracy*  53.907 (476/883)
+Precision** 84.397 (476/564)             Accuracy**   53.907 (476/883)
 
 
 
 
 *** prediction ***
-Precision   91.705 (398/434)             Accuracy   63.477 (398/627)
-Precision*  91.705 (398/434)             Accuracy*  63.477 (398/627)
-Precision** 91.705 (398/434)             Accuracy**   63.477 (398/627)
+Precision   90.297 (456/505)             Accuracy   64.589 (456/706)
+Precision*  90.297 (456/505)             Accuracy*  64.589 (456/706)
+Precision** 90.297 (456/505)             Accuracy**   64.589 (456/706)
 
 
 
 
 *** prediction ***
-Precision   92.920 (420/452)             Accuracy   63.636 (420/660)
-Precision*  92.920 (420/452)             Accuracy*  63.636 (420/660)
-Precision** 92.920 (420/452)             Accuracy**   63.636 (420/660)
+Precision   91.745 (489/533)             Accuracy   66.712 (489/733)
+Precision*  91.745 (489/533)             Accuracy*  66.712 (489/733)
+Precision** 91.745 (489/533)             Accuracy**   66.712 (489/733)
 
 
 
 
 *** prediction ***
-Precision   42.205 (222/526)             Accuracy   26.683 (222/832)
-Precision*  42.205 (222/526)             Accuracy*  26.683 (222/832)
-Precision** 42.205 (222/526)             Accuracy**   26.683 (222/832)
+Precision   35.524 (227/639)             Accuracy   25.592 (227/887)
+Precision*  35.524 (227/639)             Accuracy*  25.592 (227/887)
+Precision** 35.524 (227/639)             Accuracy**   25.592 (227/887)
+
+
 
 
 1 gram + 3 gram + 5 gram + spell
 
 *** prediction ***
-Precision   86.947 (413/475)             Accuracy   50.862 (413/812)
-Precision*  86.947 (413/475)             Accuracy*  50.862 (413/812)
-Precision** 86.947 (413/475)             Accuracy**   50.862 (413/812)
+Precision   86.452 (536/620)             Accuracy   57.946 (536/925)
+Precision*  86.452 (536/620)             Accuracy*  57.946 (536/925)
+Precision** 86.452 (536/620)             Accuracy**   57.946 (536/925)
 
 
 
 
 *** prediction ***
-Precision   85.484 (424/496)             Accuracy   58.889 (424/720)
-Precision*  85.484 (424/496)             Accuracy*  58.889 (424/720)
-Precision** 85.484 (424/496)             Accuracy**   58.889 (424/720)
+Precision   88.448 (490/554)             Accuracy   53.728 (490/912)
+Precision*  88.448 (490/554)             Accuracy*  53.728 (490/912)
+Precision** 88.448 (490/554)             Accuracy**   53.728 (490/912)
 
 
 
 
 *** prediction ***
-Precision   89.775 (518/577)             Accuracy   61.374 (518/844)
-Precision*  89.775 (518/577)             Accuracy*  61.374 (518/844)
-Precision** 89.775 (518/577)             Accuracy**   61.374 (518/844)
+Precision   87.941 (474/539)             Accuracy   59.176 (474/801)
+Precision*  87.941 (474/539)             Accuracy*  59.176 (474/801)
+Precision** 87.941 (474/539)             Accuracy**   59.176 (474/801)
 
 
 
 
 *** prediction ***
-Precision   85.111 (423/497)             Accuracy   57.551 (423/735)
-Precision*  85.111 (423/497)             Accuracy*  57.551 (423/735)
-Precision** 85.111 (423/497)             Accuracy**   57.551 (423/735)
+Precision   84.471 (495/586)             Accuracy   60.366 (495/820)
+Precision*  84.471 (495/586)             Accuracy*  60.366 (495/820)
+Precision** 84.471 (495/586)             Accuracy**   60.366 (495/820)
 
 
 
 
 *** prediction ***
-Precision   84.730 (455/537)             Accuracy   58.634 (455/776)
-Precision*  84.730 (455/537)             Accuracy*  58.634 (455/776)
-Precision** 84.730 (455/537)             Accuracy**   58.634 (455/776)
+Precision   90.646 (533/588)             Accuracy   60.158 (533/886)
+Precision*  90.646 (533/588)             Accuracy*  60.158 (533/886)
+Precision** 90.646 (533/588)             Accuracy**   60.158 (533/886)
 
 
 
 
 *** prediction ***
-Precision   81.214 (428/527)             Accuracy   56.689 (428/755)
-Precision*  81.214 (428/527)             Accuracy*  56.689 (428/755)
-Precision** 81.214 (428/527)             Accuracy**   56.689 (428/755)
+Precision   82.459 (503/610)             Accuracy   58.693 (503/857)
+Precision*  82.459 (503/610)             Accuracy*  58.693 (503/857)
+Precision** 82.459 (503/610)             Accuracy**   58.693 (503/857)
 
 
 
 
 *** prediction ***
-Precision   91.304 (462/506)             Accuracy   57.037 (462/810)
-Precision*  91.304 (462/506)             Accuracy*  57.037 (462/810)
-Precision** 91.304 (462/506)             Accuracy**   57.037 (462/810)
+Precision   84.397 (476/564)             Accuracy   53.907 (476/883)
+Precision*  84.397 (476/564)             Accuracy*  53.907 (476/883)
+Precision** 84.397 (476/564)             Accuracy**   53.907 (476/883)
 
 
 
 
 *** prediction ***
-Precision   91.705 (398/434)             Accuracy   63.477 (398/627)
-Precision*  91.705 (398/434)             Accuracy*  63.477 (398/627)
-Precision** 91.705 (398/434)             Accuracy**   63.477 (398/627)
+Precision   90.297 (456/505)             Accuracy   64.589 (456/706)
+Precision*  90.297 (456/505)             Accuracy*  64.589 (456/706)
+Precision** 90.297 (456/505)             Accuracy**   64.589 (456/706)
 
 
 
 
 *** prediction ***
-Precision   92.920 (420/452)             Accuracy   63.636 (420/660)
-Precision*  92.920 (420/452)             Accuracy*  63.636 (420/660)
-Precision** 92.920 (420/452)             Accuracy**   63.636 (420/660)
+Precision   91.745 (489/533)             Accuracy   66.712 (489/733)
+Precision*  91.745 (489/533)             Accuracy*  66.712 (489/733)
+Precision** 91.745 (489/533)             Accuracy**   66.712 (489/733)
 
 
 
 
 *** prediction ***
-Precision   42.205 (222/526)             Accuracy   26.683 (222/832)
-Precision*  42.205 (222/526)             Accuracy*  26.683 (222/832)
-Precision** 42.205 (222/526)             Accuracy**   26.683 (222/832)
+Precision   35.524 (227/639)             Accuracy   25.592 (227/887)
+Precision*  35.524 (227/639)             Accuracy*  25.592 (227/887)
+Precision** 35.524 (227/639)             Accuracy**   25.592 (227/887)
 
 
 10 gram + 1 gram + 3 gram + spell

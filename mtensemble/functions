@@ -6,7 +6,8 @@ INPUT_RAW=${INPUT_RAW:-"${INPUT}/00_raw"}               # raw files (copies - if
 INPUT_PREPROC=${INPUT_PREPROC:-"${INPUT}/01_preproc"}   # preprocessed: sanitised 
 INPUT_FEATURE=${INPUT_FEATURE:-"${INPUT}/10_feature"}   # ready to use
 INPUT_EXPERIMENT=${INPUT_EXPERIMENT:-"${INPUT}/20_experiment"}
-OUTPUT=${OUTPUT:-"./output"}
+#OUTPUT=${OUTPUT:-"./output"}
+OUTPUT="/Users/katinska/GramCorr/mtensemble/output"
 OUTPUT_EXPERIMENT=${OUTPUT_EXPERIMENT:-"${OUTPUT}/experiment"}
 
 WEKA_BASE=${WEKA_BASE:-"external/weka/"}
