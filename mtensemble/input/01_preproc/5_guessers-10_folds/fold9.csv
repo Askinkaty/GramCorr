@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold9_1319_ID2755.txt_16_61_61_Fremd	orth: 03 cap instead of lcp	5	e Fremd	0	1	-6104.67	0	0.0	0	0.0	0	0.0	0	-100
 fold9_1319_ID2755.txt_16_61_61_Fremd	orth: 03 cap instead of lcp	5	will man Fremd	0	1	-6104.62	0	0.0	0	0.0	0	0.0	0	-100
 fold9_1319_ID2755.txt_16_61_61_Fremd	orth: 03 cap instead of lcp	5	er Fremd	0	1	-6104.51	0	0.0	0	0.0	0	0.0	0	-100

@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold9_3087_ID1332.txt_16_58_58_Verantwortungsbewusst	orth: 03 cap instead of lcp	21	verantwortungsbewusst	1	0	0.0	1	-1.04964	1	-0.573922	1	-1.11715	0	-100
 fold9_4610_ID1652.txt_24_9_9_Beispielsweise	orth: 03 cap instead of lcp	14	beispielsweise	1	0	0.0	1	-2.13731	1	-1.19135	1	-1.8321	0	-100
 fold9_4610_ID1652.txt_24_9_9_Beispielsweise	orth: 03 cap instead of lcp	14	-Beispielsweise	0	1	-8604.63	0	0.0	0	0.0	0	0.0	0	-100

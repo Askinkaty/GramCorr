@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold2_3964_ID1394.txt_7_85_85_tiefen	orth: 02 lcp instead of cap: other cases	6	Tiefen	1	0	0.0	1	-17.0	1	-7.88204	1	-7.13911	0	-100
 fold2_3964_ID1394.txt_7_85_85_tiefen	orth: 02 lcp instead of cap: other cases	6	Höhen	0	0	0.0	1	-17.0	1	-10.3574	1	-9.71475	0	-100
 fold2_4373_ID1761.txt_17_0_0_Es	corr: gender	2	es	0	0	0.0	0	0.0	1	-2615.16	1	-2613.15	0	-100

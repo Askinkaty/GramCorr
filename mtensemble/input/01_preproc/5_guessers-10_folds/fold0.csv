@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold1_2438_ID2276.txt_33_31_30_jung	corr: unknown	4	Jung-sein	0	0	0.0	0	0.0	1	-5.38792	1	-8.81381	0	-100
 fold1_2438_ID2276.txt_33_31_30_jung	corr: unknown	4	Jungseins	0	0	0.0	0	0.0	1	-5.3435	1	-8.79741	0	-100
 fold1_2438_ID2276.txt_33_31_30_jung	corr: unknown	4	Jungsein	0	0	0.0	1	-6.25735	1	-5.32345	1	-8.79993	0	-100

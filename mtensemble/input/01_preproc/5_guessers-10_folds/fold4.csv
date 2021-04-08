@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold0_4339_ID2818.txt_1_97_97_Erorterung	orth: 21 transpositions: of vowel and umlaut	10	Teerung	0	1	-12407.8	0	0.0	0	0.0	0	0.0	0	5
 fold0_4339_ID2818.txt_1_97_97_Erorterung	orth: 21 transpositions: of vowel and umlaut	10	Ruhrorter	0	1	-12407.8	0	0.0	0	0.0	0	0.0	0	7
 fold0_4339_ID2818.txt_1_97_97_Erorterung	orth: 21 transpositions: of vowel and umlaut	10	Verortung	0	1	-12407.8	0	0.0	0	0.0	0	0.0	0	5

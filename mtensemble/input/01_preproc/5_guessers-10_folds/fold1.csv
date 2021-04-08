@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold2_1896_ID2180.txt_9_53_53_auser	orth: 23 transpositions: of consonants: other cases	5	-user	0	0	0.0	0	0.0	1	-104.962	1	-104.495	0	2
 fold2_1896_ID2180.txt_9_53_53_auser	orth: 23 transpositions: of consonants: other cases	5	sauer	0	0	0.0	0	0.0	1	-104.962	1	-104.495	0	2
 fold2_1896_ID2180.txt_9_53_53_auser	orth: 23 transpositions: of consonants: other cases	5	Mauser	0	0	0.0	0	0.0	1	-104.962	1	-104.495	0	2

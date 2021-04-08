@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold1_2918_ID1313.txt_44_85_85_jung	orth: 02 lcp instead of cap: other cases	4	Jung	1	0	0.0	1	-6.17413	1	-5.84182	1	-9.97121	0	-100
 fold1_2918_ID1313.txt_44_85_85_jung	orth: 02 lcp instead of cap: other cases	4	junge	0	0	0.0	1	-6.88429	1	-6.16751	1	-10.6609	0	-100
 fold1_2918_ID1313.txt_44_85_85_jung	orth: 02 lcp instead of cap: other cases	4	Jungseins	0	0	0.0	1	-7.02427	1	-6.37826	1	-10.704	0	-100

@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold8_2320_ID1895.txt_13_71_70_jugendliche	orth: 02 lcp instead of cap: other cases	11	jugendlichen	0	0	0.0	1	-4.64202	1	-7.22402	1	-7.3916	0	-100
 fold8_2320_ID1895.txt_13_71_70_jugendliche	orth: 02 lcp instead of cap: other cases	11	Jugendliche	1	0	0.0	1	-4.28552	1	-6.85665	1	-6.86895	0	-100
 fold8_2320_ID1895.txt_13_71_70_jugendliche	orth: 02 lcp instead of cap: other cases	11	er jugendliche	0	1	-5808.91	0	0.0	0	0.0	0	0.0	0	-100
