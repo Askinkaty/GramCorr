@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 1714051476 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -1016771984 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold4.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -24,20 +24,20 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1714051476 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -1016771984 -do-not-check-capabilities
 
-Time taken to build model: 3.35 seconds
+Time taken to build model: 2.6 seconds
 
-Time taken to test model on training data: 0.58 seconds
+Time taken to test model on training data: 0.57 seconds
 
 === Error on training data ===
 
 Correctly Classified Instances       34911               85.4217 %
 Incorrectly Classified Instances      5958               14.5783 %
 Kappa statistic                          0.3049
-Mean absolute error                      0.2464
+Mean absolute error                      0.2465
 Root mean squared error                  0.3509
-Relative absolute error                 81.7198 %
+Relative absolute error                 81.7487 %
 Root relative squared error             90.3687 %
 Total Number of Instances            40869     
 
@@ -63,10 +63,10 @@ Time taken to test model on test data: 0.06 seconds
 Correctly Classified Instances        3865               85.2636 %
 Incorrectly Classified Instances       668               14.7364 %
 Kappa statistic                          0.2955
-Mean absolute error                      0.2481
+Mean absolute error                      0.2482
 Root mean squared error                  0.3524
-Relative absolute error                 82.2256 %
-Root relative squared error             90.7039 %
+Relative absolute error                 82.2459 %
+Root relative squared error             90.703  %
 Total Number of Instances             4533     
 
 
