@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold9_1472_ID1852.txt_3_86_86_keine	orth: 04 lcp/cap behind punctuation marks	5	nicht die	0	0	0.0	0	0.0	1	-5.96356	1	-7.90173	0	-100
 fold9_1472_ID1852.txt_3_86_86_keine	orth: 04 lcp/cap behind punctuation marks	5	Keine-Souveränität-Haben	0	0	0.0	1	-9.59491	1	-6.14195	1	-7.97251	0	-100
 fold9_1472_ID1852.txt_3_86_86_keine	orth: 04 lcp/cap behind punctuation marks	5	nicht	0	0	0.0	1	-9.41564	1	-6.60316	1	-8.40861	0	-100

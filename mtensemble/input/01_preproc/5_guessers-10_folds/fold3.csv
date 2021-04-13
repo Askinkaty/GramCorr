@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold5_4495_ID2825.txt_21_16_16_diesen	corr: case	6	dieses	0	0	0.0	1	-23.0	1	-10.4285	1	-9.47193	0	-100
 fold5_4495_ID2825.txt_21_16_16_diesen	corr: case	6	diese	0	0	0.0	1	-23.0	1	-10.28	1	-9.24305	0	-100
 fold5_4495_ID2825.txt_21_16_16_diesen	corr: case	6	dieser	0	0	0.0	1	-23.0	1	-10.1378	1	-9.13925	0	-100

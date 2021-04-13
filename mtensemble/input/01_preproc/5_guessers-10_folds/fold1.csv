@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold7_3660_ID1262.txt_14_102_102_zweiten	orth: 02 lcp instead of cap: other cases	7	Zweiten	1	0	0.0	1	-1.48039	1	-2.19379	1	-2.26466	0	-100
 fold7_3660_ID1262.txt_14_102_102_zweiten	orth: 02 lcp instead of cap: other cases	7	z weiten	0	1	-15104.6	0	0.0	0	0.0	0	0.0	0	-100
 fold5_3288_ID2845.txt_2_32_32_Jugendliche	corr: case	11	dass Jugendliche	0	0	0.0	0	0.0	1	-5.82711	0	0.0	0	-100

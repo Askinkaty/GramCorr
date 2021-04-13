@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold0_4285_ID2350.txt_35_34_34_Negativ	orth: 03 cap instead of lcp	7	er Negativ	0	1	-6704.76	0	0.0	0	0.0	0	0.0	0	-100
 fold0_4285_ID2350.txt_35_34_34_Negativ	orth: 03 cap instead of lcp	7	negativ	1	1	-6704.61	1	-2.01698	1	-4.45923	1	-4.07019	0	-100
 fold6_336_ID2726.txt_16_42_42_lies	orth: 23 transpositions: of consonants: other cases	4	ließ allzu	0	0	0.0	0	0.0	1	-3526.79	0	0.0	0	-100

@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold0_3252_ID2894.txt_18_34_34_Einigem	orth: 02 lcp instead of cap: other cases	7	einigem	1	1	-19407.8	0	0.0	0	0.0	0	0.0	0	-100
 fold0_1224_ID2568.txt_31_99_99_Leben	orth: 03 cap instead of lcp	5	das leben	0	0	0.0	0	0.0	1	-3.84231	1	-3.70501	0	-100
 fold0_1224_ID2568.txt_31_99_99_Leben	orth: 03 cap instead of lcp	5	Leben sind	0	0	0.0	0	0.0	1	-3.79882	1	-3.62979	0	-100

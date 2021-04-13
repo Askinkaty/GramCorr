@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold2_2787_ID2542.txt_5_13_13_das	orth: 11 omissions: of double consonants	3	die	0	0	0.0	0	0.0	0	0.0	1	-8.50323	0	-100
 fold2_2787_ID2542.txt_5_13_13_das	orth: 11 omissions: of double consonants	3	Das	0	0	0.0	0	0.0	1	-9.10481	1	-8.4248	0	-100
 fold2_2787_ID2542.txt_5_13_13_das	orth: 11 omissions: of double consonants	3	das ist	0	0	0.0	0	0.0	1	-9.09451	1	-8.47426	0	-100

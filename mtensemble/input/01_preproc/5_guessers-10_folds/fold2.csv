@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold2_2448_ID1728.txt_16_45_45_klamottensucht	orth: 02 lcp instead of cap: other cases	14	zusammensucht	0	0	0.0	1	-14.0	1	-4.919	1	-4.42456	1	6
 fold2_2448_ID1728.txt_16_45_45_klamottensucht	orth: 02 lcp instead of cap: other cases	14	Klamottensucht	1	0	0.0	1	-14.0	1	-4.919	1	-4.42456	0	-100
 fold5_2081_ID2977.txt_36_101_101_vorbei geht	orth: 06 sep instead of tog: compounds	11	vorbei kaputtgeht	0	0	0.0	0	0.0	1	-11.8038	0	0.0	0	-100
