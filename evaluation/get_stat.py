@@ -991,7 +991,9 @@ def count_tokens_char():
 
 
 def count_sugg():
-    p = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_2'
+    p = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021_final'
+    # p = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_042021'
+
     folds_files = [f for f in os.listdir(p) if f.endswith('csv')]
     errors = []
     corrected_all = 0
@@ -1064,4 +1066,4 @@ if __name__ == '__main__':
 
     # prepare_err_info()
     # count_tokens_char()
-    # count_sugg()
+    count_sugg()

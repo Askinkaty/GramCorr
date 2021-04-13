@@ -5,10 +5,11 @@ import codecs
 import csv
 
 import Levenshtein
+import sys
 
+data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_042021'
+out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021'
 
-data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last'
-out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell'
 
 def collect_errors(file):
     if file == 'data.csv':
@@ -31,7 +32,7 @@ def collect_errors(file):
 
 def split_list(all_rows, n):
     all_folds = []
-    av_len = len(all_rows)/n
+    av_len = len(all_rows) / n
     for i in range(n):
         new_fold = []
         if i != n - 1:
@@ -48,7 +49,6 @@ def get_hunspell_suggestions():
     suggested = codecs.open(os.path.join(out_data_dir, 'hunspell_corrections.txt'), mode='r')
     filtered_lines = []
     for sline in suggested:
-        print(sline.strip())
         if sline.strip() is None:
             continue
         else:
@@ -62,94 +62,185 @@ def get_hunspell_suggestions():
             ss = split[1].split(',')
             if error not in suggestion_dict:
                 suggestion_dict[error] = [el.strip() for el in ss]
-    print(len(suggestion_dict))
     for k, v in suggestion_dict.items():
         suggestion_dict[k] = v[:5]
     return suggestion_dict
 
+
+# Spell-checker == change to 1 if the line was suggested by SP, not if it was =to expected
 
 def get_suggections():
     suggestion_dict = get_hunspell_suggestions()
     files = os.listdir(data_dir)
     all_rows = []
     header = None
+    already_added = []
+    c = 0
+    new_sug = 0
     for file in files:
         if file.endswith('.csv') and 'fold' in file:
-            # print(file)
+            # file = 'out_moses_table_test.csv'
+            # data_dir = '.'
+            print(file)
             with codecs.open(os.path.join(data_dir, file), mode='r') as table_file:
                 table_reader = csv.reader(table_file, delimiter='\t')
-                for i, row in enumerate(table_reader):
+                for i, row in enumerate(list(table_reader)):
+                    # print(row)
                     if i == 0:
                         header = row
                         header.append('spellcheker_suggested')
                         header.append('spellcheker_score')
-                        # print(header)
                     else:
-                        # print(i)
+                        c += 1
+                        # print(row)
                         expected = row[-1]
                         error = row[0].split('_')[-1]
-                        # print(error)
-                        if error in suggestion_dict:
-                            for e in suggestion_dict[error]:
-                                # suggestion = row[3].strip().split(' ')[0]
-                                new_line = row[:]
-                                # new_line[3] = suggestion
-                                # new_line = new_line[:-1]
-
-                                if e == expected:
-                                    # new_line[4] = e
-                                    new_line[5] = '1'
-                                    new_line.append('1')
-                                else:
-                                    # new_line[4] = e
-                                    new_line[5] = '0'
-                                    new_line.append('-1')
-                                distance = Levenshtein.distance(e, expected)
-                                new_line.append(distance)
-                                # new_line = new_line[1:]
-                                # assert ' ' not in new_line[3]
-                                # print(new_line[3])
-                                # print(new_line[4])
-                                ### VERY HACKY
-                                # try:
-                                #     assert isinstance(new_line[4], int)
-                                # except:
-                                #     if new_line[3] == '' and len(new_line[4]):
-                                #         new_line = new_line[:3] + [new_line[4]] + new_line[5:]
-                                #     elif isinstance(new_line[3], str) and len(new_line[3]):
-                                #         new_line[3:5] = new_line[3]
-                                        # new_line = new_line[:4] + new_line[5:]
-                                    # print(new_line)
-                                    # break
+                        if error not in suggestion_dict:
+                            new_line = row[:-1]
+                            new_line.append('0')
+                            new_line.append('-100')
+                            if new_line not in all_rows:
                                 all_rows.append(new_line)
                         else:
-                            # suggestion = row[3].strip().split(' ')[0]
-                            new_line = row[:]
-                            # new_line[3] = suggestion
-                            # new_line = new_line[:-1]
-                            new_line.extend(['0']*2)
-                            # print(new_line[3])
-                            # print(new_line[4])
-                            ### VERY HACKY
-                            # try:
-                            #     assert(isinstance(new_line[4], int))
-                            # except:
-                            #     if new_line[3] == '' and len(new_line[4]):
-                            #         new_line = new_line[:3] + [new_line[4]] + new_line[5:]
-                            #     elif isinstance(new_line[3], str) and len(new_line[3]):
-                            #         new_line = new_line[:4] + new_line[5:]
-                                # print(new_line)
-                                # break
-                            # assert ' ' not in new_line[3]
-                            all_rows.append(new_line)
+                            # print(suggestion_dict[error])
+                            for e in suggestion_dict[error]:
+
+                                already_suggested = False
+                                n = row[0] + '_' + e
+
+                                with codecs.open(os.path.join(data_dir, file), mode='r') as table_file1:
+                                    table_reader_j = csv.reader(table_file1, delimiter='\t')
+                                    for j, j_row in enumerate(list(table_reader_j)):
+                                        if e == j_row[3] and row[0] == j_row[0]:
+                                            already_suggested = True
+                                            break
+                                # print(already_suggested)
+                                distance = Levenshtein.distance(e, error)
+                                m = row[0] + '_' + row[3]
+                                if m not in already_added and row[3] != e:
+                                    new_line = row[:-1]
+                                    new_line.append('0')
+                                    new_line.append('-100')
+                                    if new_line not in all_rows:
+                                        all_rows.append(new_line)
+                                        already_added.append(m)
+
+                                if already_suggested:
+                                    if n not in already_added:
+                                        new_line = row[:-1]
+                                        if row[3] == e:
+                                            new_line.append('1')
+                                            new_line.append(distance)
+                                            if new_line not in all_rows:
+                                                all_rows.append(new_line)
+                                                already_added.append(n)
+                                    else:
+                                        continue
+                                else:
+                                    if n not in already_added:
+                                        new_line = row[:-1]
+                                        new_line[3] = e
+                                        if e == expected:
+                                            new_line[4] = '1'
+                                        else:
+                                            new_line[4] = '0'
+                                        new_line.append('1')
+                                        new_line.append(distance)
+                                        if new_line not in all_rows:
+                                            new_sug += 1
+                                            all_rows.append(new_line)
+                                            already_added.append(n)
+                                    else:
+                                        continue
+
+    print(len(all_rows))
+    print(c)
+    print(new_sug)
+    print(len(already_added))
     all_folds = split_list(all_rows, len(files))
-    for i, file in enumerate(files):
+    for k, file in enumerate(files):
         if file.endswith('.csv') and 'fold' in file:
+            print(file)
             with codecs.open(os.path.join(out_data_dir, file), mode='w') as full_out:
                 writer = csv.writer(full_out, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(header)
-                for el in all_folds[i]:
+                for el in all_folds[k]:
                     writer.writerow(el)
+
+
+import random
+import numpy as np
+
+
+def change_split():
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021_final'
+
+    files = os.listdir(out_data_dir)
+    errors_lines = []
+    cur_err = None
+    er_line = []
+    header = None
+    for file in files:
+        if file.endswith('.csv') and 'fold' in file:
+            with codecs.open(os.path.join(out_data_dir, file), mode='r') as table_file:
+                table_reader = csv.reader(table_file, delimiter='\t')
+                for i, row in enumerate(table_reader):
+                    if i == 0:
+                        header = row
+                    else:
+                        if cur_err != row[0]:
+                            if cur_err is None:
+                                er_line.append(row)
+                                cur_err = row[0]
+                            else:
+                                cur_err = row[0]
+                                errors_lines.append(er_line)
+                                er_line = []
+                                er_line.append(row)
+                        else:
+                            er_line.append(row)
+    print(len(errors_lines))
+    rows = []
+    for e in errors_lines:
+        for r in e:
+            rows.append(r)
+    print(len(rows))
+
+    # print(errors_lines[0])
+    # print(header)
+    random.shuffle(errors_lines)
+    splits = np.array_split(errors_lines, 10)
+    for j, split in enumerate(splits):
+        file = 'fold' + str(j) + '.csv'
+        with codecs.open(os.path.join(out_dir, file), mode='w') as out:
+            writer = csv.writer(out, delimiter='\t')
+            writer.writerow(header)
+            for er in split:
+                for line in er:
+                    writer.writerow(line)
+
+
+def count_error_sugg():
+    dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021'
+
+    files = os.listdir(dir)
+    files = ['/Users/katinska/GramCorr/evaluation/out_moses_table_042021.csv']
+    errors = []
+    for file in files:
+        # if file.endswith('.csv') and 'fold' in file:
+        if file.endswith('.csv'):
+
+            print(file)
+            # with codecs.open(os.path.join(out_data_dir, file), mode='r') as table_file:
+            with codecs.open(os.path.join(file), mode='r') as table_file:
+
+                table_reader = csv.reader(table_file, delimiter='\t')
+                for i, row in enumerate(table_reader):
+                    if i == 0:
+                        header = row
+                    else:
+                        errors.append(row[0] + '_' + row[3])
+    print(len(errors))
 
 
 if __name__ == '__main__':
@@ -166,6 +257,8 @@ if __name__ == '__main__':
     #     if file.endswith('.csv'):
     #         print(file)
     #         add_spellchecker_scores(file)
-            # collect_errors(file)
+    # collect_errors(file)
 
-    get_suggections()
+    # get_suggections()
+    # change_split()
+    # count_error_sugg()
