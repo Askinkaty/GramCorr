@@ -730,8 +730,8 @@ def build_out_table():
     out_file = codecs.open('out_moses_table_042021.csv', 'w')
     out_writer = csv.writer(out_file, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
     c = 0
-    corrected = 0
-    not_corrected = 0
+    suggested = 0
+    not_suggested = 0
     already_written = []
     already_recorded_sugg = []
     with open(path_to_errors, 'rb') as pickle_file:
@@ -752,10 +752,11 @@ def build_out_table():
             c += 1
             error_info, t = collect_error_info(key, value, models)
             # print(error_info)
-            corrected += any([el[-1] for el in error_info])
-            # print(corrected)
+            suggested += any([el[-1] for el in error_info])
+            # print(suggested)
             if not any([el[-1] for el in error_info]):
-                not_corrected += 1
+                # sys.exit()
+                not_suggested += 1
                 continue
             for row in build_rows(error_info, t, key, models):
                 str_row = '_'.join([str(el) for el in row])
@@ -771,8 +772,8 @@ def build_out_table():
                     # sys.exit()
         for a_er in all_errors:
             out_writer.writerow(a_er)
-    print(not_corrected)
-    return len(all_errors), len(error_data.keys()), corrected
+    print(not_suggested)
+    return len(all_errors), len(error_data.keys()), suggested
 
 
 def chunks(lst, n):
@@ -881,11 +882,11 @@ def split_table():
 def main():
     # get_bleu_score()
     # eval()
-    # all_errors, got_suggections, corrected = build_out_table()
+    all_errors, got_suggections, corrected = build_out_table()
     # print(f'All errors in the data: {all_errors}')
     # print(f'All errors which left after filtering broken: {got_suggections}')
     # print(f'Corrected by at least one system: {corrected}')
-    split_table()
+    # split_table()
 
 
 if __name__ == '__main__':
