@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -1867422237 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 2099866523 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold0.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -24,63 +24,63 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -1867422237 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 2099866523 -do-not-check-capabilities
 
-Time taken to build model: 3.92 seconds
+Time taken to build model: 4.17 seconds
 
-Time taken to test model on training data: 1.54 seconds
+Time taken to test model on training data: 1.53 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       29278               94.9382 %
-Incorrectly Classified Instances      1561                5.0618 %
-Kappa statistic                          0.8559
-Mean absolute error                      0.0997
-Root mean squared error                  0.206 
-Relative absolute error                 26.623  %
-Root relative squared error             47.599  %
-Total Number of Instances            30839     
+Correctly Classified Instances       29329               94.9281 %
+Incorrectly Classified Instances      1567                5.0719 %
+Kappa statistic                          0.8552
+Mean absolute error                      0.0996
+Root mean squared error                  0.2061
+Relative absolute error                 26.6603 %
+Root relative squared error             47.6865 %
+Total Number of Instances            30896     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.997    0.194    0.939      0.997    0.967      0.863    0.978     0.992     0
-                 0.806    0.003    0.989      0.806    0.888      0.863    0.978     0.953     1
-Weighted Avg.    0.949    0.146    0.952      0.949    0.948      0.863    0.978     0.983     
+                 0.997    0.195    0.939      0.997    0.967      0.863    0.978     0.992     0
+                 0.805    0.003    0.989      0.805    0.888      0.863    0.978     0.953     1
+Weighted Avg.    0.949    0.147    0.952      0.949    0.947      0.863    0.978     0.983     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 23077    69 |     a = 0
-  1492  6201 |     b = 1
+ 23147    67 |     a = 0
+  1500  6182 |     b = 1
 
 Time taken to test model on test data: 0.19 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        3068               90.3682 %
-Incorrectly Classified Instances       327                9.6318 %
-Kappa statistic                          0.7169
-Mean absolute error                      0.1452
-Root mean squared error                  0.2736
-Relative absolute error                 39.0863 %
-Root relative squared error             63.7332 %
-Total Number of Instances             3395     
+Correctly Classified Instances        3002               89.9341 %
+Incorrectly Classified Instances       336               10.0659 %
+Kappa statistic                          0.712 
+Mean absolute error                      0.1508
+Root mean squared error                  0.2772
+Relative absolute error                 40.2238 %
+Root relative squared error             63.9188 %
+Total Number of Instances             3338     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.973    0.311    0.907      0.973    0.939      0.727    0.934     0.974     0
-                 0.689    0.027    0.891      0.689    0.777      0.727    0.934     0.863     1
-Weighted Avg.    0.904    0.242    0.903      0.904    0.899      0.727    0.934     0.947     
+                 0.968    0.307    0.904      0.968    0.935      0.720    0.932     0.972     0
+                 0.693    0.032    0.880      0.693    0.776      0.720    0.932     0.871     1
+Weighted Avg.    0.899    0.238    0.898      0.899    0.895      0.720    0.932     0.947     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 2498   70 |    a = 0
-  257  570 |    b = 1
+ 2421   79 |    a = 0
+  257  581 |    b = 1
 
