@@ -27,8 +27,8 @@ tr = '/Users/katinska/GramCorr/translated/Koko_xml/10_gram'
 data = '../translate/Koko/word_test'
 # data = '/Users/katinska/GramCorr/translated/Koko_xml'
 proc_data_dir = '../translate/Koko/split_processed'
-error_dict_file = 'error_dict_check_042021.pkl'
-type_dict_file = 'type_dict_032021.pkl'
+error_dict_file = 'error_dict_check_23042021.pkl'
+type_dict_file = 'type_dict_23042021.pkl'
 random.seed(42)
 
 
@@ -162,39 +162,28 @@ class Pair:
             try:
                 assert len(self.errors) == len(self.corrections) == len(self.hypotheses)
             except:
-                # print(self.hypotheses)
                 new_hypotheses = []
+                # 1
                 if '' in self.errors or '' in self.corrections:
                     for el in self.hypotheses:
                         if el == '' and (el not in self.errors or el not in self.corrections):
                             continue
                         else:
                             new_hypotheses.append(el)
-                # if '' in self.hypotheses:
-                #     self.hypotheses.remove('')
+                    self.hypotheses = new_hypotheses
+                # 2
+                if len(self.hypotheses) > len(self.errors):
+                    if '' in self.hypotheses:
+                        new_hypotheses = [el for el in self.hypotheses if el!= '']
+                        self.hypotheses = new_hypotheses
+                    # 3
+                    else:
+                        l = len(self.errors)
+                        self.hypotheses = self.hypotheses[:l]
                 try:
                     assert len(self.errors) == len(self.corrections) == len(self.hypotheses)
-                    # print('#' * 100)
-                    # print('FOUND HYP: ', self.hypotheses)
-
-                    # return None
-                    # print('All good!')
                     return True
                 except:
-                    # try:
-                    #     new_hypotheses = []
-                    #     for el in self.hypotheses:
-                    #         if ' ' in el:
-                    #             new_hypotheses.extend(el.split())
-                    #         else:
-                    #             new_hypotheses.append(el)
-                    #     self.hypotheses = new_hypotheses
-                    #     print('NEW HYPOTH', self.hypotheses)
-                    #     print(new_hypotheses)
-                    #     assert len(self.errors) == len(self.corrections) == len(self.hypotheses)
-                    #     print('All good!')
-                    #     return True
-                    # except:
                     # print('SOURCE ', self.source)
                     # print('TARGET ', self.target)
                     # print('TRANSL ', self.translation)
@@ -433,47 +422,42 @@ def get_data(fold, model, char, proc_data_dir):
     return d
 
 
-def get_other_hypotheses(line, source_line, target_line, n_best, correction, error, types, i, char):
+def get_other_hypotheses(line, source_line, target_line, n_best, correction, error, types, i, char, already_suggected):
     hypotheses = dict()
 
     # here add in dict scores for every new hypotheses
 
-    score = 0
+    other_score = 0
     hyp_num = 5
     corr = False
-    for b_line in n_best[1:]:
+    to_skip_line = True
+    for b_line in n_best:
         score_line = b_line.split('|||')
-        if int(score_line[0]) + 1 == line:
-            # if corrected and not score:
-            score = float(score_line[-1].strip())
+        if int(score_line[0]) == line:
+            if to_skip_line:
+                to_skip_line = False
+                continue
+            other_score = float(score_line[-1].strip())
             pair = Pair((source_line, target_line, score_line[1]), char)
             # print(error)
             # print(source_line)
             # print(target_line)
             # print('_______________')
             result = pair.get_hypotheses()
+            hypoths = pair.hypotheses
             if not result or pair.broken or pair.skipped:
-                # print('Broken in other hypotheses')
                 continue
             else:
-                # print('passed')
-                # corrected, not_corrected, new_suggestion, types_result
-                n_c, n_v, new_suggestion, _ = check_hypothesis(correction, error, types,
-                                                               pair.hypotheses[i])
-                # if new_suggestion:
-                #     print(error)
-                #     print(pair.hypotheses[i])
-                #     print(n_c)
-                #     print(score)
-                #     print('))))))))))))))')
-                #     print('NEW SUGG', new_suggestion)
-                if n_c:
-                    corr = True
-                if pair.hypotheses[i] not in hypotheses.keys():
-                    hypotheses[pair.hypotheses[i]] = float(score_line[-1].strip())
+                for h in hypoths:
+                    n_c, n_v, new_suggestion, _ = check_hypothesis(correction, error, types,
+                                                                   h)
+                    if n_c:
+                        corr = True
+                    if h not in hypotheses.keys() and h != already_suggected:
+                        hypotheses[h] = other_score
                 if len(hypotheses) > hyp_num:
                     break
-    return hypotheses, score, corr
+    return hypotheses, other_score, corr
 
 
 def eval():
@@ -487,7 +471,7 @@ def eval():
     print(models)
     for model in models:
         # print(model)
-        # if '10' not in model:
+        # if '10' in model:
         #     continue
         print(f'Model: {model}')
         if model == '10_gram':
@@ -516,12 +500,10 @@ def eval():
             assert len(s_lines) == len(t_lines) == len(data.translation)
             pairs = zip(s_lines, t_lines, data.translation)
             for k, p in enumerate(pairs):
-                cur_line += 1
-                # print(p[0])
-                # print(p[1])
-                # sys.exit()
-
                 pair = Pair(p, char)
+                errors = list(pair.errors)
+                hypotheses = list(pair.hypotheses)
+                corrections = list(pair.corrections)
                 # if not p[0][1][0].startswith('Eine zweifellos'):
                 #     continue
                 # print('source', pair.source)
@@ -534,22 +516,15 @@ def eval():
                     if int(score_line[0]) == cur_line:
                         score = float(score_line[-1].strip())
                         break
-
                 result = pair.get_hypotheses()
                 total_skipped += int(pair.skipped)
                 # if 'Leider zu oft kommen Situationen vor' in p[1][1]:
                 #     sys.exit()
                 if not result or pair.broken:
-
-                    # print('RESULT:', result)
-                    # print('Broken: ', pair.broken)
-                    # print(pair.errors)
-                    for l, h in enumerate(pair.errors):
-                        # print(h)
-                        error = clean_error(pair.errors[l])
-                        # print(error)
+                    for l, h in enumerate(errors):
+                        error = clean_error(errors[l])
                         i = err_table.loc[
-                            (err_table['fold#'] == 'fold' + str(number)) & (err_table['line'] == cur_line) &
+                            (err_table['fold#'] == 'fold' + str(number)) & (err_table['line'] == cur_line + 1) &
                             (err_table['error'] == error)].index.values.tolist()
                         if i:
                             ind = i[0]
@@ -561,23 +536,25 @@ def eval():
                                 error_dict[err_id] = dict()
                                 error_dict[err_id]['type'] = types
                             new_hypotheses, other_score, corr = get_other_hypotheses(cur_line, p[0], p[1], data.n_best,
-                                                                                 pair.corrections[l], pair.errors[l], types,
+                                                                                 corrections[l], errors[l], types,
                                                                                  l,
-                                                                                 char)
+                                                                                 char, None)
                             if not len(new_hypotheses):
                                 continue
                             if model not in error_dict[err_id]:
                                 error_dict[err_id][model] = dict()
                             error_dict[err_id][model]['other_suggestions'] = new_hypotheses
-                            error_dict[err_id][model]['expected'] = pair.corrections[l]
-                            error_dict[err_id][model]['other_suggestions_score'] = other_score
+                            error_dict[err_id][model]['expected'] = corrections[l]
                             # print(error_dict[err_id][model])
 
                 else:
                     all_errors += pair.errors_num
-                    for l, h in enumerate(pair.errors):
-                        error = clean_error(pair.errors[l])
-                        i = err_table.loc[(err_table['fold#'] == 'fold' + str(number)) & (err_table['line'] == cur_line) &
+                    errors = list(pair.errors)
+                    hypotheses = list(pair.hypotheses)
+                    corrections = list(pair.corrections)
+                    for l, h in enumerate(errors):
+                        error = clean_error(errors[l])
+                        i = err_table.loc[(err_table['fold#'] == 'fold' + str(number)) & (err_table['line'] == cur_line + 1) &
                                           (err_table['error'] == error)].index.values.tolist()
                         if i:
                             ind = i[0]
@@ -588,35 +565,31 @@ def eval():
                             if err_id not in error_dict:
                                 error_dict[err_id] = dict()
                                 error_dict[err_id]['type'] = types
-                            c, v, new_suggestion, types_result = check_hypothesis(pair.corrections[l],
-                                                                                  pair.errors[l],
+                            c, v, new_suggestion, types_result = check_hypothesis(corrections[l],
+                                                                                  errors[l],
                                                                                   types,
-                                                                                  pair.hypotheses[l])
+                                                                                  hypotheses[l])
                             if model not in error_dict[err_id]:
                                 error_dict[err_id][model] = dict()
                             error_dict[err_id][model]['corrected'] = int(c)
                             error_dict[err_id][model]['not_corrected'] = int(v)
-                            error_dict[err_id][model]['new_suggestion/correction'] = pair.hypotheses[l]
+                            error_dict[err_id][model]['new_suggestion/correction'] = hypotheses[l]
                             error_dict[err_id][model]['new_suggection/correction_score'] = score
                             total_types_result = update_dict(total_types_result, types_result)
                             corrected += int(c)
                             new_suggestions += int(new_suggestion)
                             # print('Corrected:', c)
                             new_hypotheses, other_score, corr = get_other_hypotheses(cur_line, p[0], p[1], data.n_best,
-                                                                      pair.corrections[l], pair.errors[l], types, l,
-                                                                        char)
-
+                                                                      corrections[l], errors[l], types, l,
+                                                                        char, hypotheses[l])
                             if corr:
                                 corrected += int(corr)
                             if not corrected and not corr:
                                 not_corrected += int(v)
 
                             error_dict[err_id][model]['other_suggestions'] = new_hypotheses
-                            error_dict[err_id][model]['expected'] = pair.corrections[l]
-
-                            # if c:
-                            # error_dict[err_id][model]['correction'] = pair.corrections[l]
-                            error_dict[err_id][model]['other_suggestions_score'] = other_score
+                            error_dict[err_id][model]['expected'] = corrections[l]
+                cur_line += 1
 
                             # print(error_dict[err_id][model])
     #         facc = round((corrected * 100) / all_errors)
@@ -658,8 +631,10 @@ def collect_error_info(error_id, data, models):
     for k, v in data.items():
         if k != 'type':
             model_dict = v
+            # print(model_dict)
             correction = None
             expected = model_dict['expected']
+
             if 'corrected' in model_dict and model_dict['corrected'] == 1:
                 correction = model_dict['new_suggestion/correction']
                 score = model_dict['new_suggection/correction_score']
@@ -695,39 +670,60 @@ def build_rows(error_info, t, error_id, models):
     # (None, model, None, 0.0, 0)
     hyp = None
     for tuple in error_info:
+        # if tuple[2] is None:
+        #     print(tuple)
+        #
+        #     sys.exit()
+
         if tuple[2] is not None and hyp != tuple[2]:
             hyp = tuple[2]
             cor = tuple[4]
-            row = [tuple[0], error_id, t, len(error), hyp, cor]
-            other_models = OrderedDict()
-            for model in models:
-                other_models[model] = dict()
-            for tpl in error_info:
-                other_models[tpl[1]][tpl[2]] = tpl[3]
-            # print(other_models)
-            for m in other_models:
-                if hyp in other_models[m].keys():
-                    other_score = other_models[m][hyp]
-                    row.append(1)
-                    row.append(other_score)
-                elif not other_models[m].keys() or None in other_models[m].keys():
-                    row.append(0)
-                    row.append(0.0)
-                else:
-                    row.append(0)
-                    row.append(0.0)
-                    # row.append(-1)
-                    # other_score = max(other_models[m].values())
-                    # row.append(other_score)
-            rows.append(row)
+            current_model = tuple[1]
+            if current_model in models:
+                # row = [tuple[0], error_id, t, len(error), hyp, cor]
+
+                # print(current_model)
+
+                row = [tuple[0], error_id, t, len(error), hyp, cor]
+                other_models = OrderedDict()
+                for model in models:
+                    # if model != current_model:
+                    other_models[model] = dict()
+                for tpl in error_info:
+                    if tpl[1] in other_models.keys():
+
+                        # ??
+                        other_models[tpl[1]][tpl[2]] = tpl[3]
+                # print(other_models)
+                # sys.exit()
+                for m in other_models:
+                    if hyp in other_models[m].keys():
+                        other_score = other_models[m][hyp]
+                        row.append(1)
+                        row.append(other_score)
+                    elif not other_models[m].keys() or None in other_models[m].keys():
+                        row.append(0)
+                        row.append(0.0)
+                    else:
+                        row.append(0)
+                        row.append(0.0)
+                        # row.append(-1)
+                        # other_score = max(other_models[m].values())
+                        # row.append(other_score)
+                # print(row)
+                # sys.exit()
+                rows.append(row)
+    # print(rows)
+    # sys.exit()
     return rows
 
 
 def build_out_table():
     models = [dir for dir in os.listdir(translated) if os.path.isdir(translated + dir)]
-    path_to_errors = 'error_dict_check_042021.pkl'
+    # models = ['5_gram']
+    path_to_errors = 'error_dict_check_23042021.pkl'
 
-    out_file = codecs.open('out_moses_table_042021.csv', 'w')
+    out_file = codecs.open('out_moses_table_23042021.csv', 'w')
     out_writer = csv.writer(out_file, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
     c = 0
     suggested = 0
@@ -747,16 +743,20 @@ def build_out_table():
         all_errors = []
 
         for key, value in error_data.items():
-            # if key != 'fold3_4614_ID1935.txt_18_61_61_Hobbies':
+            # if key not in ['fold0_46_ID2351.txt_10_130_130_Tanzen',
+            #                'fold5_4880_ID1647.txt_24_21_21_soweit']:
             #     continue
             c += 1
             error_info, t = collect_error_info(key, value, models)
             # print(error_info)
+            # sys.exit()
             suggested += any([el[-1] for el in error_info])
             # print(suggested)
             if not any([el[-1] for el in error_info]):
                 # sys.exit()
                 not_suggested += 1
+                # print(error_info)
+                # sys.exit()
                 continue
             for row in build_rows(error_info, t, key, models):
                 str_row = '_'.join([str(el) for el in row])
@@ -795,7 +795,7 @@ def collect_same_er(l):
 
 
 def write_folds(folds, models):
-    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_042021'
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_23042021'
     c = 0
     for i, e in enumerate(folds):
         # print(e)
@@ -848,7 +848,7 @@ def split_table():
     folds = dict()
     new_folds = [[] for i in range(10)]
     full = []
-    with codecs.open('out_moses_table_042021.csv') as table_file:
+    with codecs.open('out_moses_table_23042021.csv') as table_file:
         next(table_file, None)
         table_reader = csv.reader(table_file, delimiter='\t')
         for row in table_reader:
@@ -882,12 +882,12 @@ def split_table():
 def main():
     # get_bleu_score()
     # eval()
-    all_errors, got_suggections, corrected = build_out_table()
+    # all_errors, got_suggections, corrected = build_out_table()
     # print(f'All errors in the data: {all_errors}')
     # print(f'All errors which left after filtering broken: {got_suggections}')
     # print(f'Corrected by at least one system: {corrected}')
-    # split_table()
-
+    split_table()
+#
 
 if __name__ == '__main__':
     main()

@@ -7,8 +7,8 @@ import csv
 import Levenshtein
 import sys
 
-data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_042021'
-out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021'
+data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_23042021'
+out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_23042021'
 
 
 def collect_errors(file):
@@ -173,7 +173,7 @@ import numpy as np
 
 
 def change_split():
-    out_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_042021_final'
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_23042021'
 
     files = os.listdir(out_data_dir)
     errors_lines = []
@@ -260,5 +260,5 @@ if __name__ == '__main__':
     # collect_errors(file)
 
     # get_suggections()
-    # change_split()
+    change_split()
     # count_error_sugg()
