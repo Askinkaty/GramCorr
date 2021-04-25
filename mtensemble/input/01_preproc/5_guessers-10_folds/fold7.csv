@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold7_3005_ID1274.txt_60_0_0_Mann	orth: 15 insertions: of double consonants	4	man	0	0	0.0	1	-2202.68	1	-2204.83	1	-2204.95	0	-100
 fold7_3005_ID1274.txt_60_0_0_Mann	orth: 15 insertions: of double consonants	4	Man	1	0	0.0	1	-2202.46	1	-2204.54	1	-2204.61	0	-100
 fold3_4959_ID1202.txt_25_35_35_Freitag Abend	orth: 06 sep instead of tog: compounds	13	Abend Freitagabend	0	0	0.0	0	0.0	0	0.0	1	-7.26104	0	-100

@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold6_4737_ID2189.txt_19_78_78_Ausenseiter	orth: 23 transpositions: of consonants: other cases	11	Auserlesenheit	0	1	-7804.25	1	-5.7338	1	-8.76178	1	-9.64914	1	7
 fold6_4737_ID2189.txt_19_78_78_Ausenseiter	orth: 23 transpositions: of consonants: other cases	11	Austernseitling	0	1	-7804.25	1	-5.7338	1	-8.76178	1	-9.64914	1	6
 fold6_4737_ID2189.txt_19_78_78_Ausenseiter	orth: 23 transpositions: of consonants: other cases	11	Herauseitern	0	1	-7804.25	1	-5.7338	1	-8.76178	1	-9.64914	1	6

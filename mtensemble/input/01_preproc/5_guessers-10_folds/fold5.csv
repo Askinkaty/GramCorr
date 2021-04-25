@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold1_3061_ID1539.txt_3_119_120_aus zubilden	orth: 06 sep instead of tog: compounds	12	geradeaus zubilden	0	0	0.0	0	0.0	0	0.0	1	-216.259	0	-100
 fold1_3061_ID1539.txt_3_119_120_aus zubilden	orth: 06 sep instead of tog: compounds	12	zubilden aus	0	0	0.0	0	0.0	0	0.0	1	-216.177	0	-100
 fold1_3061_ID1539.txt_3_119_120_aus zubilden	orth: 06 sep instead of tog: compounds	12	Geld-aus-dem-Fenster-Werfens zubilden	0	0	0.0	0	0.0	1	-209.561	0	0.0	0	-100

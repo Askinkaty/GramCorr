@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold7_1946_ID1389.txt_51_94_94_das	orth: 11 omissions: of double consonants	3	da s	0	1	-25607.5	0	0.0	0	0.0	0	0.0	0	-100
 fold7_1946_ID1389.txt_51_94_94_das	orth: 11 omissions: of double consonants	3	d as	0	1	-25607.5	0	0.0	0	0.0	0	0.0	0	-100
 fold7_1946_ID1389.txt_51_94_94_das	orth: 11 omissions: of double consonants	3	s da	0	1	-25607.5	0	0.0	0	0.0	0	0.0	0	-100

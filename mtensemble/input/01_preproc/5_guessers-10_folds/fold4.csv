@@ -1,4 +1,4 @@
-error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	expected	spellcheker_suggested	spellcheker_score
+error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score	5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
 fold4_822_ID1062.txt_18_186_186_ähnlichem	orth: 02 lcp instead of cap: other cases	9	Ähnlichem	1	0	0.0	1	-3203.83	1	-3211.62	1	-3207.89	0	-100
 fold3_738_ID2192.txt_4_19_19_disem	orth: 12 omissions: of a vowel: (i) instead of (ie)	5	diesem	1	1	-12.8521	0	0.0	0	0.0	0	0.0	1	1
 fold3_738_ID2192.txt_4_19_19_disem	orth: 12 omissions: of a vowel: (i) instead of (ie)	5	meinung	0	1	-12.8522	0	0.0	0	0.0	0	0.0	0	-100
