@@ -7,8 +7,8 @@ import csv
 import Levenshtein
 import sys
 
-data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_last_23042021'
-out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_23042021'
+data_dir = '/Users/katinska/GramCorr/mtensemble/input/new_folds_30082021'
+out_data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_30082021'
 
 
 def collect_errors(file):
@@ -61,7 +61,7 @@ def get_hunspell_suggestions():
             error = split[0].split(' ')[1].strip()
             ss = split[1].split(',')
             if error not in suggestion_dict:
-                suggestion_dict[error] = [el.strip() for el in ss]
+                suggestion_dict[error] = [(el.strip(), i) for i, el in enumerate(ss)]
     for k, v in suggestion_dict.items():
         suggestion_dict[k] = v[:5]
     return suggestion_dict
@@ -71,6 +71,7 @@ def get_hunspell_suggestions():
 
 def get_suggections():
     suggestion_dict = get_hunspell_suggestions()
+
     files = os.listdir(data_dir)
     all_rows = []
     header = None
@@ -85,73 +86,152 @@ def get_suggections():
             with codecs.open(os.path.join(data_dir, file), mode='r') as table_file:
                 table_reader = csv.reader(table_file, delimiter='\t')
                 for i, row in enumerate(list(table_reader)):
-                    # print(row)
+                    # if row[0] == 'fold8_3419_ID2285.txt_42_62_62_indenen':
+                    #     print('ROW', row)
+
                     if i == 0:
-                        header = row
+                        header = row[:-1]
                         header.append('spellcheker_suggested')
                         header.append('spellcheker_score')
+                        header.append('spellcheker_rank')
                     else:
                         c += 1
                         # print(row)
                         expected = row[-1]
+                        # if row[0] != 'fold8_3419_ID2285.txt_42_62_62_indenen':
+                        #     continue
+                        # else:
+                        #     print(row)
                         error = row[0].split('_')[-1]
+
                         if error not in suggestion_dict:
                             new_line = row[:-1]
                             new_line.append('0')
                             new_line.append('-100')
+                            new_line.append('-1')
                             if new_line not in all_rows:
                                 all_rows.append(new_line)
                         else:
                             # print(suggestion_dict[error])
-                            for e in suggestion_dict[error]:
-
+                            # print(already_added)
+                            for tpl in suggestion_dict[error]:
+                                e = tpl[0]
+                                rank = tpl[1]
                                 already_suggested = False
                                 n = row[0] + '_' + e
-
+                                # print('N', n)
                                 with codecs.open(os.path.join(data_dir, file), mode='r') as table_file1:
                                     table_reader_j = csv.reader(table_file1, delimiter='\t')
                                     for j, j_row in enumerate(list(table_reader_j)):
                                         if e == j_row[3] and row[0] == j_row[0]:
                                             already_suggested = True
                                             break
-                                # print(already_suggested)
+                                # print('ALREDY SUGG', already_suggested, e)
                                 distance = Levenshtein.distance(e, error)
                                 m = row[0] + '_' + row[3]
-                                if m not in already_added and row[3] != e:
+                                # print(row[3], e, row[3] == e)
+                                # new suggestion
+
+                                # print(already_added)
+                                if not already_suggested and n not in already_added and row[3] != e:
+                                    # print('Here 1')
+                                    new_line = row[:5]
+                                    for i in range(4):
+                                        new_line.extend([0, 0.0, -1])
+                                    new_line[3] = e
+                                    if e == expected:
+                                        new_line[4] = '1'
+                                    else:
+                                        new_line[4] = '0'
+                                    new_line.append('1')
+                                    new_line.append(distance)
+                                    new_line.append(rank)
+                                    if new_line not in all_rows:
+                                        new_sug += 1
+                                        all_rows.append(new_line)
+                                        already_added.append(n)
+
+                                # we've already recorded this suggestion
+                                if not already_suggested and n in already_added and row[3] != e:
+                                    continue
+
+                                # error which was suggested by other models
+                                # print('Ald sug', already_suggested, n not in already_added, row[3]==e)
+                                if already_suggested and n not in already_added and row[3] == e:
+                                    # print('Here 2', e)
                                     new_line = row[:-1]
+                                    # print(row[3])
+                                    if row[3] == e:
+                                        new_line.append('1')
+                                        new_line.append(distance)
+                                        new_line.append(rank)
+                                        if new_line not in all_rows:
+                                            all_rows.append(new_line)
+                                            already_added.append(n)
+
+
+                                # line with suggestion which was not proposed by spell-checker
+                                if m not in already_added and row[3] != e:
+                                    # print('Here 3', e)
+
+                                    new_line = row[:-1]
+                                    # print('New_line: ', new_line)
                                     new_line.append('0')
                                     new_line.append('-100')
+                                    new_line.append('-1')
+
                                     if new_line not in all_rows:
                                         all_rows.append(new_line)
                                         already_added.append(m)
 
-                                if already_suggested:
-                                    if n not in already_added:
-                                        new_line = row[:-1]
-                                        if row[3] == e:
-                                            new_line.append('1')
-                                            new_line.append(distance)
-                                            if new_line not in all_rows:
-                                                all_rows.append(new_line)
-                                                already_added.append(n)
-                                    else:
-                                        continue
-                                else:
-                                    if n not in already_added:
-                                        new_line = row[:-1]
-                                        new_line[3] = e
-                                        if e == expected:
-                                            new_line[4] = '1'
-                                        else:
-                                            new_line[4] = '0'
-                                        new_line.append('1')
-                                        new_line.append(distance)
-                                        if new_line not in all_rows:
-                                            new_sug += 1
-                                            all_rows.append(new_line)
-                                            already_added.append(n)
-                                    else:
-                                        continue
+                                # print('All rows:', all_rows)
+
+                                # if not already_suggested and m not in already_added and row[3] != e:
+                                #     new_line = row[:-1]
+                                #     # print('New_line: ', new_line)
+                                #     new_line.append('0')
+                                #     new_line.append('-100')
+                                #     new_line.append('-1')
+                                #
+                                #     if new_line not in all_rows:
+                                #         all_rows.append(new_line)
+                                #         already_added.append(m)
+
+                                # if already_suggested:
+                                #     print('N', n, n in already_added)
+                                #     if n not in already_added:
+                                #         print('Here:', e)
+                                #         new_line = row[:-1]
+                                #         print(row[3])
+                                #         if row[3] == e:
+                                #             new_line.append('1')
+                                #             new_line.append(distance)
+                                #             new_line.append(rank)
+                                #             print('All rows:', all_rows)
+                                #             if new_line not in all_rows:
+                                #                 all_rows.append(new_line)
+                                #                 already_added.append(n)
+                                #     else:
+                                #         continue
+                                # else:
+                                #     if n not in already_added:
+                                #         new_line = row[:5]
+                                #         for i in range(4):
+                                #             new_line.extend([0, 0.0, -1])
+                                #         new_line[3] = e
+                                #         if e == expected:
+                                #             new_line[4] = '1'
+                                #         else:
+                                #             new_line[4] = '0'
+                                #         new_line.append('1')
+                                #         new_line.append(distance)
+                                #         new_line.append(rank)
+                                #         if new_line not in all_rows:
+                                #             new_sug += 1
+                                #             all_rows.append(new_line)
+                                #             already_added.append(n)
+                                #     else:
+                                #         continue
 
     print(len(all_rows))
     print(c)
@@ -173,7 +253,7 @@ import numpy as np
 
 
 def change_split():
-    out_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_23042021'
+    out_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_30082021'
 
     files = os.listdir(out_data_dir)
     errors_lines = []
@@ -259,6 +339,6 @@ if __name__ == '__main__':
     #         add_spellchecker_scores(file)
     # collect_errors(file)
 
-    # get_suggections()
+    get_suggections()
     change_split()
     # count_error_sugg()
