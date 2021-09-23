@@ -3,27 +3,36 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 2026596650 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 723502981 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold5.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
 
 @attribute error_length numeric
-@attribute 3_gram_is_suggested {-1,0,1}
-@attribute 3_gram_score numeric
-@attribute 5_gram_is_suggested {-1,0,1}
-@attribute 5_gram_score numeric
+@attribute 1_gram_is_suggested {-1,0,1}
+@attribute 1_gram_score numeric
+@attribute 1_gram_rank numeric
+@attribute 10_gram_is_suggested {-1,0,1}
+@attribute 10_gram_score numeric
+@attribute 10_gram_rank numeric
 @attribute spellcheker_suggested {-1,0,1}
 @attribute spellcheker_score numeric
-@attribute conf_norm_2 numeric
-@attribute std_2 numeric
-@attribute maxabs_2 numeric
-@attribute conf_norm_3 numeric
-@attribute std_3 numeric
-@attribute maxabs_3 numeric
-@attribute conf_norm_4 numeric
-@attribute std_4 numeric
-@attribute maxabs_4 numeric
+@attribute spellcheker_rank numeric
+@attribute score_norm_2 numeric
+@attribute score_std_2 numeric
+@attribute score_maxabs_2 numeric
+@attribute rank_std_2 numeric
+@attribute rank_maxabs_2 numeric
+@attribute score_norm_3 numeric
+@attribute score_std_3 numeric
+@attribute score_maxabs_3 numeric
+@attribute rank_std_3 numeric
+@attribute rank_maxabs_3 numeric
+@attribute score_norm_4 numeric
+@attribute score_std_4 numeric
+@attribute score_maxabs_4 numeric
+@attribute rank_std_4 numeric
+@attribute rank_maxabs_4 numeric
 @attribute class {0,1}
 
 @data
@@ -34,63 +43,63 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 2026596650 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 723502981 -do-not-check-capabilities
 
-Time taken to build model: 17.79 seconds
+Time taken to build model: 27.61 seconds
 
-Time taken to test model on training data: 7.32 seconds
+Time taken to test model on training data: 11.41 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       40929               96.599  %
-Incorrectly Classified Instances      1441                3.401  %
-Kappa statistic                          0.8811
-Mean absolute error                      0.062 
-Root mean squared error                  0.1551
-Relative absolute error                 20.7468 %
-Root relative squared error             40.1265 %
-Total Number of Instances            42370     
+Correctly Classified Instances       47463               99.7457 %
+Incorrectly Classified Instances       121                0.2543 %
+Kappa statistic                          0.9908
+Mean absolute error                      0.0228
+Root mean squared error                  0.0732
+Relative absolute error                  8.1974 %
+Root relative squared error             19.6427 %
+Total Number of Instances            47584     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.991    0.148    0.968      0.991    0.979      0.883    0.995     0.999     0
-                 0.852    0.009    0.957      0.852    0.902      0.883    0.995     0.980     1
-Weighted Avg.    0.966    0.122    0.966      0.966    0.965      0.883    0.995     0.995     
+                 1.000    0.014    0.997      1.000    0.998      0.991    1.000     1.000     0
+                 0.986    0.000    0.999      0.986    0.992      0.991    1.000     0.999     1
+Weighted Avg.    0.997    0.012    0.997      0.997    0.997      0.991    1.000     1.000     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 34333   296 |     a = 0
-  1145  6596 |     b = 1
+ 39644     9 |     a = 0
+   112  7819 |     b = 1
 
-Time taken to test model on test data: 0.8 seconds
+Time taken to test model on test data: 1.32 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        4220               92.6048 %
-Incorrectly Classified Instances       337                7.3952 %
-Kappa statistic                          0.74  
-Mean absolute error                      0.1049
-Root mean squared error                  0.229 
-Relative absolute error                 34.7371 %
-Root relative squared error             58.5988 %
-Total Number of Instances             4557     
+Correctly Classified Instances        5368               97.3522 %
+Incorrectly Classified Instances       146                2.6478 %
+Kappa statistic                          0.9004
+Mean absolute error                      0.0451
+Root mean squared error                  0.1443
+Relative absolute error                 16.396  %
+Root relative squared error             39.1219 %
+Total Number of Instances             5514     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.975    0.286    0.936      0.975    0.955      0.745    0.963     0.990     0
-                 0.714    0.025    0.869      0.714    0.784      0.745    0.963     0.894     1
-Weighted Avg.    0.926    0.237    0.924      0.926    0.923      0.745    0.963     0.972     
+                 0.990    0.109    0.979      0.990    0.984      0.901    0.984     0.995     0
+                 0.891    0.010    0.943      0.891    0.916      0.901    0.984     0.965     1
+Weighted Avg.    0.974    0.093    0.973      0.974    0.973      0.901    0.984     0.991     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 3608   92 |    a = 0
-  245  612 |    b = 1
+ 4571   48 |    a = 0
+   98  797 |    b = 1
 

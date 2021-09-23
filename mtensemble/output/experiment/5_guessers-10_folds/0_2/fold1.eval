@@ -3,22 +3,28 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 532722303 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 1792485796 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold2.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
 
 @attribute error_length numeric
-@attribute 10_gram_is_suggested {-1,0,1}
-@attribute 10_gram_score numeric
-@attribute 3_gram_is_suggested {-1,0,1}
-@attribute 3_gram_score numeric
-@attribute conf_norm_0 numeric
-@attribute std_0 numeric
-@attribute maxabs_0 numeric
-@attribute conf_norm_2 numeric
-@attribute std_2 numeric
-@attribute maxabs_2 numeric
+@attribute 5_gram_is_suggested {-1,0,1}
+@attribute 5_gram_score numeric
+@attribute 5_gram_rank numeric
+@attribute 1_gram_is_suggested {-1,0,1}
+@attribute 1_gram_score numeric
+@attribute 1_gram_rank numeric
+@attribute score_norm_0 numeric
+@attribute score_std_0 numeric
+@attribute score_maxabs_0 numeric
+@attribute rank_std_0 numeric
+@attribute rank_maxabs_0 numeric
+@attribute score_norm_2 numeric
+@attribute score_std_2 numeric
+@attribute score_maxabs_2 numeric
+@attribute rank_std_2 numeric
+@attribute rank_maxabs_2 numeric
 @attribute class {0,1}
 
 @data
@@ -29,63 +35,63 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 532722303 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 1792485796 -do-not-check-capabilities
 
-Time taken to build model: 13.61 seconds
+Time taken to build model: 16.03 seconds
 
-Time taken to test model on training data: 5.21 seconds
+Time taken to test model on training data: 4.37 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       48655               95.4712 %
-Incorrectly Classified Instances      2308                4.5288 %
-Kappa statistic                          0.8154
-Mean absolute error                      0.0862
-Root mean squared error                  0.1906
-Relative absolute error                 31.8792 %
-Root relative squared error             51.824  %
-Total Number of Instances            50963     
+Correctly Classified Instances       39283               99.4229 %
+Incorrectly Classified Instances       228                0.5771 %
+Kappa statistic                          0.982 
+Mean absolute error                      0.0197
+Root mean squared error                  0.0789
+Relative absolute error                  6.088  %
+Root relative squared error             19.5932 %
+Total Number of Instances            39511     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.995    0.256    0.953      0.995    0.974      0.825    0.982     0.996     0
-                 0.744    0.005    0.967      0.744    0.841      0.825    0.982     0.933     1
-Weighted Avg.    0.955    0.215    0.955      0.955    0.952      0.825    0.982     0.986     
+                 1.000    0.027    0.993      1.000    0.996      0.982    1.000     1.000     0
+                 0.973    0.000    0.998      0.973    0.986      0.982    1.000     0.999     1
+Weighted Avg.    0.994    0.021    0.994      0.994    0.994      0.982    1.000     1.000     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 42540   207 |     a = 0
-  2101  6115 |     b = 1
+ 31460    14 |     a = 0
+   214  7823 |     b = 1
 
-Time taken to test model on test data: 0.57 seconds
+Time taken to test model on test data: 0.46 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        5157               91.4038 %
-Incorrectly Classified Instances       485                8.5962 %
-Kappa statistic                          0.6432
-Mean absolute error                      0.1237
-Root mean squared error                  0.2546
-Relative absolute error                 45.6833 %
-Root relative squared error             69.1578 %
-Total Number of Instances             5642     
+Correctly Classified Instances        4300               97.3071 %
+Incorrectly Classified Instances       119                2.6929 %
+Kappa statistic                          0.9151
+Mean absolute error                      0.0401
+Root mean squared error                  0.1421
+Relative absolute error                 12.4577 %
+Root relative squared error             35.5508 %
+Total Number of Instances             4419     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.975    0.404    0.926      0.975    0.950      0.654    0.926     0.982     0
-                 0.596    0.025    0.823      0.596    0.692      0.654    0.926     0.798     1
-Weighted Avg.    0.914    0.342    0.909      0.914    0.908      0.654    0.926     0.952     
+                 0.986    0.077    0.981      0.986    0.983      0.915    0.991     0.997     0
+                 0.923    0.014    0.941      0.923    0.932      0.915    0.991     0.977     1
+Weighted Avg.    0.973    0.065    0.973      0.973    0.973      0.915    0.991     0.993     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 4613  117 |    a = 0
-  368  544 |    b = 1
+ 3486   51 |    a = 0
+   68  814 |    b = 1
 
