@@ -54,43 +54,43 @@ do
                     CSVLOADER_EXTRA_ARGS=( \
                         -N "6" \
                         -L "6:-1,0,1" \
-                        -R "7" \
+                        -R "7,8" \
                     )
                     ;;
                 ?_?)
                     ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
                     SELECT_GUESSERS_ARGS=("${ADD_FEATURES_ARGS[@]}")
                     CSVLOADER_EXTRA_ARGS=( \
-                        -N "6,8" \
-                        -L "6,8:-1,0,1" \
-                        -R "7,9" \
+                        -N "6,9" \
+                        -L "6,9:-1,0,1" \
+                        -R "7,8,10,11" \
                     )
                     ;;
                 ?_?_?)
                     ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
                     SELECT_GUESSERS_ARGS=("${ADD_FEATURES_ARGS[@]}")
                     CSVLOADER_EXTRA_ARGS=( \
-                        -N "6,8,10" \
-                        -L "6,8,10:-1,0,1" \
-                        -R "7,9,11" \
+                        -N "6,9,12" \
+                        -L "6,9,12:-1,0,1" \
+                        -R "7,8,10,11,13,14" \
                     )
                     ;;
                 ?_?_?_?)
                     ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
                     SELECT_GUESSERS_ARGS=("${ADD_FEATURES_ARGS[@]}")
                     CSVLOADER_EXTRA_ARGS=( \
-                        -N "6,8,10,12" \
-                        -L "6,8,10,12:-1,0,1" \
-                        -R "7,9,11,13" \
+                        -N "6,9,12,15" \
+                        -L "6,9,12,15:-1,0,1" \
+                        -R "7,8,10,11,13,14,16,17" \
                     )
                     ;;
                 ?_?_?_?_?)
                     ADD_FEATURES_ARGS=(--guesser_ids "${GUESSER_IDS//_/,}")
                     SELECT_GUESSERS_ARGS=("${ADD_FEATURES_ARGS[@]}")
                     CSVLOADER_EXTRA_ARGS=( \
-                        -N "6,8,10,12,14" \
-                        -L "6,8,10,12,14:-1,0,1" \
-                        -R "7,9,11,13,15" \
+                        -N "6,9,12,15,18" \
+                        -L "6,9,12,15,18:-1,0,1" \
+                        -R "7,8,10,11,13,14,16,17,19,20" \
                     )
                     ;;
             esac

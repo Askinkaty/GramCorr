@@ -19,11 +19,11 @@ error_ids and where the guesser suggested a correction)
  *suggestion           # 4:str
  is_correct(class)     # 5:int:{0,1}
  --- GUESSERS (2 columns per guesser: 1,0,-1 and confidence score)
- 10_gram_is_suggested    10_gram_score     # cols  6, 7
- 1_gram_is_suggested     1_gram_score      # cols  8, 9
- 3_gram_is_suggested     3_gram_score      # ...  10,11
- 5_gram_is_suggested     5_gram_score      # ...  12,13
- spellcheker_suggested   spellcheker_score # ...  14,15
+ 10_gram_is_suggested   10_gram_score      10_gram_rank # cols  6, 7, 8
+  1_gram_is_suggested    1_gram_score       1_gram_rank # cols  9,10,11
+  3_gram_is_suggested    3_gram_score       3_gram_rank # ...  12,13,14
+  5_gram_is_suggested    5_gram_score       5_gram_rank # ...  15,16,17
+ spellcheker_suggested  spellcheker_score  spellchecker_rank # 18,19,20
 
 The values in the *_is_suggestd columns mean:
 *  1: this is the best suggested correction from this system
@@ -54,6 +54,7 @@ import numpy as np
 from sklearn import preprocessing
 
 NUM_INFO_COLUMNS = 5    # Fix the number of 'info' columns
+NUM_COLS_PER_GUESSER = 3
 UNKNOWN_VALUE = "?"     # Set the character to represent missing/unknown values
 
 
@@ -106,7 +107,7 @@ log.info(f"Sanitized err_id,type,suggestion column(s).")
 
 # Try to infer the number of guessers in the input file and do a sanity check
 # for the number of guessers: obviously, the number should be an int.
-num_guessers = (len(data.columns) - NUM_INFO_COLUMNS) / 2
+num_guessers = (len(data.columns) - NUM_INFO_COLUMNS) / NUM_COLS_PER_GUESSER
 assert num_guessers == int(num_guessers)
 num_guessers = int(num_guessers)
 log.info(f"{num_guessers} guessers detected.")
@@ -131,13 +132,14 @@ for err_num, err_id in enumerate(err_ids):
         # class_minus_1_selector = data[
         #     data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([-1])
         class_0_selector = data[
-            data.columns[NUM_INFO_COLUMNS + (guess_id * 2)]].isin([0])
+            data.columns[NUM_INFO_COLUMNS + (guess_id * NUM_COLS_PER_GUESSER)]].isin([0])
         scores_selector = err_id_selector & ~class_0_selector
         scores_selector_sum = scores_selector.abs().sum()
         scores_unknown_selector = err_id_selector & class_0_selector
 
         scores = data[scores_selector][
-                          data.columns[NUM_INFO_COLUMNS + 1 + (guess_id * 2)]]
+                          data.columns[NUM_INFO_COLUMNS + 1 + (guess_id *
+                                                               NUM_COLS_PER_GUESSER)]]
         scores_unknown = scores_unknown_selector.sum() * [UNKNOWN_VALUE]
         log.debug("scores: %s", list(scores))
         log.debug("scores: min/max: %s/%s ", scores.min(), scores.max())
@@ -145,55 +147,73 @@ for err_num, err_id in enumerate(err_ids):
         # classes = data[scores_selector]["class"]
         # print("classes: ", list(classes))
 
-        column = f"conf_norm_{guess_id}"
+        ranks = data[scores_selector][
+                          data.columns[NUM_INFO_COLUMNS + 2 + (guess_id *
+                                                               NUM_COLS_PER_GUESSER)]]
+
+        column = f"score_norm_{guess_id}"
         data.loc[scores_unknown_selector, column] = scores_unknown
         if scores_selector_sum > 0:
             scores_feat = preprocessing.normalize(scores.to_frame(), norm='l2', axis=0)
             # scores_norm = scores_feat
             data.loc[scores_selector, column] = scores_feat
 
-        column = f"std_{guess_id}"
+        column = f"score_std_{guess_id}"
         data.loc[scores_unknown_selector, column] = scores_unknown
         if scores_selector_sum > 0:
             scores_feat = preprocessing.StandardScaler().fit_transform(scores.to_frame())
             data.loc[scores_selector, column] = scores_feat
 
         # Note: Make sure the scores are all aligned along the same axis/range.
-        # column = f"delta_{guess_id}"
+        # column = f"score_delta_{guess_id}"
         # data.loc[scores_unknown_selector, column] = scores_unknown
         # if scores_selector_sum > 0:
         #     scores_feat = 1 - scores_norm
         #     data.loc[scores_selector, column] = scores_feat
 
-        # column = f"quant_{guess_id}"
+        # column = f"score_quant_{guess_id}"
         # data.loc[scores_unknown_selector, column] = scores_unknown
         # if scores_selector_sum > 0:
         #     scores_feat = preprocessing.QuantileTransformer(
         #         n_quantiles=10, random_state=0).fit_transform(scores.to_frame())
         #     data.loc[scores_selector, column] = scores_feat
 
-        column = f"maxabs_{guess_id}"
+        column = f"score_maxabs_{guess_id}"
         data.loc[scores_unknown_selector, column] = scores_unknown
         if scores_selector_sum > 0:
             scores_feat = preprocessing.MaxAbsScaler().fit_transform(scores.to_frame())
             data.loc[scores_selector, column] = scores_feat
 
+        column = f"rank_std_{guess_id}"
+        data.loc[scores_unknown_selector, column] = scores_unknown
+        if scores_selector_sum > 0:
+            ranks_feat = preprocessing.StandardScaler().fit_transform(ranks.to_frame())
+            data.loc[scores_selector, column] = ranks_feat
+
+        column = f"rank_maxabs_{guess_id}"
+        data.loc[scores_unknown_selector, column] = scores_unknown
+        if scores_selector_sum > 0:
+            ranks_feat = preprocessing.MaxAbsScaler().fit_transform(ranks.to_frame())
+            data.loc[scores_selector, column] = ranks_feat
+
 # Instead of relying on setting this value, it's (quite) safe to calculate the
 # number of added features.
-num_features = (len(data.columns) - NUM_INFO_COLUMNS - num_guessers*2) / num_guessers
+num_features = (len(data.columns) - NUM_INFO_COLUMNS -
+                num_guessers*NUM_COLS_PER_GUESSER) / num_guessers
 assert num_features == int(num_features)
 num_features = int(num_features)
 
 range_info_columns = list(range(NUM_INFO_COLUMNS))
 # range_info_columns = [0, 2, 4]    # only a selection of list(range(NUM_INFO_COLUMNS))
-range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*2 for gid in guesser_ids])
+range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*NUM_COLS_PER_GUESSER for gid in guesser_ids])
 range_org_columns_score = range_org_columns_suggested + 1
-range_feats = np.array([NUM_INFO_COLUMNS+2*num_guessers+gid*num_features for gid in guesser_ids])
+range_org_columns_rank = range_org_columns_suggested + 2
+range_feats = np.array([NUM_INFO_COLUMNS+NUM_COLS_PER_GUESSER*num_guessers+gid*num_features for gid in guesser_ids])
 range_feats = [elem for fid in range(num_features) for elem in list(range_feats + fid)]
 
 guesser_columns = [data.columns[cid] for cid in sorted(
     list(range_info_columns) + list(range_org_columns_suggested) +
-    list(range_org_columns_score) + list(range_feats))]
+    list(range_org_columns_score) + list(range_org_columns_rank) + list(range_feats))]
 
 data.to_csv(sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE,
             columns=guesser_columns)

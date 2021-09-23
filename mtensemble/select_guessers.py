@@ -9,6 +9,7 @@ import numpy as np
 from sklearn import preprocessing
 
 NUM_INFO_COLUMNS = 5    # Fix the number of 'info' columns
+NUM_COLS_PER_GUESSER = 3
 UNKNOWN_VALUE = "?"     # Set the character to represent missing/unknown values
 
 
@@ -51,19 +52,23 @@ assert max(guesser_ids) <= num_guessers
 
 # Instead of relying on setting this value, it's (quite) safe to calculate the
 # number of added features.
-num_features = (len(data.columns) - NUM_INFO_COLUMNS - num_guessers*2) / num_guessers
+num_features = (len(data.columns) - NUM_INFO_COLUMNS -
+                num_guessers*NUM_COLS_PER_GUESSER) / num_guessers
 assert num_features == int(num_features)
 num_features = int(num_features)
 
 range_info_columns = list(range(NUM_INFO_COLUMNS))
-range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*2 for gid in guesser_ids])
+range_org_columns_suggested = np.array([NUM_INFO_COLUMNS+gid*NUM_COLS_PER_GUESSER for gid in guesser_ids])
 range_org_columns_score = range_org_columns_suggested + 1
-range_feats = np.array([NUM_INFO_COLUMNS+2*num_guessers+gid*num_features for gid in guesser_ids])
+range_org_columns_rank = range_org_columns_suggested + 2
+range_feats = np.array([NUM_INFO_COLUMNS+NUM_COLS_PER_GUESSER*num_guessers+gid*num_features for gid in guesser_ids])
 range_feats = [elem for fid in range(num_features) for elem in list(range_feats + fid)]
 
 guesser_columns = [data.columns[cid] for cid in sorted(list(range_info_columns) +
                          list(range_org_columns_suggested) +
-                         list(range_org_columns_score) + list(range_feats))]
+                         list(range_org_columns_score) +
+                         list(range_org_columns_rank) +
+                         list(range_feats))]
 
 data[(data.iloc[:, range_org_columns_suggested] != 0).any(axis=1)].to_csv(
     sys.stdout, index=False, sep="\t", na_rep=UNKNOWN_VALUE,
