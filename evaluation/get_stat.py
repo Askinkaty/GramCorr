@@ -679,15 +679,16 @@ def prepare_stat():
 
 
 
-def rtf_performance():
+# def rtf_performance():
     """
     ~TODO: weird small table on the page 7
     Do we need to calculate the number of all invalid candidates which were discarded?
 
     :return:
     """
-    pred_dir = '/Users/katinska/GramCorr/mtensemble/output/output_exp'
-    dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_2'
+    # pred_dir = '/Users/katinska/GramCorr/mtensemble/output/output_exp'
+    dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell'
+    pred_dir = '/Users/katinska/GramCorr/mtensemble/output/experiment/5_guessers-10_folds/0_1_2_3_4'
     folds_files = [f for f in os.listdir(dir) if f.endswith('csv')]
     files = [el for el in os.listdir(pred_dir) if el.endswith('.pred')]
     incorrect_picked = 0
@@ -748,44 +749,60 @@ def rtf_performance():
 
 
 
+import ast
 
 def count_type_perf_rf():
     pred_dir = '/Users/katinska/GramCorr/mtensemble/output/experiment/5_guessers-10_folds/0_1_2_3_4'
-    table = '/Users/katinska/GramCorr/evaluation/out_moses_table_032021.csv'
+    # table = '/Users/katinska/GramCorr/evaluation/out_moses_table_23042021.csv'
+    table = '/Users/katinska/GramCorr/corpora/LearnerCorpora/Koko/cv/error_coordinates.csv'
     files = [el for el in os.listdir(pred_dir) if el.endswith('.pred')]
-    types = ["orth: 02 lcp instead of cap: other cases", "orth: 11 omissions: of double consonants",
+    # types = ["orth: 09 tog instead of sep: other cases"]
+    types = ["orth: 02 lcp instead of cap: other cases",
+            "orth: 11 omissions: of double consonants",
             "orth: 06 sep instead of tog: compounds", "orth: 08 tog instead of sep: minimal phraseologism",
              "orth: 03 cap instead of lcp", "orth: 14 omissions: of one grapheme",
              "orth: 28 Eigennamen", "orth: 07 sep instead of tog: other cases",
-             "orth: 09 tog instead of sep: other cases", "orth: 15 insertions: of double consonants",
-             "corr: case"]
+             "orth: 09 tog instead of sep: other cases"]
     type_dict = dict()
     type_num = dict()
     with codecs.open(table) as table_file:
         table_reader = csv.reader(table_file, delimiter='\t')
-        for row in table_reader:
-            error = row[0]
-            b = error.split('_')[:-1]
-            error = '_'.join(b).replace("'", '')
+        for j, row in enumerate(table_reader):
+            if j == 0:
+                continue
+            # print(row)
+            error = row[0] + '_' + row[1] + '_' + row[2] + '_' + row[3] + '_' + row[4] + '_' + row[5]
+            # b = error.split('_')[:-1]
+            # error = '_'.join(b).replace("'", '')
             # error = error.replace(' ', '_').replace("'", '')
             # if 'fold7_3368_ID2587.txt_14_183_182' in error:
-            #     print(error)
-            #     print(row)
-            type = row[1]
+            # print(error)
+            # print(row)
+            type = ast.literal_eval(row[8])
+            # print(isinstance(type, list))
+            # sys.exit()
             if error not in type_dict:
                 type_dict[error] = type
-            if type not in type_num:
-                type_num[type] = 1
-            elif type in type_num:
-                type_num[type] += 1
+            for t in type:
+                if t not in type_num:
+                    type_num[t] = 1
+                elif t in type_num:
+                    type_num[t] += 1
     # print(len(type_dict))
+    # print(type_num)
+    # sys.exit()
+    # print(type_dict)
+    # print(len(type_num))
     # sys.exit()
     # print('*'*100)
+    error_fixed = dict()
     stat = dict()
     for t in type_num:
         if t not in stat:
             stat[t] = {'correct': 0, 'error': 0, 'all': 0}
     all_errors = []
+    # print(stat)
+    # sys.exit()
     for file in files:
         pf = codecs.open(os.path.join(pred_dir, file), 'r', encoding='utf-8')
         lines = pf.readlines()
@@ -807,43 +824,74 @@ def count_type_perf_rf():
             # b = error_ens.split('_')[:-1]
             # error_ens = '_'.join(b).replace("'", '')
             # print(error_ens)
-            if error_ens not in all_errors:
-                all_errors.append(error_ens)
+            # sys.exit()
             # if error_ens in type_dict:
             type_er = type_dict[error_ens]
-            if line.split(',')[3] != '+':
-                stat[type_er]['correct'] += 1
+            # print(type_er)
+            # sys.exit()
+            if error_ens not in all_errors:
+                all_errors.append(error_ens)
+            if error_ens not in error_fixed:
+                for t_er in type_er:
+                    if line.split(',')[3] != '+':
+                        error_fixed[error_ens] = True
+                        stat[t_er]['correct'] += 1
+                    else:
+                        stat[t_er]['error'] += 1
+                        error_fixed[error_ens] = False
+                    stat[t_er]['all'] += 1
             else:
-                stat[type_er]['error'] += 1
-            stat[type_er]['all'] += 1
+                if error_fixed[error_ens] is True:
+                    continue
+                else:
+                    for t_er in type_er:
+                        if line.split(',')[3] != '+':
+                            error_fixed[error_ens] = True
+                            stat[t_er]['correct'] += 1
+                            stat[t_er]['error'] -= 1
+
     # print(stat)
+    # print(error_fixed)
     # print('*'*100)
     # for type in types:
     # print(len(all_errors))
     # sys.exit()
     for type in stat.keys():
+        if type not in types:
+            continue
         print(stat[type])
-        print(type_num[type])
+        print('All: ', type_num[type])
         print(type)
         p = stat[type]['correct'] / (stat[type]['correct'] + stat[type]['error'] + 0.001)
         # r = stat[type]['correct'] / type_num[type] + 0.001
-        r = stat[type]['correct'] / (stat[type]['all'] + 0.001)
+        # r = stat[type]['correct'] / (stat[type]['all'] + 0.001)
+        r = stat[type]['correct'] / (type_num[type] + 0.001)
+
 
         print('Precision: ', p)
         print('Recall: ', r)
-        print('F measure: ', (2 * p * r) / (p + r + 0.001))
+        f = (2 * p * r) / (p + r + 0.001)
+        print('F measure: ', f)
         print('*'*100)
+        if f > 1:
+            sys.exit()
     other_corr = 0
     other_error = 0
     other_total = 0
     for t in stat.keys():
         if t not in types:
+            print(t)
             other_corr += stat[t]['correct']
             other_error += stat[t]['error']
-            # other_total += type_num[t]
-            other_total += stat[t]['all']
+            other_total += type_num[t]
+            # other_total += stat[t]['all']
+
+    print('All other correct', other_corr)
+    print('All other error', other_error)
+
     p = other_corr / (other_corr + other_error)
     r = other_corr / other_total
+    print(other_total)
     print('Other precision: ', p)
     print('Other recall: ', r)
     print('F measure: ', (2 * p * r) / (p + r + 0.001))
@@ -887,7 +935,7 @@ def count_unique_errors():
 
 def calculate_not_corrected():
     # fold3_2384_ID1233.txt_21_163_163_Hobbies
-    dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_032021_final'
+    dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell'
     errors_input = []
     folds_files = [f for f in os.listdir(dir) if f.endswith('csv')]
     for f in folds_files:
@@ -902,18 +950,20 @@ def calculate_not_corrected():
                 if error not in errors_input:
                     errors_input.append(error)
     error_coord = '/Users/katinska/GramCorr/data_preprocessing/new_error_coordinates.csv'
+    # error_coord = '/Users/katinska/GramCorr/corpora/LearnerCorpora/Koko/cv/error_coordinates.csv'
     error_c = []
     with codecs.open(error_coord) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for j, row in enumerate(csv_reader):
             if j == 0:
                 continue
+            print(row)
             error = 'fold'+ row[1] + '_' + row[2] + '_' + row[3] + '_' + row[4] + '_' + row[5] + '_' + row[6] + '_' + row[7]
             # print(error)
             if error not in error_c:
                 error_c.append(error)
 
-    out_table = '/Users/katinska/GramCorr/evaluation/out_moses_table_032021.csv'
+    out_table = '/Users/katinska/GramCorr/evaluation/out_moses_table_23042021.csv'
     err_inp = []
     with codecs.open(out_table) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter='\t')
@@ -1062,8 +1112,8 @@ if __name__ == '__main__':
     # rtf_performance()
     # count_unique_errors()
     # calculate_not_corrected()
-    # count_type_perf_rf()
+    count_type_perf_rf()
 
     # prepare_err_info()
     # count_tokens_char()
-    count_sugg()
+    # count_sugg()

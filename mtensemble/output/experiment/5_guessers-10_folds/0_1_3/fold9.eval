@@ -3,27 +3,36 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 19292615 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 593046783 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold0.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
 
 @attribute error_length numeric
-@attribute 10_gram_is_suggested {-1,0,1}
-@attribute 10_gram_score numeric
-@attribute 1_gram_is_suggested {-1,0,1}
-@attribute 1_gram_score numeric
 @attribute 5_gram_is_suggested {-1,0,1}
 @attribute 5_gram_score numeric
-@attribute conf_norm_0 numeric
-@attribute std_0 numeric
-@attribute maxabs_0 numeric
-@attribute conf_norm_1 numeric
-@attribute std_1 numeric
-@attribute maxabs_1 numeric
-@attribute conf_norm_3 numeric
-@attribute std_3 numeric
-@attribute maxabs_3 numeric
+@attribute 5_gram_rank numeric
+@attribute 3_gram_is_suggested {-1,0,1}
+@attribute 3_gram_score numeric
+@attribute 3_gram_rank numeric
+@attribute 10_gram_is_suggested {-1,0,1}
+@attribute 10_gram_score numeric
+@attribute 10_gram_rank numeric
+@attribute score_norm_0 numeric
+@attribute score_std_0 numeric
+@attribute score_maxabs_0 numeric
+@attribute rank_std_0 numeric
+@attribute rank_maxabs_0 numeric
+@attribute score_norm_1 numeric
+@attribute score_std_1 numeric
+@attribute score_maxabs_1 numeric
+@attribute rank_std_1 numeric
+@attribute rank_maxabs_1 numeric
+@attribute score_norm_3 numeric
+@attribute score_std_3 numeric
+@attribute score_maxabs_3 numeric
+@attribute rank_std_3 numeric
+@attribute rank_maxabs_3 numeric
 @attribute class {0,1}
 
 @data
@@ -34,63 +43,63 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 19292615 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 593046783 -do-not-check-capabilities
 
-Time taken to build model: 26.76 seconds
+Time taken to build model: 22.74 seconds
 
-Time taken to test model on training data: 9.29 seconds
+Time taken to test model on training data: 6.98 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       56269               96.16   %
-Incorrectly Classified Instances      2247                3.84   %
-Kappa statistic                          0.8244
-Mean absolute error                      0.076 
-Root mean squared error                  0.1776
-Relative absolute error                 31.3378 %
-Root relative squared error             50.9915 %
-Total Number of Instances            58516     
+Correctly Classified Instances       46001               99.3499 %
+Incorrectly Classified Instances       301                0.6501 %
+Kappa statistic                          0.9788
+Mean absolute error                      0.0225
+Root mean squared error                  0.0834
+Relative absolute error                  7.2756 %
+Root relative squared error             21.1809 %
+Total Number of Instances            46302     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.997    0.254    0.960      0.997    0.978      0.834    0.985     0.997     0
-                 0.746    0.003    0.976      0.746    0.846      0.834    0.985     0.935     1
-Weighted Avg.    0.962    0.218    0.962      0.962    0.959      0.834    0.985     0.989     
+                 0.999    0.031    0.993      0.999    0.996      0.979    1.000     1.000     0
+                 0.969    0.001    0.997      0.969    0.983      0.979    1.000     0.999     1
+Weighted Avg.    0.993    0.025    0.994      0.993    0.993      0.979    1.000     1.000     
 
 
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 50103   150 |     a = 0
-  2097  6166 |     b = 1
+ 37398    27 |     a = 0
+   274  8603 |     b = 1
 
-Time taken to test model on test data: 1.03 seconds
+Time taken to test model on test data: 0.77 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        6142               93.2584 %
-Incorrectly Classified Instances       444                6.7416 %
-Kappa statistic                          0.6815
-Mean absolute error                      0.1047
-Root mean squared error                  0.229 
-Relative absolute error                 43.3445 %
-Root relative squared error             66.0681 %
-Total Number of Instances             6586     
+Correctly Classified Instances        4897               97.6276 %
+Incorrectly Classified Instances       119                2.3724 %
+Kappa statistic                          0.9225
+Mean absolute error                      0.043 
+Root mean squared error                  0.14  
+Relative absolute error                 13.7876 %
+Root relative squared error             35.3215 %
+Total Number of Instances             5016     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.984    0.384    0.940      0.984    0.962      0.694    0.937     0.987     0
-                 0.616    0.016    0.862      0.616    0.719      0.694    0.937     0.816     1
-Weighted Avg.    0.933    0.332    0.929      0.933    0.928      0.694    0.937     0.963     
+                 0.993    0.094    0.978      0.993    0.985      0.923    0.992     0.997     0
+                 0.906    0.007    0.970      0.906    0.937      0.923    0.992     0.978     1
+Weighted Avg.    0.976    0.077    0.976      0.976    0.976      0.923    0.992     0.993     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 5575   91 |    a = 0
-  353  567 |    b = 1
+ 4010   27 |    a = 0
+   92  887 |    b = 1
 

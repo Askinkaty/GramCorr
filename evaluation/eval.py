@@ -943,7 +943,7 @@ def split_table():
 def main():
     # get_bleu_score()
     # eval()
-    all_errors, got_suggections, corrected = build_out_table()
+    # all_errors, got_suggections, corrected = build_out_table()
     # print(f'All errors in the data: {all_errors}')
     # print(f'All errors which left after filtering broken: {got_suggections}')
     # print(f'Corrected by at least one system: {corrected}')

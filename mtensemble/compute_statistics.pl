@@ -17,7 +17,7 @@ use warnings;
 # only one argument on the command line => the number of errors for which no system at all gave an answer
 #my ($nb_no_answers) = @ARGV;
 
-my ($nb_no_answers) = 6639;
+#my ($nb_no_answers) = 5836;
 
 
 my $results = {};
