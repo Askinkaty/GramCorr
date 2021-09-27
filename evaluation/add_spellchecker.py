@@ -152,12 +152,12 @@ def get_suggections():
                                         already_added.append(n)
 
                                 # we've already recorded this suggestion
-                                if not already_suggested and n in already_added and row[3] != e:
+                                elif not already_suggested and n in already_added and row[3] != e:
                                     continue
 
                                 # error which was suggested by other models
                                 # print('Ald sug', already_suggested, n not in already_added, row[3]==e)
-                                if already_suggested and n not in already_added and row[3] == e:
+                                elif already_suggested and n not in already_added and row[3] == e:
                                     # print('Here 2', e)
                                     new_line = row[:-1]
                                     # print(row[3])
@@ -171,7 +171,7 @@ def get_suggections():
 
 
                                 # line with suggestion which was not proposed by spell-checker
-                                if m not in already_added and row[3] != e:
+                                elif m not in already_added and row[3] != e:
                                     # print('Here 3', e)
 
                                     new_line = row[:-1]
@@ -339,6 +339,6 @@ if __name__ == '__main__':
     #         add_spellchecker_scores(file)
     # collect_errors(file)
 
-    get_suggections()
+    # get_suggections()
     change_split()
     # count_error_sugg()
