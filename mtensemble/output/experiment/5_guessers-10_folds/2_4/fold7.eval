@@ -3,7 +3,7 @@ Options: -F weka.filters.unsupervised.attribute.RemoveType -W weka.classifiers.t
 
 === Classifier model (full training set) ===
 
-FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S 543381859 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
+FilteredClassifier using weka.classifiers.trees.RandomForest -P 100 -I 100 -num-slots 3 -K 0 -M 1.0 -V 0.001 -S -228162615 on data filtered through weka.filters.unsupervised.attribute.RemoveType -T string
 
 Filtered Header
 @relation 'fold8.arff-weka.filters.unsupervised.attribute.Reorder-R1,3,6-last,5-weka.filters.unsupervised.attribute.RemoveType-Tstring'
@@ -35,22 +35,22 @@ RandomForest
 
 Bagging with 100 iterations and base learner
 
-weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S 543381859 -do-not-check-capabilities
+weka.classifiers.trees.RandomTree -K 0 -M 1.0 -V 0.001 -S -228162615 -do-not-check-capabilities
 
-Time taken to build model: 11.43 seconds
+Time taken to build model: 9.17 seconds
 
-Time taken to test model on training data: 3.53 seconds
+Time taken to test model on training data: 3.14 seconds
 
 === Error on training data ===
 
-Correctly Classified Instances       38850               99.6282 %
-Incorrectly Classified Instances       145                0.3718 %
-Kappa statistic                          0.9889
-Mean absolute error                      0.0181
-Root mean squared error                  0.0717
-Relative absolute error                  5.3589 %
-Root relative squared error             17.4434 %
-Total Number of Instances            38995     
+Correctly Classified Instances       35265               99.6186 %
+Incorrectly Classified Instances       135                0.3814 %
+Kappa statistic                          0.9887
+Mean absolute error                      0.0189
+Root mean squared error                  0.0738
+Relative absolute error                  5.579  %
+Root relative squared error             17.9472 %
+Total Number of Instances            35400     
 
 
 === Detailed Accuracy By Class ===
@@ -64,34 +64,34 @@ Weighted Avg.    0.996    0.012    0.996      0.996    0.996      0.989    1.000
 === Confusion Matrix ===
 
      a     b   <-- classified as
- 30575    23 |     a = 0
-   122  8275 |     b = 1
+ 27743    21 |     a = 0
+   114  7522 |     b = 1
 
 Time taken to test model on test data: 0.35 seconds
 
 === Error on test data ===
 
-Correctly Classified Instances        4168               97.7715 %
-Incorrectly Classified Instances        95                2.2285 %
-Kappa statistic                          0.9342
-Mean absolute error                      0.0374
-Root mean squared error                  0.1337
-Relative absolute error                 10.9966 %
-Root relative squared error             32.3311 %
-Total Number of Instances             4263     
+Correctly Classified Instances        3852               97.5437 %
+Incorrectly Classified Instances        97                2.4563 %
+Kappa statistic                          0.9259
+Mean absolute error                      0.0398
+Root mean squared error                  0.1421
+Relative absolute error                 11.8262 %
+Root relative squared error             34.7019 %
+Total Number of Instances             3949     
 
 
 === Detailed Accuracy By Class ===
 
                  TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
-                 0.989    0.064    0.982      0.989    0.986      0.934    0.993     0.998     0
-                 0.936    0.011    0.961      0.936    0.948      0.934    0.993     0.983     1
-Weighted Avg.    0.978    0.053    0.978      0.978    0.978      0.934    0.993     0.995     
+                 0.989    0.074    0.980      0.989    0.984      0.926    0.992     0.997     0
+                 0.926    0.011    0.957      0.926    0.941      0.926    0.992     0.979     1
+Weighted Avg.    0.975    0.060    0.975      0.975    0.975      0.926    0.992     0.993     
 
 
 === Confusion Matrix ===
 
     a    b   <-- classified as
- 3295   35 |    a = 0
-   60  873 |    b = 1
+ 3073   35 |    a = 0
+   62  779 |    b = 1
 
