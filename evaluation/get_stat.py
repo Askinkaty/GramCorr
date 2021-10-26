@@ -16,12 +16,12 @@ import random
 # import matplotlib.pyplot as plt
 # from sklearn.metrics import roc_curve, auc, plot_roc_curve, roc_auc_score
 
-data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_1'
+data_dir = '/Users/katinska/GramCorr/mtensemble/input/folds_with_spell_30082021'
 
 
 
 def correlation():
-    model_data = {'10': [], '1': [], '3': [], '5': [], 'spell': []}
+    model_data = {'5': [], '3': [], '1': [], '10': [], 'spell': []}
     model_data = collections.OrderedDict(model_data)
     files = os.listdir(data_dir)
     for file in files:
@@ -29,18 +29,16 @@ def correlation():
             with codecs.open(os.path.join(data_dir, file), mode='r') as table_file:
                 table_reader = csv.reader(table_file, delimiter='\t')
                 for i, row in enumerate(table_reader):
-                    # error_id	type	error_length	suggestion	is_correct	10_gram_is_suggested	10_gram_score
-                    # 	1_gram_is_suggested	1_gram_score	3_gram_is_suggested	3_gram_score
-                    # 5_gram_is_suggested	5_gram_score	spellcheker_suggested	spellcheker_score
+
                     if i == 0:
                         continue
                     else:
-                        print(row[5], row[7], row[9], row[11], row[13])
-                        model_data['10'].append(row[5])
-                        model_data['1'].append(row[7])
-                        model_data['3'].append(row[9])
-                        model_data['5'].append(row[11])
-                        model_data['spell'].append(row[13])
+                        print(row[5], row[8], row[11], row[14], row[17])
+                        model_data['5'].append(row[5])
+                        model_data['3'].append(row[8])
+                        model_data['1'].append(row[11])
+                        model_data['10'].append(row[14])
+                        model_data['spell'].append(row[17])
     for k, v in model_data.items():
         model_data[k] = np.array(v).astype(np.float)
     m = np.vstack(model_data.values())
@@ -1101,7 +1099,8 @@ def count_sugg():
 
 
 if __name__ == '__main__':
-    # correlation()
+    correlation()
+    sys.exit()
     # collect_not_corrected()
     # get_not_corrected_error_dict()
     # get_errors_ensemble()
@@ -1112,7 +1111,7 @@ if __name__ == '__main__':
     # rtf_performance()
     # count_unique_errors()
     # calculate_not_corrected()
-    count_type_perf_rf()
+    # count_type_perf_rf()
 
     # prepare_err_info()
     # count_tokens_char()
